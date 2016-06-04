@@ -32,7 +32,8 @@ void print()
     printTrans();
 
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), WHITE);
-    printf("\n=================================================================\n"
+    printf(
+		"\n=================================================================\n"
         "[ i: Input | s: Stop | q: Exit ]\n"
         "[ Enter your choice ]:");
 }
@@ -56,44 +57,51 @@ static void printPerSec()
         int id;
         //标题与综合信息
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), WHITE);
-        printf("=================================================================\n"
+        printf(
+			"=================================================================\n"
             "===================== ");
 
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), CYAN);
         printf("Train Simulation");
 
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), WHITE);
-        printf(" ==========================\n"
-            "|                                                               |\n"
-            "|------------------------- ");
+        printf(
+			" ==========================\n"
+            "|                                                               |\n");
+
+        logprintf("|------------------------- ");
 
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), CYAN);
         logprintf("General");
 
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), WHITE);
-        logprintf(" -----------------------------|\n"
+        logprintf(
+            " -----------------------------|\n"
             "|                                                               |\n"
         );
 
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GREEN);
-        logprintf("|                Clock = %-3ds                                   |\n"
+        logprintf(
+            "|                Clock = %-3ds                                   |\n"
             "|           Input Mode = %-20s                   |\n"
             "|             Strategy = %-20s                   |\n",
             processTime,
-            inputMode == 1 ? "From file" : "From keyboard",
+            inputMode == FROM_FILE ? "From file" : "From keyboard",
             strategy == 1 ? "Alternative mode" :
             strategy == 2 ? "Fast-first mode" : "Manual mode");
 
         //火车信息
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), WHITE);
-        logprintf("|                                                               |\n"
+        logprintf(
+            "|                                                               |\n"
             "|--------------------- ");
 
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), CYAN);
         logprintf("Train Status");
 
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), WHITE);
-        logprintf(" ----------------------------|\n"
+        logprintf(
+            " ----------------------------|\n"
             "|                                                               |\n");
 
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GREEN);
@@ -111,14 +119,16 @@ static void printPerSec()
 
         //轨道信息
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), WHITE);
-        logprintf("|                                                               |\n"
+        logprintf(
+            "|                                                               |\n"
             "|-------------------- ");
 
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), CYAN);
         logprintf("Railway Status");
 
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), WHITE);
-        logprintf(" ---------------------------|\n"
+        logprintf(
+            " ---------------------------|\n"
             "|                                                               |");
 
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GREEN);
