@@ -1,0 +1,272 @@
+General -----------------------------|
+|                                                               |
+|                Clock = 0  s                                   |
+|           Input Mode = From keyboard                          |
+|             Strategy = Alternative mode                       |
+|                                                               |
+|--------------------- Train Status ----------------------------|
+|                                                               |
+| ID: A | Speed: 0.0 | Dir:       | Pos: A[10][Normal] | Status: Waiting
+| ID: B | Speed: 0.0 | Dir:       | Pos: B[22][Normal] | Status: Waiting
+| ID: C | Speed: 0.0 | Dir:       | Pos: C[ 0][Normal] | Status: Waiting
+|                                                               |
+|-------------------- Railway Status ---------------------------|
+|                                                               |
+|/ Railway ID: A | Length:36
+| Common ID: 1 | stp: 11 edp: 16
+| Common ID: 2 | stp: 27 edp: 36
+|/ Railway ID: B | Length:28
+| Common ID: 1 | stp: 23 edp: 28
+|/ Railway ID: C | Length:58
+| Common ID: 2 | stp: 15 edp: 24
+|/ Common Tracks:
+General -----------------------------|
+|                                                               |
+|                Clock = 1  s                                   |
+|           Input Mode = From keyboard                          |
+|             Strategy = Alternative mode                       |
+|                                                               |
+|--------------------- Train Status ----------------------------|
+|                                                               |
+| ID: A | Speed: 0.0 | Dir: east  | Pos: A[10][Normal] | Status: Waiting
+| ID: B | Speed: 0.0 | Dir: south | Pos: B[22][Normal] | Status: Waiting
+| ID: C | Speed: 0.0 | Dir: north | Pos: C[ 0][Normal] | Status: Waiting
+|                                                               |
+|-------------------- Railway Status ---------------------------|
+|                                                               |
+|/ Railway ID: A | Length:36
+| Common ID: 1 | stp: 11 edp: 16
+| Common ID: 2 | stp: 27 edp: 36
+|/ Railway ID: B | Length:28
+| Common ID: 1 | stp: 23 edp: 28
+|/ Railway ID: C | Length:58
+| Common ID: 2 | stp: 15 edp: 24
+|/ Common Tracks:
+General -----------------------------|
+|                                                               |
+|                Clock = 2  s                                   |
+|           Input Mode = From keyboard                          |
+|             Strategy = Alternative mode                       |
+|                                                               |
+|--------------------- Train Status ----------------------------|
+|                                                               |
+| ID: A | Speed: 1.0 | Dir: east  | Pos: A[10][Normal] | Status: Running
+| ID: B | Speed: 0.0 | Dir: south | Pos: B[22][Normal] | Status: Paused/common
+| ID: C | Speed: 0.0 | Dir: north | Pos: C[ 0][Normal] | Status: Waiting
+|                                                               |
+|-------------------- Railway Status ---------------------------|
+|                                                               |
+|/ Railway ID: A | Length:36
+| Common ID: 1 | stp: 11 edp: 16
+| Common ID: 2 | stp: 27 edp: 36
+|/ Railway ID: B | Length:28
+| Common ID: 1 | stp: 23 edp: 28
+|/ Railway ID: C | Length:58
+| Common ID: 2 | stp: 15 edp: 24
+|/ Common Tracks:
+General -----------------------------|
+|                                                               |
+|                Clock = 3  s                                   |
+|           Input Mode = From keyboard                          |
+|             Strategy = Alternative mode                       |
+|                                                               |
+|--------------------- Train Status ----------------------------|
+|                                                               |
+| ID: A | Speed: 1.0 | Dir: east  | Pos: A[11][Commom] | Status: Running
+| ID: B | Speed: 0.0 | Dir: south | Pos: B[22][Normal] | Status: Paused/common
+| ID: C | Speed: 0.0 | Dir: north | Pos: C[ 0][Normal] | Status: Waiting
+|                                                               |
+|-------------------- Railway Status ---------------------------|
+|                                                               |
+|/ Railway ID: A | Length:36
+| Common ID: 1 | stp: 11 edp: 16
+| Common ID: 2 | stp: 27 edp: 36
+|/ Railway ID: B | Length:28
+| Common ID: 1 | stp: 23 edp: 28
+|/ Railway ID: C | Length:58
+| Common ID: 2 | stp: 15 edp: 24
+|/ Common Tracks:
+| Common ID: 1 | Status: A using
+General -----------------------------|
+|                                                               |
+|                Clock = 4  s                                   |
+|           Input Mode = From keyboard                          |
+|             Strategy = Alternative mode                       |
+|                                                               |
+|--------------------- Train Status ----------------------------|
+|                                                               |
+| ID: A | Speed: 1.0 | Dir: east  | Pos: A[12][Commom] | Status: Running
+| ID: B | Speed: 0.0 | Dir: south | Pos: B[22][Normal] | Status: Paused/common
+| ID: C | Speed: 0.0 | Dir: north | Pos: C[ 0][Normal] | Status: Waiting
+|                                                               |
+|-------------------- Railway Status ---------------------------|
+|                                                               |
+|/ Railway ID: A | Length:36
+| Common ID: 1 | stp: 11 edp: 16
+| Common ID: 2 | stp: 27 edp: 36
+|/ Railway ID: B | Length:28
+| Common ID: 1 | stp: 23 edp: 28
+|/ Railway ID: C | Length:58
+| Common ID: 2 | stp: 15 edp: 24
+|/ Common Tracks:
+| Common ID: 1 | Status: A using
+General -----------------------------|
+|                                                               |
+|                Clock = 5  s                                   |
+|           Input Mode = From keyboard                          |
+|             Strategy = Alternative mode                       |
+|                                                               |
+|--------------------- Train Status ----------------------------|
+|                                                               |
+| ID: A | Speed: 1.0 | Dir: east  | Pos: A[13][Commom] | Status: Running
+| ID: B | Speed: 0.0 | Dir: south | Pos: B[22][Normal] | Status: Paused/common
+| ID: C | Speed: 0.0 | Dir: north | Pos: C[ 0][Normal] | Status: Waiting
+|                                                               |
+|-------------------- Railway Status ---------------------------|
+|                                                               |
+|/ Railway ID: A | Length:36
+| Common ID: 1 | stp: 11 edp: 16
+| Common ID: 2 | stp: 27 edp: 36
+|/ Railway ID: B | Length:28
+| Common ID: 1 | stp: 23 edp: 28
+|/ Railway ID: C | Length:58
+| Common ID: 2 | stp: 15 edp: 24
+|/ Common Tracks:
+| Common ID: 1 | Status: A using
+General -----------------------------|
+|                                                               |
+|                Clock = 6  s                                   |
+|           Input Mode = From keyboard                          |
+|             Strategy = Alternative mode                       |
+|                                                               |
+|--------------------- Train Status ----------------------------|
+|                                                               |
+| ID: A | Speed: 1.0 | Dir: east  | Pos: A[14][Commom] | Status: Running
+| ID: B | Speed: 0.0 | Dir: south | Pos: B[22][Normal] | Status: Paused/common
+| ID: C | Speed: 0.0 | Dir: north | Pos: C[ 0][Normal] | Status: Waiting
+|                                                               |
+|-------------------- Railway Status ---------------------------|
+|                                                               |
+|/ Railway ID: A | Length:36
+| Common ID: 1 | stp: 11 edp: 16
+| Common ID: 2 | stp: 27 edp: 36
+|/ Railway ID: B | Length:28
+| Common ID: 1 | stp: 23 edp: 28
+|/ Railway ID: C | Length:58
+| Common ID: 2 | stp: 15 edp: 24
+|/ Common Tracks:
+| Common ID: 1 | Status: A using
+General -----------------------------|
+|                                                               |
+|                Clock = 7  s                                   |
+|           Input Mode = From keyboard                          |
+|             Strategy = Alternative mode                       |
+|                                                               |
+|--------------------- Train Status ----------------------------|
+|                                                               |
+| ID: A | Speed: 1.0 | Dir: east  | Pos: A[15][Commom] | Status: Running
+| ID: B | Speed: 0.0 | Dir: south | Pos: B[22][Normal] | Status: Paused/common
+| ID: C | Speed: 0.0 | Dir: north | Pos: C[ 0][Normal] | Status: Waiting
+|                                                               |
+|-------------------- Railway Status ---------------------------|
+|                                                               |
+|/ Railway ID: A | Length:36
+| Common ID: 1 | stp: 11 edp: 16
+| Common ID: 2 | stp: 27 edp: 36
+|/ Railway ID: B | Length:28
+| Common ID: 1 | stp: 23 edp: 28
+|/ Railway ID: C | Length:58
+| Common ID: 2 | stp: 15 edp: 24
+|/ Common Tracks:
+| Common ID: 1 | Status: A using
+General -----------------------------|
+|                                                               |
+|                Clock = 8  s                                   |
+|           Input Mode = From keyboard                          |
+|             Strategy = Alternative mode                       |
+|                                                               |
+|--------------------- Train Status ----------------------------|
+|                                                               |
+| ID: A | Speed: 1.0 | Dir: east  | Pos: A[16][Normal] | Status: Running
+| ID: B | Speed: 1.0 | Dir: south | Pos: B[22][Normal] | Status: Running
+| ID: C | Speed: 0.0 | Dir: north | Pos: C[ 0][Normal] | Status: Waiting
+|                                                               |
+|-------------------- Railway Status ---------------------------|
+|                                                               |
+|/ Railway ID: A | Length:36
+| Common ID: 1 | stp: 11 edp: 16
+| Common ID: 2 | stp: 27 edp: 36
+|/ Railway ID: B | Length:28
+| Common ID: 1 | stp: 23 edp: 28
+|/ Railway ID: C | Length:58
+| Common ID: 2 | stp: 15 edp: 24
+|/ Common Tracks:
+General -----------------------------|
+|                                                               |
+|                Clock = 9  s                                   |
+|           Input Mode = From keyboard                          |
+|             Strategy = Alternative mode                       |
+|                                                               |
+|--------------------- Train Status ----------------------------|
+|                                                               |
+| ID: A | Speed: 1.0 | Dir: east  | Pos: A[17][Normal] | Status: Running
+| ID: B | Speed: 1.0 | Dir: south | Pos: B[23][Commom] | Status: Running
+| ID: C | Speed: 0.0 | Dir: north | Pos: C[ 0][Normal] | Status: Waiting
+|                                                               |
+|-------------------- Railway Status ---------------------------|
+|                                                               |
+|/ Railway ID: A | Length:36
+| Common ID: 1 | stp: 11 edp: 16
+| Common ID: 2 | stp: 27 edp: 36
+|/ Railway ID: B | Length:28
+| Common ID: 1 | stp: 23 edp: 28
+|/ Railway ID: C | Length:58
+| Common ID: 2 | stp: 15 edp: 24
+|/ Common Tracks:
+| Common ID: 1 | Status: B using
+General -----------------------------|
+|                                                               |
+|                Clock = 10 s                                   |
+|           Input Mode = From keyboard                          |
+|             Strategy = Alternative mode                       |
+|                                                               |
+|--------------------- Train Status ----------------------------|
+|                                                               |
+| ID: A | Speed: 1.0 | Dir: east  | Pos: A[18][Normal] | Status: Running
+| ID: B | Speed: 1.0 | Dir: south | Pos: B[24][Commom] | Status: Running
+| ID: C | Speed: 0.0 | Dir: north | Pos: C[ 0][Normal] | Status: Waiting
+|                                                               |
+|-------------------- Railway Status ---------------------------|
+|                                                               |
+|/ Railway ID: A | Length:36
+| Common ID: 1 | stp: 11 edp: 16
+| Common ID: 2 | stp: 27 edp: 36
+|/ Railway ID: B | Length:28
+| Common ID: 1 | stp: 23 edp: 28
+|/ Railway ID: C | Length:58
+| Common ID: 2 | stp: 15 edp: 24
+|/ Common Tracks:
+| Common ID: 1 | Status: B using
+General -----------------------------|
+|                                                               |
+|                Clock = 11 s                                   |
+|           Input Mode = From keyboard                          |
+|             Strategy = Alternative mode                       |
+|                                                               |
+|--------------------- Train Status ----------------------------|
+|                                                               |
+| ID: A | Speed: 1.0 | Dir: east  | Pos: A[19][Normal] | Status: Running
+| ID: B | Speed: 1.0 | Dir: west  | Pos: B[25][Commom] | Status: Running
+| ID: C | Speed: 0.0 | Dir: north | Pos: C[ 0][Normal] | Status: Waiting
+|                                                               |
+|-------------------- Railway Status ---------------------------|
+|                                                               |
+|/ Railway ID: A | Length:36
+| Common ID: 1 | stp: 11 edp: 16
+| Common ID: 2 | stp: 27 edp: 36
+|/ Railway ID: B | Length:28
+| Common ID: 1 | stp: 23 edp: 28
+|/ Railway ID: C | Length:58
+| Common ID: 2 | stp: 15 edp: 24
+|/ Common Tracks:
+| Common ID: 1 | Status: B using
