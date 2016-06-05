@@ -1,0 +1,8 @@
+train.num=3
+trainA.speed=0 st=0 sp=10 dir=1 type=0
+trainB.speed=0 st=0 sp=22 dir=1 type=1
+trainC.speed=0 st=0 sp=0 dir=1 type=0
+railway.num=3
+railwayA.len=36 sw=0 nw=9 ne=18 se=27 cm=2  id=1 11 16 id=2 27 36
+railwayB.len=28 sw=0 nw=9 ne=14 se=23 cm=1  id=1 23 28
+railwayC.len=58 sw=0 nw=9 ne=29 se=38 cm=1  id=2 15 24
