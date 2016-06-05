@@ -58,13 +58,13 @@
     <Text Include="txt\init.txt">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="txt\initsets.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
     <Text Include="txt\log.txt">
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="txt\output.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="txt\init - sets.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

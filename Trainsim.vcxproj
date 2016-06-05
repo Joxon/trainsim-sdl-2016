@@ -113,8 +113,8 @@
   <ItemGroup>
     <Text Include="txt\command.txt" />
     <Text Include="txt\init - keyboard.txt" />
+    <Text Include="txt\init - sets.txt" />
     <Text Include="txt\init.txt" />
-    <Text Include="txt\initsets.txt" />
     <Text Include="txt\log.txt" />
     <Text Include="txt\output.txt" />
   </ItemGroup>

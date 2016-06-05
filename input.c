@@ -118,8 +118,6 @@ static void initFromFile()
 	FILE *fp;
 	unsigned int  id;
 	char ch;
-	int length, southwest, northwest, northeast, southeast;
-	int common_count, common_ID, start, end;
 
 	if ((fp = fopen(".\\txt\\init.txt", "r")) != NULL)
 	{
@@ -134,11 +132,13 @@ static void initFromFile()
 			train[id].status = WAIT;
 		}
 
+
 		/*轨道初始化*/
 		fscanf(fp, "railway.num=%d\n", &railNum);
 		for (id = 0; id < railNum; ++id)
 		{
 			/*轨道初始化：长宽设定*/
+			int length, southwest, northwest, northeast, southeast;
 			fscanf(fp, "railway%c.len=%d sw=%d nw=%d ne=%d se=%d\n",
 				&ch, &length, &southwest, &northwest, &northeast,
 				&southeast);
@@ -147,25 +147,30 @@ static void initFromFile()
 			while (blockid <= northwest)
 			{
 				railway[id][blockid].direction = WEST;
+				railway[id][blockid].station = 0;
 				++blockid;
 			}
 			while (blockid <= northeast)
 			{
 				railway[id][blockid].direction = NORTH;
+				railway[id][blockid].station = 0;
 				++blockid;
 			}
 			while (blockid <= southeast)
 			{
 				railway[id][blockid].direction = EAST;
+				railway[id][blockid].station = 0;
 				++blockid;
 			}
 			while (blockid < length)
 			{
 				railway[id][blockid].direction = SOUTH;
+				railway[id][blockid].station = 0;
 				++blockid;
 			}
 
 			/*轨道初始化：公共轨道*/
+			int common_count, common_ID, start, end;
 			fscanf(fp, "cm=%d\n", &common_count);
 			int commomid = 1;
 			while (commomid++ <= common_count)
@@ -177,6 +182,16 @@ static void initFromFile()
 					railway[id][blockid].last = -1;
 				}
 			}
+
+			/*轨道初始化：停靠点*/
+			int stationCount, stationID = 1, stationPoint;
+			fscanf(fp, "sn=%d\n", &stationCount);
+			while (stationID++ <= stationCount)
+			{
+				fscanf("%d\n", &stationPoint);
+				railway[id][stationPoint].station = 1;
+			}
+
 
 			//复制轨道起始部分，防止越界访问，i的范围视速度而定
 			for (int i = 0; i < 10; ++i)
@@ -242,30 +257,35 @@ static void initFromKeyBoard()
 			"separated by spaces:\n", 'A' + id);
 		scanf("%d %d %d %d %d",
 			&length, &southwest, &northwest, &northeast, &southeast);
-		train[id].railwayLength = length;
 		fflush(stdin);
+		train[id].railwayLength = length;
 		int blockid = 0;
 		while (blockid <= northwest)
 		{
 			railway[id][blockid].direction = WEST;
+			railway[id][blockid].station = 0;
 			++blockid;
 		}
 		while (blockid <= northeast)
 		{
 			railway[id][blockid].direction = NORTH;
+			railway[id][blockid].station = 0;
 			++blockid;
 		}
 		while (blockid <= southeast)
 		{
 			railway[id][blockid].direction = EAST;
+			railway[id][blockid].station = 0;
 			++blockid;
 		}
 		while (blockid < length)
 		{
 			railway[id][blockid].direction = SOUTH;
+			railway[id][blockid].station = 0;
 			++blockid;
 		}
 		printf("DONE...\n");
+
 		/*轨道初始化：公共轨道*/
 		printf("How many common parts does the railway%c have?\n"
 			"(int > 0):", 'A' + id);
@@ -287,6 +307,26 @@ static void initFromKeyBoard()
 			}
 			printf("DONE...\n");
 		}
+
+		/*轨道初始化：停靠点*/
+		int stationCount, stationID = 1, stationPoint;
+		printf("How many stations does the railway%c have?\n"
+			"(int > 0):", 'A' + id);
+		scanf("%d", &stationCount);
+		fflush(stdin);
+		printf("Please input railway%c's"
+			"station point (int > 0),\n"
+			"separated by spaces in one line:\n", 'A' + id);
+		while (stationID++ <= stationCount)
+		{
+			fscanf("%d", &stationPoint);
+			railway[id][stationPoint].station = 1;
+		}
+
+
+		//复制轨道起始部分，防止越界访问，i的范围视速度而定
+		for (int i = 0; i < 10; ++i)
+			railway[id][length + i] = railway[id][i];
 	}
 
 	printf("init successful!");

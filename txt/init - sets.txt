@@ -3,9 +3,9 @@ trainA.speed=5.0 st=0 sp=0 dir=1 type=0
 trainB.speed=10.0 st=1 sp=0 dir=1 type=1
 trainC.speed=5.0 st=2 sp=0 dir=2 type=0
 railway.num=3
-railwayA.len=40 sw=0 nw=10 ne=20 se=30 cm=2 id=1 22 27 id=2 32 37
-railwayB.len=70 sw=0 nw=5 ne=35 se=40 cm=1 id=1 0 5
-railwayC.len=40 sw=0 nw=15 ne=20 se=35 cm=1 id=2 15 20
+railwayA.len=40 sw=0 nw=10 ne=20 se=30 cm=2 id=1 22 27 id=2 32 37 sn=2 5 10
+railwayB.len=70 sw=0 nw=5 ne=35 se=40 cm=1 id=1 0 5 sn=1 10
+railwayC.len=40 sw=0 nw=15 ne=20 se=35 cm=1 id=2 15 20 sn=1 20
 
 train.num=3
 trainA.speed=1 st=0 sp=0 dir=1 type=0

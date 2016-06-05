@@ -107,7 +107,7 @@ struct block
 
     /*站点标记
     * 1为站点 
-    * 2为非站点
+    * 0为非站点
     */
     int station;
 };
