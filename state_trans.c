@@ -9,11 +9,15 @@ extern unsigned int trainNum;
 extern struct train train[MAX_TRAIN];
 extern struct block railway[MAX_RAIL][MAX_RAIL_LENGTH];
 extern float        trainSpeed[MAX_TRAIN];
-static int          flag = 0;
+extern int inputMode;
+static int   clock=0 ,      flag = 0;
+int m,sum=0;
+static char ch;
+
 
 void trans(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], int i)
 {
-    int state = STOP;
+    int state = STOP,j;
     switch (state)
     {
     case STOP:
@@ -30,8 +34,36 @@ void trans(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], int i)
                 break;
             }
         }
-        else
-            state = RUN;
+		else {
+			for (j = 0; j < tra->speed; j++) {
+				if (rail[i][tra->position + j].station != 0)
+					sum++;
+				if (sum > 0)
+					break;
+			}
+			if (sum > 0) {
+				state = PAUSE;
+				if (tra->speed != 0) {
+					tra->position += j;
+					tra->status = PAUSE;
+					trainSpeed[i] = tra->speed;
+					tra->speed = 0;
+				}
+			}
+				
+			else 
+                state = RUN;
+            
+		}
+	case PAUSE:
+		clock++;
+		if (clock == tra->pausetime) {
+			tra->speed = trainSpeed[i];
+			tra->status = RUN;
+			state = RUN;
+		}
+
+
     case RUN:
         if (tra->direction == NORMAL)
         {
@@ -66,53 +98,67 @@ void trans(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], int i)
         }
         else if (judgeCommonTrack(tra, rail, i) == 2)
         {
-            if (tra->direction == NORMAL)
-            {
-                if (rail[i][tra->position + (int)tra->speed].last == i)
-                {
-                    state = STOP;
-                    tra->status = PAUSE_COMMON;
-                    trainSpeed[i] = tra->speed;
-                    tra->speed = 0;
-                    break;
-                }
-                else
-                {
-                    if (flag == 0)
-                    {
-                        state = RUN;
-                        rail[i][tra->position + (int)tra->speed].last = i;
-                        tra->status = RUN;
-                        flag = rail[i][tra->position + (int)tra->speed].common;
-                        break;
-                    }
-                    else if (flag == rail[i][tra->position + (int)tra->speed].common)
-                    {
-                        state = STOP;
-                        tra->speed = 0;
-                        tra->status = PAUSE_COMMON;
-                        flag = 0;
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                if (rail[i][tra->position - (int)tra->speed].last == i)
-                {
-                    state = STOP;
-                    tra->speed = 0;
-                    tra->status = STOP;
-                    break;
-                }
-                else
-                {
-                    state = RUN;
-                    rail[i][tra->position - (int)tra->speed].last = i;
-                    tra->status = RUN;
-                    break;
-                }
-            }
+			if (inputMode == 1) {
+				if (tra->direction == NORMAL) {
+					if (rail[i][tra->position + (int)tra->speed].last == i) {
+						state = STOP;
+						tra->status = PAUSE_COMMON;
+						trainSpeed[i] = tra->speed;
+						tra->speed = 0;
+						break;
+					}
+					else {
+						if (flag == 0) {
+							state = RUN;
+							rail[i][tra->position + (int)tra->speed].last = i;
+							tra->status = RUN;
+							flag = rail[i][tra->position + (int)tra->speed].common;
+							break;
+						}
+						else if (flag == rail[i][tra->position + (int)tra->speed].common) {
+							state = STOP;
+							tra->speed = 0;
+							tra->status = PAUSE_COMMON;
+							flag = 0;
+							break;
+						}
+					}
+				}
+				else {
+					if (rail[i][tra->position - (int)tra->speed].last == i) {
+						state = STOP;
+						tra->speed = 0;
+						tra->status = STOP;
+						break;
+					}
+					else {
+						state = RUN;
+						rail[i][tra->position - (int)tra->speed].last = i;
+						tra->status = RUN;
+						break;
+					}
+				}
+			}
+			else if (inputMode == 2) {
+				if (tra->speed>train[m].speed) {
+					state = RUN;
+					break;
+				}
+			}
+			else if (inputMode == 3) {
+				printf("Please choose which one to run(%c or %c):", 'A' + i, 'A' + m);
+				if ((ch = getchar()) == 'A' + 'i') {
+					state = RUN;
+					tra->status = PAUSE_COMMON;
+					break;
+				}
+				else {
+					state = STOP;
+					trainSpeed[i] = tra->speed;
+					tra->speed = 0;
+					break;
+				}
+			}
         }
         else
         {

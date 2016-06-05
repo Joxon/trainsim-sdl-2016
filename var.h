@@ -27,7 +27,8 @@
 #define RUN 2
 #define PAUSE_COMMON 3
 #define PAUSE_ANY 4
-#define WAIT 5
+#define PAUSE 5
+#define WAIT 6
 //»ð³µ·½Ïò
 #define NORMAL 1
 #define REVERSE 2
