@@ -1,2 +1,5 @@
 
-.idea/
+/Debug
+/.vs/Trainsim/v14
+/Trainsim.VC.db
+/txt

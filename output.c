@@ -33,7 +33,7 @@ void print()
 
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), WHITE);
     printf(
-		"\n=================================================================\n"
+        "\n=================================================================\n"
         "[ i: Input | s: Stop | q: Exit ]\n"
         "[ Enter your choice ]:");
 }
@@ -58,7 +58,7 @@ static void printPerSec()
         //标题与综合信息
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), WHITE);
         printf(
-			"=================================================================\n"
+            "=================================================================\n"
             "===================== ");
 
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), CYAN);
@@ -66,7 +66,7 @@ static void printPerSec()
 
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), WHITE);
         printf(
-			" ==========================\n"
+            " ==========================\n"
             "|                                                               |\n");
 
         logprintf("|------------------------- ");

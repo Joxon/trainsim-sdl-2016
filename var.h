@@ -56,23 +56,23 @@ struct train
     /*火车的起始运动方向
     * NORMAL = 顺时针
     * REVERSE = 逆时针
-	*/
+    */
     int   direction;
 
     //火车运行方向
     char  dir[10];
 
     /*火车状态
-	* RUN = 运行
-	* PAUSE_COMMON = 等待公共轨道
-	* PAUSE_ANY = 用户暂停
-	*/
+    * RUN = 运行
+    * PAUSE_COMMON = 等待公共轨道
+    * PAUSE_ANY = 用户暂停
+    */
     int   status;
 
     /*火车类型，
-	* FAST = 快车
-	* SLOW = 慢车
-	*/
+    * FAST = 快车
+    * SLOW = 慢车
+    */
     int   type;
 
     //火车当前所处的位置
@@ -80,25 +80,34 @@ struct train
 
     //火车运行轨道的点的个数
     int   railwayLength;
+
+    //火车在站点的暂停时间
+    int pausetime;
 };
 
 struct block
 {
     /*共轨标记
-	* 0 = 非公共
-	* >=0 = 公共
-	*/
+    * 0 = 非公共
+    * >=0 = 公共
+    */
     int common;
 
     /*方向标记
-	* WEST = 左
-	* SOUTH = 下
-	* EAST = 右
-	* NORTH = 上
-	*/
+    * WEST = 左
+    * SOUTH = 下
+    * EAST = 右
+    * NORTH = 上
+    */
     int direction;
 
     //上次通过的火车
     int last;
+
+    /*站点标记
+    * 1为站点 
+    * 2为非站点
+    */
+    int station;
 };
 #endif //TRAIN_SIMULATION_STRUCT_H
