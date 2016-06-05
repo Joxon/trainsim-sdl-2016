@@ -1,2 +1,34 @@
 
 .idea/
+/.vs/Trainsim/v14
+/Debug/Trainsim.tlog
+/Debug/zlib1.dll
+/Debug/vc140.pdb
+/Debug/vc140.idb
+/Debug/Trainsim.pdb
+/Debug/Trainsim.log
+/Debug/Trainsim.ilk
+/Debug/Trainsim.Build.CppClean.log
+/Debug/state_trans.obj
+/Debug/sprite.png
+/Debug/SDL2_image.dll
+/Debug/SDL2.dll
+/Debug/SDL2 test.pdb
+/Debug/SDL2 test.ilk
+/Debug/SDL2 test.exe
+/Debug/output.obj
+/Debug/main.obj
+/Debug/libpng16-16.dll
+/Debug/libjpeg-9.dll
+/Debug/input.obj
+/Debug/image.png
+/Debug/image.bmp
+/Debug/hello.bmp
+/Debug/event.png
+/Debug/control.obj
+/Debug/background.png
+/Debug/background.bmp
+/SDL2 test/Debug
+/Debug/txt/output.txt
+/Debug/txt/log.txt
+/Trainsim.VC.db
