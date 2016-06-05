@@ -19,7 +19,8 @@ extern unsigned short inputMode;
 
 void init()
 {
-	printf("             === Trainsim by C403 ===               ;###'                       \n"
+	printf(
+		"             === Trainsim by C403 ===               ;###'                       \n"
 		"             |   Jiannan Zheng      |               ,#+++.                      \n"
 		"             |   Awesome Yuan       |                #+++                       \n"
 		"             |    Joxon Chan        |                #+++`                      \n"
@@ -125,9 +126,9 @@ static void initFromFile()
 		fscanf(fp, "train.num=%d\n", &trainNum);
 		for (id = 0; id < trainNum; ++id)
 		{
-			fscanf(fp, "train%c.speed=%f st=%d sp=%d dir=%d type=%d\n",
+			fscanf(fp, "train%c.speed=%f st=%d sp=%d dir=%d type=%d pt=%d\n",
 				&ch, &trainSpeed[id], &train[id].startTime, &train[id].startPoint,
-				&train[id].direction, &train[id].type);
+				&train[id].direction, &train[id].type, &train[id].pausetime);
 			train[id].position = train[id].startPoint;
 			train[id].status = WAIT;
 		}
@@ -188,7 +189,7 @@ static void initFromFile()
 			fscanf(fp, "sn=%d\n", &stationCount);
 			while (stationID++ <= stationCount)
 			{
-				fscanf("%d\n", &stationPoint);
+				fscanf(fp,"%d\n", &stationPoint);
 				railway[id][stationPoint].station = 1;
 			}
 
@@ -228,10 +229,16 @@ static void initFromKeyBoard()
 			"start point (int => 0),\n"
 			"direction (1 for normal or 2 for rev),\n"
 			"type(1 for fast or 2 slow),\n"
+			"pausetime (int => 0),\n"
 			"separated by spaces:\n",
 			'A' + id);
-		scanf("%f %d %d %d %d",
-			&train[id].speed, &train[id].startTime, &train[id].startPoint, &train[id].direction, &train[id].type);
+		scanf("%f %d %d %d %d %d",
+			&train[id].speed,
+			&train[id].startTime,
+			&train[id].startPoint, 
+			&train[id].direction, 
+			&train[id].type,
+			&train[id].pausetime);
 		trainSpeed[id] = train[id].speed;
 		fflush(stdin);
 		printf("DONE...\n");
@@ -319,7 +326,7 @@ static void initFromKeyBoard()
 			"separated by spaces in one line:\n", 'A' + id);
 		while (stationID++ <= stationCount)
 		{
-			fscanf("%d", &stationPoint);
+			scanf("%d", &stationPoint);
 			railway[id][stationPoint].station = 1;
 		}
 
