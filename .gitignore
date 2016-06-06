@@ -32,3 +32,65 @@
 /Debug/txt/output.txt
 /Debug/txt/log.txt
 /Trainsim.VC.db
+/项目2.layout
+/项目2.exe
+/项目2.dev
+/x64/Debug/vc140.pdb
+/x64/Debug/vc140.idb
+/x64/Debug/Trainsim.tlog/Trainsim.lastbuildstate
+/x64/Debug/Trainsim.tlog/link.write.1.tlog
+/x64/Debug/Trainsim.tlog/link.read.1.tlog
+/x64/Debug/Trainsim.tlog/link.command.1.tlog
+/x64/Debug/Trainsim.tlog/CL.write.1.tlog
+/x64/Debug/Trainsim.tlog/CL.read.1.tlog
+/x64/Debug/Trainsim.tlog/CL.command.1.tlog
+/x64/Debug/Trainsim.tlog
+/x64/Debug/Trainsim.pdb
+/x64/Debug/Trainsim.log
+/x64/Debug/Trainsim.ilk
+/x64/Debug/Trainsim.exe
+/x64/Debug/state_trans.obj
+/x64/Debug/SDL2 test.pdb
+/x64/Debug/output.obj
+/x64/Debug/main.obj
+/x64/Debug/input.obj
+/x64/Debug/control.obj
+/x64/Debug
+/state_trans.o
+/SDL2 test/x64/Debug/vc140.pdb
+/SDL2 test/x64/Debug/vc140.idb
+/SDL2 test/x64/Debug/SDL2 test.tlog/unsuccessfulbuild
+/SDL2 test/x64/Debug/SDL2 test.tlog/SDL2 test.lastbuildstate
+/SDL2 test/x64/Debug/SDL2 test.tlog/link.write.1.tlog
+/SDL2 test/x64/Debug/SDL2 test.tlog/link.read.1.tlog
+/SDL2 test/x64/Debug/SDL2 test.tlog/link.command.1.tlog
+/SDL2 test/x64/Debug/SDL2 test.tlog/link-rc.write.1.tlog
+/SDL2 test/x64/Debug/SDL2 test.tlog/link-rc.read.1.tlog
+/SDL2 test/x64/Debug/SDL2 test.tlog/link-cvtres.write.1.tlog
+/SDL2 test/x64/Debug/SDL2 test.tlog/link-cvtres.read.1.tlog
+/SDL2 test/x64/Debug/SDL2 test.tlog/CL.write.1.tlog
+/SDL2 test/x64/Debug/SDL2 test.tlog/CL.read.1.tlog
+/SDL2 test/x64/Debug/SDL2 test.tlog/CL.command.1.tlog
+/SDL2 test/x64/Debug/SDL2 test.tlog
+/SDL2 test/x64/Debug/SDL2 test.log
+/SDL2 test/x64/Debug/main.obj
+/SDL2 test/x64/Debug
+/output.o
+/Makefile.win
+/main.o
+/input.o
+/Debug/Trainsim.exe
+/Debug/smpeg2.dll
+/Debug/SDL2_ttf.dll
+/Debug/SDL2_net.dll
+/Debug/SDL2_mixer.dll
+/Debug/libwebp-4.dll
+/Debug/libvorbisfile-3.dll
+/Debug/libvorbis-0.dll
+/Debug/libtiff-5.dll
+/Debug/libogg-0.dll
+/Debug/libmodplug-1.dll
+/Debug/libfreetype-6.dll
+/Debug/libFLAC-8.dll
+/Debug
+/control.o
