@@ -1,5 +1,4 @@
-T=2; TrainA; Start
-T=3; TrainA; Trans: A->A-B
-T=8; TrainA; Trans: A-B->A
-T=8; TrainB; Start
-T=9; TrainB; Trans: B->A-B
+T=2; TrainA; Stop
+T=6; TrainA; Start
+T=9; TrainA; Trans: A->A-B
+T=12; TrainA; Trans: A-B->A

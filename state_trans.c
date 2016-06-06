@@ -11,13 +11,13 @@ extern struct block railway[MAX_RAIL][MAX_RAIL_LENGTH];
 extern float        trainSpeed[MAX_TRAIN];
 extern int inputMode;
 static int clock = 0, flag = 0;
-int m, sum = 0;
+int m;
 static char ch;
 
 
 void trans(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], int i)
 {
-	int state = STOP, j;
+	int state = STOP, j,sum=0;
 	switch (state)
 	{
 	case STOP:
@@ -28,6 +28,9 @@ void trans(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], int i)
 				tra->speed = trainSpeed[i];
 				state = RUN;
 			}
+			else if (tra->status == PAUSE_STATION) {
+				state = PAUSE_STATION;
+			}
 			else
 			{
 				state = STOP;
@@ -35,7 +38,7 @@ void trans(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], int i)
 			}
 		}
 		else {
-			for (j = 0; j <= tra->speed; j++) {
+			for (j = 0; j < tra->speed; j++) {
 				if (rail[i][tra->position + j].station != 0)
 					sum++;
 				if (sum > 0)
@@ -54,15 +57,17 @@ void trans(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], int i)
 			else
 				state = RUN;
 		}
-
-	case PAUSE_STATION:
-		clock++;
-		if (clock == tra->pausetime) {
-			tra->speed = trainSpeed[i];
-			tra->status = RUN;
-			state = RUN;
-		}
-
+    if(tra->status== PAUSE_STATION){
+	    case PAUSE_STATION:
+		    clock++;
+		    if (clock == tra->pausetime) {
+			    tra->speed = trainSpeed[i];
+			    tra->status = RUN;
+			    state = RUN;
+			    clock = 0;
+		     }
+		break;
+	}
 	case RUN:
 		if (tra->direction == NORMAL)
 		{

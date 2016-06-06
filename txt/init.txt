@@ -1,5 +1,5 @@
 train.num=3
-trainA.speed=0 st=0 sp=10 dir=1 type=0 pt=10
+trainA.speed=2 st=0 sp=1 dir=1 type=0 pt=3
 trainB.speed=0 st=0 sp=22 dir=1 type=1 pt=10
 trainC.speed=0 st=0 sp=0 dir=1 type=0 pt=10
 railway.num=3
