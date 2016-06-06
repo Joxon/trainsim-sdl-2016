@@ -4,52 +4,52 @@
 
 int main(int argc, char** argv)
 {
-	//ÆÁÄ»¿í¶È
+	//å±å¹•å®½åº¦
 	const int SCREEN_WIDTH = 680;
 	const int SCREEN_HEIGHT = 400;
-	//³õÊ¼»¯SDL
+	//åˆå§‹åŒ–SDL
 	SDL_Init(SDL_INIT_EVERYTHING);
-	//³õÊ¼»¯×ÖÌå¿â
+	//åˆå§‹åŒ–å­—ä½“åº“
 	TTF_Init();
-	//´´½¨´°¿Ú
+	//åˆ›å»ºçª—å£
 	SDL_Window *window = SDL_CreateWindow("Font Test",
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-	//´´½¨äÖÈ¾Æ÷
+	//åˆ›å»ºæ¸²æŸ“å™¨
 	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1,
 		SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-	//´ò¿ª×ÖÌå
+	//æ‰“å¼€å­—ä½“
 	TTF_Font *font = TTF_OpenFont("XHei.TTC", 30);
-	//ÎÄ±¾×ª±íÃæ
+	//æ–‡æœ¬è½¬è¡¨é¢
 	SDL_Color color = { 255, 255, 255 };
 	SDL_Surface *surf = TTF_RenderText_Blended(font, "Cool, Cooler, Coolest!", color);
-	//±íÃæ×ªÎÆÀí
+	//è¡¨é¢è½¬çº¹ç†
 	SDL_Texture *text = SDL_CreateTextureFromSurface(renderer, surf);
-	//ÊÍ·Å×ÊÔ´
+	//é‡Šæ”¾èµ„æº
 	SDL_FreeSurface(surf);
 	TTF_CloseFont(font);
 
 	bool quit = false;
 	SDL_Event e;
-	//Ö÷Ñ­»·
+	//ä¸»å¾ªç¯
 	while (!quit)
 	{
-		//ÊÂ¼şÕ»ÂÖÑ¯
+		//äº‹ä»¶æ ˆè½®è¯¢
 		while (SDL_PollEvent(&e))
 		{
-			//°´ÓÒÉÏ½ÇµÄX»òµãÊó±êÍË³ö
+			//æŒ‰å³ä¸Šè§’çš„Xæˆ–ç‚¹é¼ æ ‡é€€å‡º
 			if (e.type == SDL_QUIT || e.type == SDL_MOUSEBUTTONDOWN) quit = true;
-			//Çå¿ÕäÖÈ¾Æ÷
+			//æ¸…ç©ºæ¸²æŸ“å™¨
 			SDL_RenderClear(renderer);
-			//äÖÈ¾×ÖÌå
+			//æ¸²æŸ“å­—ä½“
 			SDL_RenderCopy(renderer, text, NULL, NULL);
-			//³ÊÏÖäÖÈ¾Æ÷
+			//å‘ˆç°æ¸²æŸ“å™¨
 			SDL_RenderPresent(renderer);
 		}
 	}
 
-	//ÊÍ·Å×ÊÔ´
+	//é‡Šæ”¾èµ„æº
 	SDL_DestroyTexture(text);
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
