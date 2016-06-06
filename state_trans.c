@@ -42,27 +42,26 @@ void trans(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], int i)
 					break;
 			}
 			if (sum > 0) {
-				state = PAUSE;
+				state = PAUSE_STATION;
 				if (tra->speed != 0) {
 					tra->position += j;
-					tra->status = PAUSE;
+					tra->status = PAUSE_STATION;
 					trainSpeed[i] = tra->speed;
 					tra->speed = 0;
 				}
+				break;
 			}
-
 			else
 				state = RUN;
-
 		}
-	case PAUSE:
+
+	case PAUSE_STATION:
 		clock++;
 		if (clock == tra->pausetime) {
 			tra->speed = trainSpeed[i];
 			tra->status = RUN;
 			state = RUN;
 		}
-
 
 	case RUN:
 		if (tra->direction == NORMAL)
@@ -87,6 +86,7 @@ void trans(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], int i)
 				break;
 			}
 		}
+
 	case BUSY:
 		if (judgeCommonTrack(tra, rail, i) == 1)
 		{
