@@ -8,8 +8,12 @@
 ===========================*/
 
 //命令方式
-#define FROM_FILE 1
-#define FROM_KEYBOARD 2
+enum CommandType
+{
+    FROM_FILE,
+    FROM_KEYBOARD,
+};
+
 
 
 /*===========================
@@ -23,25 +27,39 @@
 #define MAX_RAIL 9
 #define MAX_RAIL_LENGTH 999
 //火车状态
-#define STOP 1
-#define RUN 2
-#define PAUSE_COMMON 3
-#define PAUSE_ANY 4
-#define PAUSE_STATION 5
-#define WAIT 6
+enum TrainStatus
+{
+    STOP ,
+    RUN ,
+    PAUSE_COMMON ,
+    PAUSE_ANY ,
+    PAUSE_STATION ,
+    WAIT ,
+    IDLE,
+    BUSY,
+};
+
 //火车方向
-#define NORMAL 1
-#define REVERSE 2
+enum TrainDirection
+{
+    NORMAL ,
+    REVERSE ,
+};
 //火车类型
-#define FAST 1
-#define SLOW 2
+enum TrainType
+{
+    FAST ,
+    SLOW ,
+};
+
 //轨道参数
-#define IDLE 3
-#define BUSY 4
-#define EAST 1
-#define WEST 2
-#define SOUTH 3
-#define NORTH 4
+enum BlockPosition
+{
+    EAST ,
+    WEST ,
+    SOUTH ,
+    NORTH ,
+};
 
 struct train
 {
@@ -106,7 +124,7 @@ struct block
     int last;
 
     /*站点标记
-    * 1为站点 
+    * 1为站点
     * 0为非站点
     */
     int station;
