@@ -55,7 +55,7 @@ void handleCommand(char * commandStr)
 	char tempSpeed[MAX_TRAIN][10] = { {'\0'} };
 
 	//把字母后的数字存到字符串中
-	for (commandElement = 0; commandElement < commandLen; ++commandElement)
+	for (commandElementFw = 0, commandElement = 0; commandElement < commandLen; ++commandElement)
 	{
 		for (trainID = 0; trainID < trainNum; ++trainID)
 			if (commandStr[commandElement] == 'A' + trainID)

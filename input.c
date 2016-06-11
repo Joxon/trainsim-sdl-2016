@@ -117,7 +117,7 @@ inputRetry:
 static void initFromFile()
 {
 	FILE *fp;
-	unsigned int  id;
+	unsigned int id;
 	char ch;
 
 	if ((fp = fopen(".\\txt\\init.txt", "r")) != NULL)
@@ -189,7 +189,7 @@ static void initFromFile()
 			fscanf(fp, "sn=%d\n", &stationCount);
 			while (stationID++ <= stationCount)
 			{
-				fscanf(fp,"%d\n", &stationPoint);
+				fscanf(fp, "%d\n", &stationPoint);
 				railway[id][stationPoint].station = 1;
 			}
 
@@ -235,8 +235,8 @@ static void initFromKeyBoard()
 		scanf("%f %d %d %d %d %d",
 			&train[id].speed,
 			&train[id].startTime,
-			&train[id].startPoint, 
-			&train[id].direction, 
+			&train[id].startPoint,
+			&train[id].direction,
 			&train[id].type,
 			&train[id].pausetime);
 		trainSpeed[id] = train[id].speed;

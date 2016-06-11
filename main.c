@@ -22,8 +22,8 @@ struct train train[MAX_TRAIN];                         //火车上限
 float        trainSpeed[MAX_TRAIN];                    //火车速度
 struct block railway[MAX_RAIL][MAX_RAIL_LENGTH];       //轨道与长度上限
 
-unsigned int strategy    = 3; //1，2，3分别对应"交替策略"，"快车优先策略"，"人工控制"
-unsigned int inputMode   = 1; //1，2分别对应"从文件读入命令"，"从键盘读入命令"
+unsigned int strategy    = ALTERNATIVE; //1，2，3分别对应"交替策略"，"快车优先策略"，"人工控制"
+unsigned int inputMode   = FROM_FILE; //1，2分别对应"从文件读入命令"，"从键盘读入命令"
 unsigned int processTime = 0; //程序时钟
 unsigned int commandTime = 0;
 char         command;
@@ -39,7 +39,6 @@ int main(void)
 
     while(1)
     {
-        unsigned int i;
 #ifdef FALSE_THREAD
         //非阻塞式接收键盘输入
         if(_kbhit())
@@ -70,6 +69,7 @@ int main(void)
         for(int i = 0; i < 3; ++i)
             train[i].position = rand()%10;
 #else
+        unsigned int i;
         //控制命令
         if(inputMode == FROM_FILE)
         {

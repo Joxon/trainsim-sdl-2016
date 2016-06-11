@@ -104,7 +104,7 @@ void trans(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], int i)
         else if (judgeCommonTrack(tra, rail, i) == 2)
         {
             if (strategy == 1) {
-				here:
+                here:
                 if (tra->direction == NORMAL) {
                     if (rail[i][tra->position + (int)tra->speed].last == i) {
                         state = STOP;
@@ -150,16 +150,16 @@ void trans(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], int i)
                     state = RUN;
                     break;
                 }
-				else if (tra->type > train[m].type) {
-					state = STOP;
-					tra->status = PAUSE_COMMON;
-					trainSpeed[i] = tra->speed;
-					tra->speed = 0;
-					break;
-				}
-				else {
-					goto here;
-				}
+                else if (tra->type > train[m].type) {
+                    state = STOP;
+                    tra->status = PAUSE_COMMON;
+                    trainSpeed[i] = tra->speed;
+                    tra->speed = 0;
+                    break;
+                }
+                else {
+                    goto here;
+                }
             }
             else if (strategy == 3) {
                 printf("Please choose which one to run(%c or %c):", 'A' + i, 'A' + m);
@@ -170,7 +170,7 @@ void trans(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], int i)
                 }
                 else {
                     state = STOP;
-					tra->status = PAUSE_COMMON;
+                    tra->status = PAUSE_COMMON;
                     trainSpeed[i] = tra->speed;
                     tra->speed = 0;
                     break;
@@ -261,15 +261,15 @@ int judgeCommonTrack(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], in
                         if (railway[j][train[j].position + (int)trainSpeed[j]].common
                             == rail[i][tra->position + (int)tra->speed].common)
                             y++;
-						if (j != i)
-							m = j;
+                        if (j != i)
+                            m = j;
                     }
                     else if (railway[j][train[j].position + (int)train[j].speed].common
                         == rail[i][tra->position + (int)trainSpeed[i]].common){ 
                         y++;
-						if (j != i)
-							m = j;
-					}
+                        if (j != i)
+                            m = j;
+                    }
         }
         //一般情况
         if (rail[i][tra->position + (int)tra->speed].common != 0)
@@ -287,15 +287,15 @@ int judgeCommonTrack(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], in
                         if (railway[j][train[j].position + (int)trainSpeed[j]].common
                             == rail[i][tra->position + (int)tra->speed].common)
                             y++;
-						if (j != i)
-							m = j;
+                        if (j != i)
+                            m = j;
                     }
                     else if (railway[j][train[j].position + (int)train[j].speed].common
                         == rail[i][tra->position + (int)tra->speed].common){
                         y++;
-						if (j != i)
-							m = j;
-					}
+                        if (j != i)
+                            m = j;
+                    }
 
         }
     }
@@ -319,15 +319,15 @@ int judgeCommonTrack(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], in
                         if (railway[j][train[j].position - (int)trainSpeed[j]].common
                             == rail[i][tra->position - (int)tra->speed].common)
                             y++;
-						if (j != i)
-							m = j;
+                        if (j != i)
+                            m = j;
                     }
                     else if (railway[j][train[j].position - (int)train[j].speed].common
                         == rail[i][tra->position - (int)tra->speed].common){ 
                         y++;
-						if (j != i)
-							m = j;
-					}
+                        if (j != i)
+                            m = j;
+                    }
         }
         //下一秒
         if (rail[i][tra->position + (int)tra->speed].common != 0)
@@ -345,15 +345,15 @@ int judgeCommonTrack(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], in
                         if (railway[j][train[j].position - (int)trainSpeed[j]].common
                             == rail[i][tra->position - (int)tra->speed].common)
                             y++;
-						if (j != i)
-							m = j;
+                        if (j != i)
+                            m = j;
                     }
                     else if (railway[j][train[j].position - (int)train[j].speed].common
                         == rail[i][tra->position - (int)trainSpeed[i]].common){ 
                         y++;
-						if (j != i)
-							m = j;
-					}
+                        if (j != i)
+                            m = j;
+                    }
 
         }
     }

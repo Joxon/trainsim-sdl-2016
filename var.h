@@ -14,6 +14,13 @@ enum CommandType
     FROM_KEYBOARD,
 };
 
+enum Strategy
+{
+    ALTERNATIVE,
+    FAST_FIRST,
+    MANUAL,
+};
+
 
 
 /*===========================
@@ -26,6 +33,7 @@ enum CommandType
 #define MAX_TRAIN 9
 #define MAX_RAIL 9
 #define MAX_RAIL_LENGTH 999
+
 //火车状态
 enum TrainStatus
 {
@@ -55,10 +63,14 @@ enum TrainType
 //轨道参数
 enum BlockPosition
 {
-    EAST ,
-    WEST ,
+    SOUTHWEST,
+    WEST,
+    NORTHWEST,
+    NORTH,
+    NORTHEAST,
+    EAST,
+    SOUTHEAST,
     SOUTH ,
-    NORTH ,
 };
 
 struct train
