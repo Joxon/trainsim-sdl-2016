@@ -11,7 +11,7 @@ extern struct train train[MAX_TRAIN];
 extern FILE         *commandPtr;
 extern unsigned int processTime;
 extern unsigned int commandTime;
-extern unsigned int trainNum;
+extern int trainNum;
 
 void getInputFromFile()
 {
@@ -50,8 +50,8 @@ void getInputFromKeyboard()
 
 void handleCommand(char * commandStr)
 {
-	unsigned int commandElement, commandElementFw, trainID, speedElement;
-	unsigned int commandLen = strlen(commandStr);
+	int commandElement, commandElementFw, trainID, speedElement;
+	int commandLen = strlen(commandStr);
 	char tempSpeed[MAX_TRAIN][10] = { {'\0'} };
 
 	//把字母后的数字存到字符串中

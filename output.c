@@ -19,8 +19,8 @@ extern int          railNum;
 extern struct train train[MAX_TRAIN];
 extern struct block railway[MAX_RAIL][MAX_RAIL_LENGTH];
 
-extern unsigned short strategy;
-extern unsigned short inputMode;
+extern int strategy;
+extern int inputMode;
 extern unsigned int   processTime;
 
 extern FILE *logPtr;
@@ -105,10 +105,11 @@ static void printPerSec()
 
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GREEN);
 		for (id = 0; id < trainNum; ++id)
-			logprintf("| ID: %c | Speed: %-3.1f | Dir: %-5s | Pos: %c[%2d][%6s] | Status: %-s\n",
+			logprintf("| ID: %c | Type:%-4s | Speed: %-3.1f | Dir: %-5s | Pos: %c[%2d][%6s] | Status: %-s\n",
 				'A' + id,
+				train[id].type == FAST ? "Fast" : "Slow",
 				train[id].speed,
-				train[id].dir,
+				train[id].directionStr,
 				'A' + id, train[id].position,
 				railway[id][train[id].position].common != 0 ? "Commom" : "Normal",
 				train[id].status == RUN ? "Running" :

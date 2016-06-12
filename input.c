@@ -8,14 +8,31 @@
 
 #define SLEEP_TIME_MS 1000
 
-extern unsigned int trainNum;
-extern unsigned int railNum;
+extern int trainNum;
+extern int railNum;
 extern struct train train[MAX_TRAIN];
 extern float        trainSpeed[MAX_TRAIN];
 extern struct block railway[MAX_RAIL][MAX_RAIL_LENGTH];
 
-extern unsigned short strategy;
-extern unsigned short inputMode;
+extern int strategy;
+extern int inputMode;
+
+void errorFromFile()
+{
+	/*文件输入错误*/
+	system("cls");
+	printf("ERROR data detected! Please check init.txt.\n"
+		"Press any key to exit...");
+	_getch();
+	exit(EXIT_FAILURE);
+};
+
+void errorFromKeyboad()
+{
+	/*键盘输入错误*/
+	printf("ERROR input detected! Press any key to retry.");
+	_getch();
+};
 
 void init()
 {
@@ -117,18 +134,26 @@ inputRetry:
 static void initFromFile()
 {
 	FILE *fp;
-	unsigned int id;
+	int id;
 	char ch;
 
-	if ((fp = fopen(".\\txt\\init.txt", "r")) != NULL)
+	fp = fopen(".\\txt\\init.txt", "r");
+	if (fp != NULL)
 	{
+		/*策略选择*/
+		fscanf(fp, "strategy=%d\n", &strategy);
+		if (strategy < 1 || strategy > 3) errorFromFile();
+
 		/*火车初始化*/
 		fscanf(fp, "train.num=%d\n", &trainNum);
+		if (trainNum < 0) errorFromFile();
 		for (id = 0; id < trainNum; ++id)
 		{
 			fscanf(fp, "train%c.speed=%f st=%d sp=%d dir=%d type=%d pt=%d\n",
 				&ch, &trainSpeed[id], &train[id].startTime, &train[id].startPoint,
 				&train[id].direction, &train[id].type, &train[id].pausetime);
+			//if (train[id].speed < 0 || train[id].startTime < 0 || train[id].startPoint < 0 || train[id].direction < 1 ||
+			//	train[id].direction > 2 || train[id].type < 1 || train[id].type > 2 || train[id].pausetime < 0) errorFromFile();
 			train[id].position = train[id].startPoint;
 			train[id].status = WAIT;
 		}
@@ -136,6 +161,7 @@ static void initFromFile()
 
 		/*轨道初始化*/
 		fscanf(fp, "railway.num=%d\n", &railNum);
+		if (railNum < 0) errorFromFile();
 		for (id = 0; id < railNum; ++id)
 		{
 			/*轨道初始化：长宽设定*/
@@ -143,6 +169,7 @@ static void initFromFile()
 			fscanf(fp, "railway%c.len=%d sw=%d nw=%d ne=%d se=%d\n",
 				&ch, &length, &southwest, &northwest, &northeast,
 				&southeast);
+			if (length < 0 || southeast < 0 || northeast < 0 || northwest < 0 || southeast < 0) errorFromFile();
 			train[id].railwayLength = length;
 			int blockid = 0;
 			while (blockid <= northwest)
@@ -173,10 +200,12 @@ static void initFromFile()
 			/*轨道初始化：公共轨道*/
 			int common_count, common_ID, start, end;
 			fscanf(fp, "cm=%d\n", &common_count);
+			if (common_count < 0) errorFromFile();
 			int commomid = 1;
 			while (commomid++ <= common_count)
 			{
 				fscanf(fp, "id=%d %d %d\n", &common_ID, &start, &end);
+				if (common_count <= 0 || start < 0 || end < 0) errorFromFile();
 				for (blockid = start; blockid < end; ++blockid)
 				{
 					railway[id][blockid].common = common_ID;
@@ -187,9 +216,11 @@ static void initFromFile()
 			/*轨道初始化：停靠点*/
 			int stationCount, stationID = 1, stationPoint;
 			fscanf(fp, "sn=%d\n", &stationCount);
+			if (stationCount < 0) errorFromFile();
 			while (stationID++ <= stationCount)
 			{
 				fscanf(fp, "%d\n", &stationPoint);
+				if (stationPoint < 0) errorFromFile();
 				railway[id][stationPoint].station = 1;
 			}
 
@@ -213,13 +244,40 @@ static void initFromFile()
 
 static void initFromKeyBoard()
 {
-	unsigned int id;
+	/*策略选择*/
+strategyRetry:
+	system("cls");
+	printf("SELECTING STRATEGY...\n"
+		"Which strategy do you like?\n"
+		"1:Alternative mode\n"
+		"2:Fast-first mode\n"
+		"3:Manual mode\n"
+		"(int > 0):");
+	scanf("%d", &strategy);
+	fflush(stdin);
+	if (strategy < 1 || strategy > 3)
+	{
+		errorFromKeyboad();
+		goto strategyRetry;
+	}
+	printf("DONE...");
+	Sleep(SLEEP_TIME_MS);
+
 	/*火车初始化*/
+	int id;
+trainRetry:
+	system("cls");
 	printf("INITIALIZING TRAINS...\n"
 		"How many trains do we have?\n"
 		"(int > 0):");
 	scanf("%d", &trainNum);
 	fflush(stdin);
+	if (trainNum <= 0)
+	{
+		errorFromKeyboad();
+		goto trainRetry;
+	}
+
 	for (id = 0; id < trainNum; ++id)
 	{
 		printf(
@@ -228,7 +286,7 @@ static void initFromKeyBoard()
 			"start time (int => 0),\n"
 			"start point (int => 0),\n"
 			"direction (1 for normal or 2 for rev),\n"
-			"type(1 for fast or 2 slow),\n"
+			"type(1 for fast, 2 for slow),\n"
 			"pausetime (int => 0),\n"
 			"separated by spaces:\n",
 			'A' + id);
@@ -239,32 +297,60 @@ static void initFromKeyBoard()
 			&train[id].direction,
 			&train[id].type,
 			&train[id].pausetime);
-		trainSpeed[id] = train[id].speed;
 		fflush(stdin);
+
+		if (train[id].speed < 0 ||
+			train[id].startTime < 0 ||
+			train[id].startPoint < 0 ||
+			train[id].direction < 1 ||
+			train[id].direction > 2 ||
+			train[id].type < 1 ||
+			train[id].type > 2 ||
+			train[id].pausetime < 0)
+		{
+			errorFromKeyboad();
+			goto trainRetry;
+		}
+
+		trainSpeed[id] = train[id].speed;
 		printf("DONE...\n");
 	}
 
 	/*轨道初始化*/
+	int length, southwest, northwest, northeast, southeast;
+	int common_count, common_ID, start, end;
+
+railwayRetry:
 	system("cls");
 	printf("INITIALIZING RAILWAYS...\n"
 		"How many railways do we have?\n"
 		"(int > 0):");
 	scanf("%d", &railNum);
 	fflush(stdin);
-	int length, southwest, northwest, northeast, southeast;
-	int common_count, common_ID, start, end;
+	if (railNum < 0)
+	{
+		errorFromKeyboad();
+		goto railwayRetry;
+	}
+
 	for (id = 0; id < railNum; ++id)
 	{
 		/*轨道初始化：长宽设定*/
 		printf("Please input railway%c's length (int > 0),\n"
 			"SW point(int => 0),\n"
-			"NW point(int => 0),\n"
-			"NE point(int => 0),\n"
-			"SE point(int => 0),\n"
+			"NW point(int > 0),\n"
+			"NE point(int > 0),\n"
+			"SE point(int > 0),\n"
 			"separated by spaces:\n", 'A' + id);
 		scanf("%d %d %d %d %d",
 			&length, &southwest, &northwest, &northeast, &southeast);
 		fflush(stdin);
+		if (length < 0 || southeast < 0 || northeast < 0 || northwest < 0 || southeast < 0)
+		{
+			errorFromKeyboad();
+			goto railwayRetry;
+		}
+
 		train[id].railwayLength = length;
 		int blockid = 0;
 		while (blockid <= northwest)
@@ -295,9 +381,15 @@ static void initFromKeyBoard()
 
 		/*轨道初始化：公共轨道*/
 		printf("How many common parts does the railway%c have?\n"
-			"(int > 0):", 'A' + id);
+			"(int => 0):", 'A' + id);
 		scanf("%d", &common_count);
 		fflush(stdin);
+		if (common_count < 0)
+		{
+			errorFromKeyboad();
+			goto railwayRetry;
+		}
+
 		printf("Please input railway%c's"
 			"common id (int > 0),\n"
 			"start point (int => 0),\n"
@@ -307,6 +399,12 @@ static void initFromKeyBoard()
 		while (commomid++ <= common_count)
 		{
 			scanf("%d %d %d", &common_ID, &start, &end);
+			if (common_count <= 0 || start < 0 || end < 0)
+			{
+				errorFromKeyboad();
+				goto railwayRetry;
+			}
+
 			for (blockid = start; blockid <= end; ++blockid)
 			{
 				railway[id][blockid].common = common_ID;
@@ -318,15 +416,26 @@ static void initFromKeyBoard()
 		/*轨道初始化：停靠点*/
 		int stationCount, stationID = 1, stationPoint;
 		printf("How many stations does the railway%c have?\n"
-			"(int > 0):", 'A' + id);
+			"(int => 0):", 'A' + id);
 		scanf("%d", &stationCount);
 		fflush(stdin);
+		if (stationCount < 0)
+		{
+			errorFromKeyboad();
+			goto railwayRetry;
+		}
+
 		printf("Please input railway%c's"
-			"station point (int > 0),\n"
+			"station point (int => 0),\n"
 			"separated by spaces in one line:\n", 'A' + id);
 		while (stationID++ <= stationCount)
 		{
 			scanf("%d", &stationPoint);
+			if (stationPoint < 0)
+			{
+				errorFromKeyboad();
+				goto railwayRetry;
+			}
 			railway[id][stationPoint].station = 1;
 		}
 
@@ -340,3 +449,4 @@ static void initFromKeyBoard()
 	Sleep(SLEEP_TIME_MS);
 	system("cls");
 }
+
