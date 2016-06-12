@@ -27,6 +27,12 @@
     <ClCompile Include="state_trans.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="drawTrain.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="drawUI.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="control.h">
@@ -39,6 +45,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="var.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="drawSDL.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

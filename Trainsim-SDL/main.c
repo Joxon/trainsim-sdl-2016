@@ -11,6 +11,7 @@
 #include "output.h"
 #include "state_trans.h"
 #include "control.h"
+#include "drawSDL.h"
 
 int trainNum;                                 //火车数量
 int railNum;                                  //轨道数量
@@ -44,20 +45,15 @@ int main(int argc, char* args[])
 
 	//SDL初始化
 	SDL_Init(SDL_INIT_VIDEO);
+	IMG_Init(IMG_INIT_PNG);
+	TTF_Init();
+
 	SDL_Window* window = SDL_CreateWindow("Trainsim", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
 
-	SDL_Rect trainViewport;
-	trainViewport.h = WINDOW_HEIGHT;
-	trainViewport.w = WINDOW_WIDTH * 5 / 6;
-	trainViewport.x = 0;
-	trainViewport.y = 0;
+	TTF_Font* font = TTF_OpenFont("font.ttf", 30);
 
-	SDL_Rect userViewport;
-	userViewport.h = WINDOW_HEIGHT;
-	userViewport.w = WINDOW_WIDTH / 6;
-	userViewport.x = WINDOW_WIDTH * 5 / 6;
-	userViewport.y = 0;
-
+	//渲染火车和轨道
+	SDL_Renderer* trainRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	SDL_Renderer* blockRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	SDL_Texture* blocks = IMG_LoadTexture(blockRenderer, "blocks.png");
 	SDL_Rect clip[BLOCK_ROW][BLOCK_COLUMN];
@@ -69,11 +65,24 @@ int main(int argc, char* args[])
 			clip[i][j].w = BLOCK_SIZE;
 			clip[i][j].h = BLOCK_SIZE;
 		}
+	SDL_Rect trainViewport;
+	trainViewport.h = WINDOW_HEIGHT;
+	trainViewport.w = WINDOW_WIDTH * 5 / 6;
+	trainViewport.x = 0;
+	trainViewport.y = 0;
+	SDL_RenderSetViewport(trainRenderer, &trainViewport);
+	SDL_RenderSetViewport(blockRenderer, &trainViewport);
 
-	SDL_Renderer* trainRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	//渲染用户输入界面
 	SDL_Renderer* userRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	SDL_Rect userViewport;
+	userViewport.h = WINDOW_HEIGHT;
+	userViewport.w = WINDOW_WIDTH / 6;
+	userViewport.x = WINDOW_WIDTH * 5 / 6;
+	userViewport.y = 0;
+	SDL_RenderSetViewport(userRenderer, &userViewport);
 
-
+	//主循环
 	bool quit = false;
 	SDL_Event e;
 	while (!quit)
@@ -115,10 +124,13 @@ int main(int argc, char* args[])
 		}
 	}
 
+	//释放资源
 	SDL_DestroyTexture(blocks);
+	SDL_DestroyRenderer(trainRenderer);
 	SDL_DestroyRenderer(blockRenderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
+
 	return 0;
 }
 
