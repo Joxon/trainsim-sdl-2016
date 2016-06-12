@@ -118,6 +118,10 @@ struct train
 
 struct block
 {
+	//绘图坐标
+	int x;
+	int y;
+
 	/*共轨标记
 	* 0 = 非公共
 	* >=0 = 公共

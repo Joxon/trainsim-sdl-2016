@@ -56,7 +56,7 @@ enum TrainDirection
 //»ğ³µÀàĞÍ
 enum TrainType
 {
-	FAST = 1,
+	FAST,
 	SLOW,
 };
 

@@ -16,11 +16,11 @@
 //#define DEBUG_TRANS       //调试开关
 #define FALSE_THREAD        //伪线程开关
 
-int trainNum;                                 //火车数量
-int railNum;                                  //轨道数量
-struct train train[MAX_TRAIN];                         //火车上限
-float        trainSpeed[MAX_TRAIN];                    //火车速度
-struct block railway[MAX_RAIL][MAX_RAIL_LENGTH];       //轨道与长度上限
+int trainNum; //火车数量
+int railNum;  //轨道数量
+struct train train[MAX_TRAIN]; //火车上限
+float        trainSpeed[MAX_TRAIN]; //火车速度
+struct block railway[MAX_RAIL][MAX_RAIL_LENGTH]; //轨道与长度上限
 
 int strategy = 0; //1，2，3分别对应"交替策略"，"快车优先策略"，"人工控制"
 int inputMode = 0; //1，2分别对应"从文件读入命令"，"从键盘读入命令"

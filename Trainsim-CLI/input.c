@@ -92,7 +92,8 @@ initRetry:
 		Sleep(SLEEP_TIME_MS);
 		exit(EXIT_SUCCESS);
 	default:
-		printf("\nWrong init mode! Please retry...\n");
+		system("cls");
+		printf("Wrong init mode! Please retry...\n");
 		Sleep(SLEEP_TIME_MS);
 		goto initRetry;
 	}
@@ -142,7 +143,10 @@ static void initFromFile()
 	{
 		/*策略选择*/
 		fscanf(fp, "strategy=%d\n", &strategy);
-		if (strategy < 1 || strategy > 3) errorFromFile();
+		//if (strategy != ALTERNATIVE ||
+		//	strategy != FAST_FIRST ||
+		//	strategy != MANUAL)
+		//	errorFromFile();
 
 		/*火车初始化*/
 		fscanf(fp, "train.num=%d\n", &trainNum);
@@ -152,8 +156,10 @@ static void initFromFile()
 			fscanf(fp, "train%c.speed=%f st=%d sp=%d dir=%d type=%d pt=%d\n",
 				&ch, &trainSpeed[id], &train[id].startTime, &train[id].startPoint,
 				&train[id].direction, &train[id].type, &train[id].pausetime);
-			//if (train[id].speed < 0 || train[id].startTime < 0 || train[id].startPoint < 0 || train[id].direction < 1 ||
-			//	train[id].direction > 2 || train[id].type < 1 || train[id].type > 2 || train[id].pausetime < 0) errorFromFile();
+			//if (train[id].speed < 0 || train[id].startTime < 0 || train[id].startPoint < 0 ||
+			//	train[id].direction != NORMAL || train[id].direction != REVERSE ||
+			//	train[id].type != FAST || train[id].type != SLOW || train[id].pausetime < 0)
+			//	errorFromFile();
 			train[id].position = train[id].startPoint;
 			train[id].status = WAIT;
 		}
@@ -169,7 +175,7 @@ static void initFromFile()
 			fscanf(fp, "railway%c.len=%d sw=%d nw=%d ne=%d se=%d\n",
 				&ch, &length, &southwest, &northwest, &northeast,
 				&southeast);
-			if (length < 0 || southeast < 0 || northeast < 0 || northwest < 0 || southeast < 0) errorFromFile();
+			//if (length < 0 || southeast < 0 || northeast < 0 || northwest < 0 || southeast < 0) errorFromFile();
 			train[id].railwayLength = length;
 			int blockid = 0;
 			while (blockid <= northwest)
@@ -200,12 +206,12 @@ static void initFromFile()
 			/*轨道初始化：公共轨道*/
 			int common_count, common_ID, start, end;
 			fscanf(fp, "cm=%d\n", &common_count);
-			if (common_count < 0) errorFromFile();
+			//if (common_count < 0) errorFromFile();
 			int commomid = 1;
 			while (commomid++ <= common_count)
 			{
 				fscanf(fp, "id=%d %d %d\n", &common_ID, &start, &end);
-				if (common_count <= 0 || start < 0 || end < 0) errorFromFile();
+				//if (common_count <= 0 || start < 0 || end < 0) errorFromFile();
 				for (blockid = start; blockid < end; ++blockid)
 				{
 					railway[id][blockid].common = common_ID;
@@ -216,27 +222,27 @@ static void initFromFile()
 			/*轨道初始化：停靠点*/
 			int stationCount, stationID = 1, stationPoint;
 			fscanf(fp, "sn=%d\n", &stationCount);
-			if (stationCount < 0) errorFromFile();
+			//if (stationCount < 0) errorFromFile();
 			while (stationID++ <= stationCount)
 			{
 				fscanf(fp, "%d\n", &stationPoint);
-				if (stationPoint < 0) errorFromFile();
+				//if (stationPoint < 0) errorFromFile();
 				railway[id][stationPoint].station = 1;
 			}
 
 
-			//复制轨道起始部分，防止越界访问，i的范围视速度而定
+			//复制轨道起始部分，防止越界访问，i的最大值决定了火车最大速度
 			for (int i = 0; i < 10; ++i)
 				railway[id][length + i] = railway[id][i];
 		}
-
 		fclose(fp);
 		printf("\ninit successful!");
 	}
 
 	else
 	{
-		printf("\nCannot open init.txt. Press any key to exit...");
+		system("cls");
+		printf("Cannot open init.txt. Press any key to exit...");
 		_getch();
 		exit(EXIT_FAILURE);
 	}

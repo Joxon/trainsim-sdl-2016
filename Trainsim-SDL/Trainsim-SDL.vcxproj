@@ -76,7 +76,7 @@
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -98,7 +98,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -117,15 +117,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="control.c" />
-    <ClCompile Include="input.c" />
     <ClCompile Include="main.c" />
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="output.c" />
     <ClCompile Include="state_trans.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="control.h" />
-    <ClInclude Include="input.h" />
     <ClInclude Include="output.h" />
     <ClInclude Include="state_trans.h" />
     <ClInclude Include="var.h" />
