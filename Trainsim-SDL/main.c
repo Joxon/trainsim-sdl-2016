@@ -41,18 +41,19 @@ void initFromFile();
 int main(int argc, char* args[])
 {
 	//初始化火车和轨道
-	initFromFile();
+	//initFromFile();
 
 	//SDL初始化
 	SDL_Init(SDL_INIT_VIDEO);
 	IMG_Init(IMG_INIT_PNG);
 	TTF_Init();
 
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 	SDL_Window* window = SDL_CreateWindow("Trainsim", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
 
 	TTF_Font* font = TTF_OpenFont("font.ttf", 30);
 
-	//渲染火车和轨道
+	//火车和轨道
 	SDL_Renderer* trainRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	SDL_Renderer* blockRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	SDL_Texture* blocks = IMG_LoadTexture(blockRenderer, "blocks.png");
@@ -65,22 +66,12 @@ int main(int argc, char* args[])
 			clip[i][j].w = BLOCK_SIZE;
 			clip[i][j].h = BLOCK_SIZE;
 		}
-	SDL_Rect trainViewport;
-	trainViewport.h = WINDOW_HEIGHT;
-	trainViewport.w = WINDOW_WIDTH * 5 / 6;
-	trainViewport.x = 0;
-	trainViewport.y = 0;
-	SDL_RenderSetViewport(trainRenderer, &trainViewport);
-	SDL_RenderSetViewport(blockRenderer, &trainViewport);
 
-	//渲染用户输入界面
+
+	//用户输入界面
 	SDL_Renderer* userRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-	SDL_Rect userViewport;
-	userViewport.h = WINDOW_HEIGHT;
-	userViewport.w = WINDOW_WIDTH / 6;
-	userViewport.x = WINDOW_WIDTH * 5 / 6;
-	userViewport.y = 0;
-	SDL_RenderSetViewport(userRenderer, &userViewport);
+
+
 
 	//主循环
 	bool quit = false;
@@ -90,45 +81,73 @@ int main(int argc, char* args[])
 		while (SDL_PollEvent(&e))
 		{
 			if (e.type == SDL_QUIT) quit = true;
-
-			int i;
-			//控制命令
-			if (inputMode == FROM_FILE)
-			{
-				for (i = 0; i < trainNum; ++i)
-					if (processTime == train[i].startTime)
-						train[i].speed = trainSpeed[i];     //到启动时刻返还速度
-				getInputFromFile();
-			}
-			else if (inputMode == FROM_KEYBOARD)
-				for (i = 0; i < trainNum; ++i)
-					if (processTime == train[i].startTime)
-						train[i].speed = trainSpeed[i];     //到启动时刻返还速度
-
-															//状态变换
-			for (i = 0; i < trainNum; ++i)
-				trans(&train[i], railway, i);
-
-			//输出
-			print();
-
-			//火车移动
-			for (i = 0; i < trainNum; ++i)
-			{
-				changeDirection(&train[i], railway, i);
-				changePosition(&train[i]);
-			}
-
-			//时间片推进
-			++processTime;
 		}
+
+		SDL_RenderClear(blockRenderer);
+		SDL_RenderClear(trainRenderer);
+		SDL_RenderClear(userRenderer);
+
+		SDL_Rect trainViewport;
+		trainViewport.h = WINDOW_HEIGHT;
+		trainViewport.w = WINDOW_WIDTH * 5 / 6;
+		trainViewport.x = 0;
+		trainViewport.y = 0;
+		SDL_RenderSetViewport(trainRenderer, &trainViewport);
+		SDL_RenderSetViewport(blockRenderer, &trainViewport);
+		SDL_RenderCopy(blockRenderer, blocks, NULL, NULL);
+
+		SDL_Rect userViewport;
+		userViewport.h = WINDOW_HEIGHT;
+		userViewport.w = WINDOW_WIDTH / 6;
+		userViewport.x = WINDOW_WIDTH * 5 / 6;
+		userViewport.y = 0;
+		SDL_RenderSetViewport(userRenderer, &userViewport);
+
+		SDL_RenderPresent(blockRenderer); 
+		SDL_RenderPresent(trainRenderer);
+		SDL_RenderPresent(userRenderer);
+
+		//int i;
+		////控制命令
+		//if (inputMode == FROM_FILE)
+		//{
+		//	for (i = 0; i < trainNum; ++i)
+		//		if (processTime == train[i].startTime)
+		//			train[i].speed = trainSpeed[i];     //到启动时刻返还速度
+		//	getInputFromFile();
+		//}
+		//else if (inputMode == FROM_KEYBOARD)
+		//	for (i = 0; i < trainNum; ++i)
+		//		if (processTime == train[i].startTime)
+		//			train[i].speed = trainSpeed[i];     //到启动时刻返还速度
+
+		//												//状态变换
+		//for (i = 0; i < trainNum; ++i)
+		//	trans(&train[i], railway, i);
+
+		////输出
+		//print();
+
+		////火车移动
+		//for (i = 0; i < trainNum; ++i)
+		//{
+		//	changeDirection(&train[i], railway, i);
+		//	changePosition(&train[i]);
+		//}
+
+		////时间片推进
+		//++processTime;
 	}
 
 	//释放资源
+	TTF_CloseFont(font);
 	SDL_DestroyTexture(blocks);
 	SDL_DestroyRenderer(trainRenderer);
 	SDL_DestroyRenderer(blockRenderer);
 	SDL_DestroyWindow(window);
+
+	TTF_Quit(); 
+	IMG_Quit();
 	SDL_Quit();
 
 	return 0;

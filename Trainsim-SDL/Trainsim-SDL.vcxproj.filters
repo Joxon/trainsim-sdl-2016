@@ -33,6 +33,9 @@
     <ClCompile Include="drawUI.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="drawRailway.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="control.h">
@@ -50,5 +53,13 @@
     <ClInclude Include="drawSDL.h">
       <Filter>头文件</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="blocks.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="train.png">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>
