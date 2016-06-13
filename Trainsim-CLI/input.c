@@ -173,34 +173,33 @@ static void initFromFile()
 			/*轨道初始化：长宽设定*/
 			int length, southwest, northwest, northeast, southeast;
 			fscanf(fp, "railway%c.len=%d sw=%d nw=%d ne=%d se=%d\n",
-				&ch, &length, &southwest, &northwest, &northeast,
-				&southeast);
+				&ch, &length, &southwest, &northwest, &northeast, &southeast);
 			//if (length < 0 || southeast < 0 || northeast < 0 || northwest < 0 || southeast < 0) errorFromFile();
 			train[id].railwayLength = length;
+			railway[id][southwest].direction = SOUTHWEST;
+			railway[id][northwest].direction = NORTHWEST;
+			railway[id][northeast].direction = NORTHEAST;
+			railway[id][southeast].direction = SOUTHEAST;
 			int blockid = 0;
-			while (blockid <= northwest)
+			for (blockid = southwest + 1; blockid < northwest; ++blockid)
 			{
 				railway[id][blockid].direction = WEST;
 				railway[id][blockid].station = 0;
-				++blockid;
 			}
-			while (blockid <= northeast)
+			for (blockid = northwest + 1; blockid < northeast; ++blockid)
 			{
 				railway[id][blockid].direction = NORTH;
 				railway[id][blockid].station = 0;
-				++blockid;
 			}
-			while (blockid <= southeast)
+			for (blockid = northeast + 1; blockid < southeast; ++blockid)
 			{
 				railway[id][blockid].direction = EAST;
 				railway[id][blockid].station = 0;
-				++blockid;
 			}
-			while (blockid < length)
+			for (blockid = southeast + 1; blockid < length; ++blockid)
 			{
 				railway[id][blockid].direction = SOUTH;
 				railway[id][blockid].station = 0;
-				++blockid;
 			}
 
 			/*轨道初始化：公共轨道*/

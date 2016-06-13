@@ -50,13 +50,9 @@ int main(int argc, char* args[])
 
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 	SDL_Window* window = SDL_CreateWindow("Trainsim", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
-
+	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	TTF_Font* font = TTF_OpenFont("font.ttf", 30);
-
-	//火车和轨道
-	SDL_Renderer* trainRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-	SDL_Renderer* blockRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-	SDL_Texture* blocks = IMG_LoadTexture(blockRenderer, "blocks.png");
+	SDL_Texture* blocksTexture = IMG_LoadTexture(renderer, "blocks.png");
 	SDL_Rect clip[BLOCK_ROW][BLOCK_COLUMN];
 	for (int i = 0; i < BLOCK_ROW; ++i)
 		for (int j = 0; j < BLOCK_COLUMN; ++j)
@@ -67,11 +63,19 @@ int main(int argc, char* args[])
 			clip[i][j].h = BLOCK_SIZE;
 		}
 
+	//火车和轨道界面
+	SDL_Rect trainViewport;
+	trainViewport.x = 0;
+	trainViewport.y = 0;
+	trainViewport.h = WINDOW_HEIGHT;
+	trainViewport.w = WINDOW_WIDTH * 5 / 6;
 
 	//用户输入界面
-	SDL_Renderer* userRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
-
+	SDL_Rect userViewport;
+	userViewport.x = WINDOW_WIDTH * 5 / 6;
+	userViewport.y = 0;
+	userViewport.h = WINDOW_HEIGHT;
+	userViewport.w = WINDOW_WIDTH / 6;
 
 	//主循环
 	bool quit = false;
@@ -83,57 +87,49 @@ int main(int argc, char* args[])
 			if (e.type == SDL_QUIT) quit = true;
 		}
 
-		SDL_RenderClear(blockRenderer);
-		SDL_RenderClear(trainRenderer);
-		SDL_RenderClear(userRenderer);
+		SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+		SDL_RenderClear(renderer);
 
-		SDL_Rect trainViewport;
-		trainViewport.h = WINDOW_HEIGHT;
-		trainViewport.w = WINDOW_WIDTH * 5 / 6;
-		trainViewport.x = 0;
-		trainViewport.y = 0;
-		SDL_RenderSetViewport(trainRenderer, &trainViewport);
-		SDL_RenderSetViewport(blockRenderer, &trainViewport);
-		SDL_RenderCopy(blockRenderer, blocks, NULL, NULL);
+		int i;
+		//控制命令
+		if (inputMode == FROM_FILE)
+		{
+			for (i = 0; i < trainNum; ++i)
+				if (processTime == train[i].startTime)
+					train[i].speed = trainSpeed[i];     //到启动时刻返还速度
+			getInputFromFile();
+		}
+		else if (inputMode == FROM_KEYBOARD)
+			for (i = 0; i < trainNum; ++i)
+				if (processTime == train[i].startTime)
+					train[i].speed = trainSpeed[i];     //到启动时刻返还速度
 
-		SDL_Rect userViewport;
-		userViewport.h = WINDOW_HEIGHT;
-		userViewport.w = WINDOW_WIDTH / 6;
-		userViewport.x = WINDOW_WIDTH * 5 / 6;
-		userViewport.y = 0;
-		SDL_RenderSetViewport(userRenderer, &userViewport);
+														//状态变换
+		for (i = 0; i < trainNum; ++i)
+			trans(&train[i], railway, i);
 
-		SDL_RenderPresent(blockRenderer); 
-		SDL_RenderPresent(trainRenderer);
-		SDL_RenderPresent(userRenderer);
+		//输出
+		print();
 
-		//int i;
-		////控制命令
-		//if (inputMode == FROM_FILE)
-		//{
-		//	for (i = 0; i < trainNum; ++i)
-		//		if (processTime == train[i].startTime)
-		//			train[i].speed = trainSpeed[i];     //到启动时刻返还速度
-		//	getInputFromFile();
-		//}
-		//else if (inputMode == FROM_KEYBOARD)
-		//	for (i = 0; i < trainNum; ++i)
-		//		if (processTime == train[i].startTime)
-		//			train[i].speed = trainSpeed[i];     //到启动时刻返还速度
+		//火车移动
+		for (i = 0; i < trainNum; ++i)
+		{
+			changeDirection(&train[i], railway, i);
+			changePosition(&train[i]);
+		}
 
-		//												//状态变换
-		//for (i = 0; i < trainNum; ++i)
-		//	trans(&train[i], railway, i);
+		//渲染轨道和火车
+		SDL_RenderSetViewport(renderer, &trainViewport);
+		drawRailway();
+		drawTrain();
 
-		////输出
-		//print();
+		//渲染用户输入界面
+		SDL_RenderSetViewport(renderer, &userViewport);
+		drawUI();
 
-		////火车移动
-		//for (i = 0; i < trainNum; ++i)
-		//{
-		//	changeDirection(&train[i], railway, i);
-		//	changePosition(&train[i]);
-		//}
+		SDL_RenderPresent(renderer);
+
+
 
 		////时间片推进
 		//++processTime;
@@ -141,12 +137,11 @@ int main(int argc, char* args[])
 
 	//释放资源
 	TTF_CloseFont(font);
-	SDL_DestroyTexture(blocks);
-	SDL_DestroyRenderer(trainRenderer);
-	SDL_DestroyRenderer(blockRenderer);
+	SDL_DestroyTexture(blocksTexture);
+	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 
-	TTF_Quit(); 
+	TTF_Quit();
 	IMG_Quit();
 	SDL_Quit();
 
@@ -204,34 +199,33 @@ void initFromFile()
 			/*轨道初始化：长宽设定*/
 			int length, southwest, northwest, northeast, southeast;
 			fscanf(fp, "railway%c.len=%d sw=%d nw=%d ne=%d se=%d\n",
-				&ch, &length, &southwest, &northwest, &northeast,
-				&southeast);
+				&ch, &length, &southwest, &northwest, &northeast, &southeast);
 			//if (length < 0 || southeast < 0 || northeast < 0 || northwest < 0 || southeast < 0) errorFromFile();
 			train[id].railwayLength = length;
+			railway[id][southwest].direction = SOUTHWEST;
+			railway[id][northwest].direction = NORTHWEST;
+			railway[id][northeast].direction = NORTHEAST;
+			railway[id][southeast].direction = SOUTHEAST;
 			int blockid = 0;
-			while (blockid <= northwest)
+			for (blockid = southwest + 1; blockid < northwest; ++blockid)
 			{
 				railway[id][blockid].direction = WEST;
 				railway[id][blockid].station = 0;
-				++blockid;
 			}
-			while (blockid <= northeast)
+			for (blockid = northwest + 1; blockid < northeast; ++blockid)
 			{
 				railway[id][blockid].direction = NORTH;
 				railway[id][blockid].station = 0;
-				++blockid;
 			}
-			while (blockid <= southeast)
+			for (blockid = northeast + 1; blockid < southeast; ++blockid)
 			{
 				railway[id][blockid].direction = EAST;
 				railway[id][blockid].station = 0;
-				++blockid;
 			}
-			while (blockid < length)
+			for (blockid = southeast + 1; blockid < length; ++blockid)
 			{
 				railway[id][blockid].direction = SOUTH;
 				railway[id][blockid].station = 0;
-				++blockid;
 			}
 
 			/*轨道初始化：公共轨道*/
