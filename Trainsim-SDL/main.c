@@ -29,14 +29,12 @@ FILE *logPtr = NULL; //日志文件指针
 FILE *commandPtr = NULL; //命令文件指针
 FILE *outPtr = NULL; //输出文件指针
 
-#define WINDOW_WIDTH 1400
-#define WINDOW_HEIGHT 900
-#define BLOCK_SIZE 60
-#define BLOCK_ROW 3
-#define BLOCK_COLUMN 21
+
 
 //void errorFromFile();
 void initFromFile();
+
+SDL_Rect clip[BLOCK_ROW][BLOCK_COLUMN];
 
 int main(int argc, char* args[])
 {
@@ -53,7 +51,7 @@ int main(int argc, char* args[])
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	TTF_Font* font = TTF_OpenFont("font.ttf", 30);
 	SDL_Texture* blocksTexture = IMG_LoadTexture(renderer, "blocks.png");
-	SDL_Rect clip[BLOCK_ROW][BLOCK_COLUMN];
+
 	for (int i = 0; i < BLOCK_ROW; ++i)
 		for (int j = 0; j < BLOCK_COLUMN; ++j)
 		{

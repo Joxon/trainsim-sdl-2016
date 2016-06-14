@@ -7,6 +7,12 @@
 
 ===========================*/
 
+#define WINDOW_WIDTH 1400
+#define WINDOW_HEIGHT 900
+#define BLOCK_SIZE 60
+#define BLOCK_ROW 3
+#define BLOCK_COLUMN 21
+
 //√¸¡Ó∑Ω Ω
 enum CommandType
 {
