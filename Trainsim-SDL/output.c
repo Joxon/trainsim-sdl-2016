@@ -26,7 +26,7 @@ extern unsigned int   processTime;
 extern FILE *logPtr;
 extern FILE *outPtr;
 
-void print()
+void printConsole()
 {
 	printPerSec();
 	printTrans();

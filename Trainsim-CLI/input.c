@@ -211,7 +211,7 @@ static void initFromFile()
 			{
 				fscanf(fp, "id=%d %d %d\n", &common_ID, &start, &end);
 				//if (common_count <= 0 || start < 0 || end < 0) errorFromFile();
-				for (blockid = start; blockid < end; ++blockid)
+				for (blockid = start; blockid <= end; ++blockid)
 				{
 					railway[id][blockid].common = common_ID;
 					railway[id][blockid].last = -1;

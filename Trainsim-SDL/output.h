@@ -1,7 +1,7 @@
 #ifndef TRAIN_SIMULATION_OUTPUT_H
 #define TRAIN_SIMULATION_OUTPUT_H
 
-void print();
+void printConsole();
 
 static void printPerSec();
 static void printTrans();

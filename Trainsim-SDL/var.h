@@ -6,17 +6,19 @@
 		 程序相关
 
 ===========================*/
-#define WINDOW_WIDTH 1400
-#define WINDOW_HEIGHT 900
-#define BLOCK_SIZE 60
-#define BLOCK_ROW 3
-#define BLOCK_COLUMN 21
 
+//窗口大小
 #define WINDOW_WIDTH 1400
 #define WINDOW_HEIGHT 900
-#define BLOCK_SIZE 60
+//轨道块参数
 #define BLOCK_ROW 3
 #define BLOCK_COLUMN 21
+#define BLOCK_SIZE 60
+//按钮参数
+#define BUTTON_ROW 4
+#define BUTTON_COLUMN 2
+#define BUTTON_WIDTH 100
+#define BUTTON_HEIGHT 30
 
 //命令方式
 enum CommandType

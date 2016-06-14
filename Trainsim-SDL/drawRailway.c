@@ -1,84 +1,70 @@
 #include<SDL.h>
 #include<SDL_image.h>
-#include<stdexcept>
-#include<string>
-#include "drawSDL.h"
-#include"var.h"
 
-#define WIDTH 30;
+#include "drawSDL.h"
+#include "var.h"
+
+#define WIDTH 60;
 
 extern struct train train[MAX_TRAIN];
 extern struct block railway[MAX_RAIL][MAX_RAIL_LENGTH];
-extern SDL_Rect clip[BLOCK_ROW][BLOCK_COLUMN];
 
-void drawRailway(SDL_Window * win,SDL_Renderer * ren)
+extern SDL_Rect blockClip[BLOCK_ROW][BLOCK_COLUMN];
+extern SDL_Rect buttonClip[BUTTON_ROW][BUTTON_COLUMN];
+
+void drawRailway(SDL_Window * win, SDL_Renderer * ren, SDL_Texture * block)
 {
-	SDL_Texture * tex = NULL;
-	int x, y;
-	int inf[3];
-	SDL_Rect rail;
-	tex = IMG_LoadTexture(ren, "../leb/ pic.jpg");
-	rail.h = WIDTH;
-	rail.w = WIDTH;
+	//设定绘制起始点（左上角为零点）
+	railway[0][0].x = 10;
+	railway[0][0].y = 10;
+	if (railway[0][0].common != railway[0][train[0].railwayLength - 1].common)
+		drawCrossBlock(0, 0, ren, block);
+	else
+		drawNormalBlock(0, 0, ren, block);
+	//SDL_RenderPresent(ren);//调试可用
 
-	railway[0][0].x = 15 * WIDTH;
-	railway[0][0].y = 10 * WIDTH;
 	//中央轨道（有两条公共轨道）
-	for (int i = 0; i < train[0].railwayLength; i++)
+	for (int i = 1; i < train[0].railwayLength; i++)
 	{
-		if (i == 0)
-		{
-			if (railway[0][i].common == railway[0][train[i].railwayLength - 1].common)
-			{
-				crossblock(0, i, ren, tex);
-			}
-			else
-			{
-				ablock(0, i, ren, tex);
-			}
-		}
+		if (railway[0][i].common != 0 && (railway[0][i - 1].common == 0 || railway[0][i + 1].common == 0))
+			drawCrossBlock(0, i, ren, block);
 		else
-		{
-			if (railway[0][i].common != 0 && (railway[0][i - 1].common==0 || railway[0][i + 1].common == 0) )
-			{
-				judge_com(0, i, inf);
-				crossblock(0, i, inf, ren, tex);
-			}
-			else
-			{
-				ablock(0, i, ren, tex);
-			}
-		}
+			drawNormalBlock(0, i, ren, block);
 
+		//SDL_RenderPresent(ren);//调试可用
 	}
-
-
 }
-//公共入口/出口
-void crossblock(int j, int i,int * inf , SDL_Renderer * ren, SDL_Texture * tex)
+//绘制公共入口/出口
+static void drawCrossBlock(int j, int i, SDL_Renderer * ren, SDL_Texture * tex)
 {
 	SDL_Rect pos;
 	pos.x = railway[j][i].x * WIDTH;
 	pos.y = railway[j][i].y * WIDTH;
-	pos.h = pos.w = WIDTH;
-	if (railway[j][i - 1].common = 0)//较小
+	pos.h = WIDTH;
+	pos.w = WIDTH;
+	//较小
+	if (railway[j][i - 1].common == 0)
 	{
 		switch (railway[j][i].direction)
 		{
 		case WEST:
-			SDL_RenderCopy(ren, tex, &clip[12][0], &pos);
+			SDL_RenderCopy(ren, tex, &blockClip[0][12], &pos);
+			railway[j][i + 1].x = railway[j][i].x;
 			railway[j][i + 1].y = railway[j][i].y - 1;
 			break;
 		case NORTH:
-			SDL_RenderCopy(ren, tex, &clip[13][0], &pos);
+			SDL_RenderCopy(ren, tex, &blockClip[0][13], &pos);
+			railway[j][i + 1].y = railway[j][i].y;
 			railway[j][i + 1].x = railway[j][i].x + 1;
 			break;
 		case EAST:
-			SDL_RenderCopy(ren, tex, &clip[9][0], &pos);
+			SDL_RenderCopy(ren, tex, &blockClip[0][9], &pos);
+			railway[j][i + 1].x = railway[j][i].x;
 			railway[j][i + 1].y = railway[j][i].y + 1;
 			break;
 		case SOUTH:
-			SDL_RenderCopy(ren, tex, &clip[16][0], &pos);
+			SDL_RenderCopy(ren, tex, &blockClip[0][16], &pos);
+			railway[j][i + 1].y = railway[j][i].y;
 			railway[j][i + 1].x = railway[j][i].x - 1;
 			break;
 		}
@@ -88,63 +74,76 @@ void crossblock(int j, int i,int * inf , SDL_Renderer * ren, SDL_Texture * tex)
 		switch (railway[j][i].direction)
 		{
 		case WEST:
-			SDL_RenderCopy(ren, tex, &clip[10][0], &pos);
+			SDL_RenderCopy(ren, tex, &blockClip[0][10], &pos);
+			railway[j][i + 1].x = railway[j][i].x;
 			railway[j][i + 1].y = railway[j][i].y - 1;
 			break;
 		case NORTH:
-			SDL_RenderCopy(ren, tex, &clip[14][0], &pos);
+			SDL_RenderCopy(ren, tex, &blockClip[0][14], &pos);
+			railway[j][i + 1].y = railway[j][i].y;
 			railway[j][i + 1].x = railway[j][i].x + 1;
 			break;
 		case EAST:
-			SDL_RenderCopy(ren, tex, &clip[11][0], &pos);
+			SDL_RenderCopy(ren, tex, &blockClip[0][11], &pos);
+			railway[j][i + 1].x = railway[j][i].x;
 			railway[j][i + 1].y = railway[j][i].y + 1;
 			break;
 		case SOUTH:
-			SDL_RenderCopy(ren, tex, &clip[15][0], &pos);
+			SDL_RenderCopy(ren, tex, &blockClip[0][15], &pos);
+			railway[j][i + 1].y = railway[j][i].y;
 			railway[j][i + 1].x = railway[j][i].x - 1;
 			break;
 		}
 	}
 }
-//普通轨道
-void ablock(int j, int i, SDL_Renderer * ren, SDL_Texture * tex)
+//绘制普通轨道
+static void drawNormalBlock(int j, int i, SDL_Renderer * ren, SDL_Texture * tex)
 {
 	SDL_Rect pos;
 	pos.x = railway[j][i].x * WIDTH;
 	pos.y = railway[j][i].y * WIDTH;
-	pos.h = pos.w = WIDTH;
-	switch(railway[j][i].direction)
+	pos.h = WIDTH;
+	pos.w = WIDTH;
+	switch (railway[j][i].direction)
 	{
 	case SOUTHWEST:
-		SDL_RenderCopy(ren, tex, &clip[4][0], &pos);
+		SDL_RenderCopy(ren, tex, &blockClip[0][4], &pos);
+		railway[j][i + 1].x = railway[j][i].x;
 		railway[j][i + 1].y = railway[j][i].y - 1;
 		break;
 	case WEST:
-		SDL_RenderCopy(ren, tex, &clip[1][0], &pos);
+		SDL_RenderCopy(ren, tex, &blockClip[0][1], &pos);
+		railway[j][i + 1].x = railway[j][i].x;
 		railway[j][i + 1].y = railway[j][i].y - 1;
 		break;
 	case NORTHWEST:
-		SDL_RenderCopy(ren, tex, &clip[2][0], &pos);
+		SDL_RenderCopy(ren, tex, &blockClip[0][2], &pos);
+		railway[j][i + 1].y = railway[j][i].y;
 		railway[j][i + 1].x = railway[j][i].x + 1;
 		break;
 	case NORTH:
-		SDL_RenderCopy(ren, tex, &clip[0][0], &pos);
+		SDL_RenderCopy(ren, tex, &blockClip[0][0], &pos);
+		railway[j][i + 1].y = railway[j][i].y;
 		railway[j][i + 1].x = railway[j][i].x + 1;
 		break;
 	case NORTHEAST:
-		SDL_RenderCopy(ren, tex, &clip[3][0], &pos);
+		SDL_RenderCopy(ren, tex, &blockClip[0][3], &pos);
+		railway[j][i + 1].x = railway[j][i].x;
 		railway[j][i + 1].y = railway[j][i].y + 1;
 		break;
 	case EAST:
-		SDL_RenderCopy(ren, tex, &clip[1][0], &pos);
+		SDL_RenderCopy(ren, tex, &blockClip[0][1], &pos);
+		railway[j][i + 1].x = railway[j][i].x;
 		railway[j][i + 1].y = railway[j][i].y + 1;
 		break;
 	case SOUTHEAST:
-		SDL_RenderCopy(ren, tex, &clip[5][0], &pos);
+		SDL_RenderCopy(ren, tex, &blockClip[0][5], &pos);
+		railway[j][i + 1].y = railway[j][i].y;
 		railway[j][i + 1].x = railway[j][i].x - 1;
 		break;
 	case SOUTH:
-		SDL_RenderCopy(ren, tex, &clip[0][0], &pos);
+		SDL_RenderCopy(ren, tex, &blockClip[0][0], &pos);
+		railway[j][i + 1].y = railway[j][i].y;
 		railway[j][i + 1].x = railway[j][i].x - 1;
 		break;
 	}

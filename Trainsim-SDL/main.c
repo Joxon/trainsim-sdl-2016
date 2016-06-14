@@ -29,36 +29,62 @@ FILE *logPtr = NULL; //日志文件指针
 FILE *commandPtr = NULL; //命令文件指针
 FILE *outPtr = NULL; //输出文件指针
 
-
-
 //void errorFromFile();
 void initFromFile();
 
-SDL_Rect clip[BLOCK_ROW][BLOCK_COLUMN];
+SDL_Rect blockClip[BLOCK_ROW][BLOCK_COLUMN];
+SDL_Rect buttonClip[BUTTON_ROW][BUTTON_COLUMN];
 
 int main(int argc, char* args[])
 {
 	//初始化火车和轨道
-	//initFromFile();
+	initFromFile();
 
 	//SDL初始化
 	SDL_Init(SDL_INIT_VIDEO);
 	IMG_Init(IMG_INIT_PNG);
 	TTF_Init();
 
-	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+	//创建窗口和渲染器
 	SDL_Window* window = SDL_CreateWindow("Trainsim", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-	TTF_Font* font = TTF_OpenFont("font.ttf", 30);
-	SDL_Texture* blocksTexture = IMG_LoadTexture(renderer, "blocks.png");
 
+	//加载字体
+	TTF_Font* font = TTF_OpenFont("font.ttf", 30);
+
+	//加载火车纹理
+	SDL_Texture* trainTexture = IMG_LoadTexture(renderer, ".\\png\\train.png");
+
+	//加载轨道块纹理
+	SDL_Texture* blocksTexture = IMG_LoadTexture(renderer, ".\\png\\blocks.png");
 	for (int i = 0; i < BLOCK_ROW; ++i)
 		for (int j = 0; j < BLOCK_COLUMN; ++j)
 		{
-			clip[i][j].x = i*BLOCK_SIZE;
-			clip[i][j].y = j*BLOCK_SIZE;
-			clip[i][j].w = BLOCK_SIZE;
-			clip[i][j].h = BLOCK_SIZE;
+			blockClip[i][j].x = j*BLOCK_SIZE;
+			blockClip[i][j].y = i*BLOCK_SIZE;
+			blockClip[i][j].w = BLOCK_SIZE;
+			blockClip[i][j].h = BLOCK_SIZE;
+		}
+	//for (int i = 0; i < BLOCK_ROW; ++i)
+	//	for (int j = 0; j < BLOCK_COLUMN; ++j)
+	//	{
+	//		SDL_Rect pos;
+	//		pos.x = j*BLOCK_SIZE;
+	//		pos.y = i*BLOCK_SIZE;
+	//		pos.w = BLOCK_SIZE;
+	//		pos.h = BLOCK_SIZE;
+	//		SDL_RenderCopy(renderer, blocksTexture, &blockClip[i][j], &pos);
+	//	}
+	//SDL_RenderPresent(renderer);
+	//加载按钮纹理
+	SDL_Texture* buttonsTexture = IMG_LoadTexture(renderer, ".\\png\\buttons.png");
+	for (int i = 0; i < BUTTON_ROW; ++i)
+		for (int j = 0; j < BUTTON_COLUMN; ++j)
+		{
+			buttonClip[i][j].x = i*BUTTON_HEIGHT;
+			buttonClip[i][j].y = j*BUTTON_WIDTH;
+			buttonClip[i][j].w = BUTTON_WIDTH;
+			buttonClip[i][j].h = BUTTON_HEIGHT;
 		}
 
 	//火车和轨道界面
@@ -103,8 +129,8 @@ int main(int argc, char* args[])
 		for (i = 0; i < trainNum; ++i)
 			trans(&train[i], railway, i);
 
-		//输出
-		print();
+		//控制台输出
+		printConsole();
 
 		//火车移动
 		for (i = 0; i < trainNum; ++i)
@@ -119,8 +145,8 @@ int main(int argc, char* args[])
 
 		//渲染轨道和火车，是以trainViewport的左上角为绘图零点
 		SDL_RenderSetViewport(renderer, &trainViewport);
-		drawRailway();
-		drawTrain();
+		drawRailway(window, renderer, blocksTexture);
+		//drawTrain();
 
 		//渲染用户输入界面，注意是以userViewport的左上角为绘图零点
 		SDL_RenderSetViewport(renderer, &userViewport);
@@ -136,10 +162,12 @@ int main(int argc, char* args[])
 	}
 
 	//释放资源
-	TTF_CloseFont(font);
-	SDL_DestroyTexture(blocksTexture);
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(window);
+	TTF_CloseFont(font); font = NULL;
+	SDL_DestroyTexture(trainTexture); trainTexture = NULL;
+	SDL_DestroyTexture(blocksTexture); blocksTexture = NULL;
+	SDL_DestroyTexture(buttonsTexture); buttonsTexture = NULL;
+	SDL_DestroyRenderer(renderer); renderer = NULL;
+	SDL_DestroyWindow(window); window = NULL;
 
 	TTF_Quit();
 	IMG_Quit();
@@ -237,7 +265,7 @@ void initFromFile()
 			{
 				fscanf(fp, "id=%d %d %d\n", &common_ID, &start, &end);
 				//if (common_count <= 0 || start < 0 || end < 0) errorFromFile();
-				for (blockid = start; blockid < end; ++blockid)
+				for (blockid = start; blockid <= end; ++blockid)
 				{
 					railway[id][blockid].common = common_ID;
 					railway[id][blockid].last = -1;
