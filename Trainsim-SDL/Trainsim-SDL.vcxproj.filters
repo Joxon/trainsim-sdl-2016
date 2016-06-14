@@ -30,10 +30,13 @@
     <ClCompile Include="drawTrain.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="drawUI.c">
+    <ClCompile Include="drawRailway.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="drawRailway.c">
+    <ClCompile Include="drawUI.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="drawUI.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
