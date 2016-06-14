@@ -119,7 +119,7 @@
     <ClCompile Include="control.c" />
     <ClCompile Include="drawRailway.c" />
     <ClCompile Include="drawTrain.c" />
-    <ClCompile Include="drawUI.c" />
+    <ClCompile Include="drawUI.cpp" />
     <ClCompile Include="main.c" />
     <ClCompile Include="output.c" />
     <ClCompile Include="state_trans.c" />

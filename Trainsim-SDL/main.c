@@ -29,19 +29,13 @@ FILE *logPtr = NULL; //日志文件指针
 FILE *commandPtr = NULL; //命令文件指针
 FILE *outPtr = NULL; //输出文件指针
 
-#define WINDOW_WIDTH 1400
-#define WINDOW_HEIGHT 900
-#define BLOCK_SIZE 60
-#define BLOCK_ROW 3
-#define BLOCK_COLUMN 21
-
 //void errorFromFile();
 void initFromFile();
 
 int main(int argc, char* args[])
 {
 	//初始化火车和轨道
-	//initFromFile();
+	initFromFile();
 
 	//SDL初始化
 	SDL_Init(SDL_INIT_VIDEO);
@@ -87,9 +81,6 @@ int main(int argc, char* args[])
 			if (e.type == SDL_QUIT) quit = true;
 		}
 
-		SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-		SDL_RenderClear(renderer);
-
 		int i;
 		//控制命令
 		if (inputMode == FROM_FILE)
@@ -104,7 +95,7 @@ int main(int argc, char* args[])
 				if (processTime == train[i].startTime)
 					train[i].speed = trainSpeed[i];     //到启动时刻返还速度
 
-														//状态变换
+		//状态变换
 		for (i = 0; i < trainNum; ++i)
 			trans(&train[i], railway, i);
 
@@ -118,21 +109,26 @@ int main(int argc, char* args[])
 			changePosition(&train[i]);
 		}
 
-		//渲染轨道和火车
+		//设置背景为白色
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+		SDL_RenderClear(renderer);
+
+		//渲染轨道和火车，是以trainViewport的左上角为绘图零点
 		SDL_RenderSetViewport(renderer, &trainViewport);
 		drawRailway();
 		drawTrain();
 
-		//渲染用户输入界面
+		//渲染用户输入界面，注意是以userViewport的左上角为绘图零点
 		SDL_RenderSetViewport(renderer, &userViewport);
-		drawUI();
+		//drawUI();
 
 		SDL_RenderPresent(renderer);
 
 
 
-		////时间片推进
-		//++processTime;
+		//时间片推进
+		++processTime;
+		//SDL_Delay(1000);
 	}
 
 	//释放资源
