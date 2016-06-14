@@ -1,6 +1,9 @@
 #include "drawSDL.h"
+#include <SDL.h>
 
-void drawTrain()
+
+void drawTrain(SDL_Window* win,SDL_Renderer * ren)
 {
-	;
+	
 }
+

@@ -29,13 +29,17 @@ FILE *logPtr = NULL; //日志文件指针
 FILE *commandPtr = NULL; //命令文件指针
 FILE *outPtr = NULL; //输出文件指针
 
+
+
 //void errorFromFile();
 void initFromFile();
+
+SDL_Rect clip[BLOCK_ROW][BLOCK_COLUMN];
 
 int main(int argc, char* args[])
 {
 	//初始化火车和轨道
-	initFromFile();
+	//initFromFile();
 
 	//SDL初始化
 	SDL_Init(SDL_INIT_VIDEO);
@@ -47,7 +51,7 @@ int main(int argc, char* args[])
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	TTF_Font* font = TTF_OpenFont("font.ttf", 30);
 	SDL_Texture* blocksTexture = IMG_LoadTexture(renderer, "blocks.png");
-	SDL_Rect clip[BLOCK_ROW][BLOCK_COLUMN];
+
 	for (int i = 0; i < BLOCK_ROW; ++i)
 		for (int j = 0; j < BLOCK_COLUMN; ++j)
 		{
