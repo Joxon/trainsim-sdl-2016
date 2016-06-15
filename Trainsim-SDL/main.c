@@ -66,17 +66,20 @@ int main(int argc, char* argv[])
 			blockClip[i][j].h = BLOCK_SIZE;
 		}
 
-	//for (int i = 0; i < BLOCK_ROW; ++i)
-	//	for (int j = 0; j < BLOCK_COLUMN; ++j)
-	//	{
-	//		SDL_Rect pos;
-	//		pos.x = j*BLOCK_SIZE;
-	//		pos.y = i*BLOCK_SIZE;
-	//		pos.w = BLOCK_SIZE;
-	//		pos.h = BLOCK_SIZE;
-	//		SDL_RenderCopy(renderer, blocksTexture, &blockClip[i][j], &pos);
-	//	}
-	//SDL_RenderPresent(renderer);
+#ifdef BLOCK_TEST
+	for (int i = 0; i < BLOCK_ROW; ++i)
+		for (int j = 0; j < BLOCK_COLUMN; ++j)
+		{
+			SDL_Rect pos;
+			pos.x = j*BLOCK_SIZE;
+			pos.y = i*BLOCK_SIZE;
+			pos.w = BLOCK_SIZE;
+			pos.h = BLOCK_SIZE;
+			SDL_RenderCopy(renderer, blocksTexture, &blockClip[i][j], &pos);
+		}
+	SDL_RenderPresent(renderer);
+#endif
+
 
 	//加载标题栏
 	SDL_Texture* bannerTexture = IMG_LoadTexture(renderer, ".\\png\\banner.png");
@@ -162,7 +165,7 @@ int main(int argc, char* argv[])
 
 		//时间片推进
 		++processTime;
-		//SDL_Delay(1000);
+		SDL_Delay(100);
 	}
 
 	//释放资源

@@ -54,8 +54,8 @@ void drawRailway(SDL_Renderer * ren, SDL_Texture * block)
 	}
 
 	//设定绘制起始点（左上角为零点）
-	railway[0][0].x = 10;
-	railway[0][0].y = 10;
+	railway[0][0].x = WINDOW_WIDTH / BLOCK_SIZE / 2;
+	railway[0][0].y = WINDOW_HEIGHT / BLOCK_SIZE / 2;
 	if (railway[0][0].common != railway[0][train[0].railwayLength - 1].common)
 		drawCrossBlock(0, 0, ren, block);
 	else
@@ -180,6 +180,12 @@ void drawRailway(SDL_Renderer * ren, SDL_Texture * block)
 				blockID = -1;
 			//SDL_RenderPresent(ren);//调试可用
 		}
+	//补共轨
+	for (int subRailID = 1; subRailID < railNum; subRailID++)
+		for (int mainBlockID = commonInfo[subRailID - 1][3] + 1, subBlockID = commonInfo[subRailID - 1][2] - 1;
+			mainBlockID < commonInfo[subRailID - 1][4]; 
+			mainBlockID++, subBlockID--)
+			railway[subRailID][subBlockID] = railway[0][mainBlockID];
 }
 
 //绘制公共入口/出口
@@ -395,6 +401,7 @@ static void judgeCommon(int extRailID, int extBlockID)
 		}
 }
 
+//绘制站点
 void drawStations(SDL_Renderer* ren, SDL_Texture* block)
 {
 	//处理站点

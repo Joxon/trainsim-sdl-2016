@@ -30,6 +30,13 @@ void drawUI(SDL_Renderer * ren, SDL_Texture * button, SDL_Texture *banner, TTF_F
 	dst.w = WINDOW_WIDTH / 6; dst.h = 150;
 	SDL_RenderCopy(ren, banner, NULL, &dst);
 
+	SDL_Color fontColor;
+	fontColor.r = 0;
+	fontColor.g = 0;
+	fontColor.b = 0;
+	fontColor.a = 255;
+	TTF_RenderUNICODE_Blended(font, "火车状态与控制", fontColor);
+
 	//绘制各火车状态和相应按钮
 	for (int train = 0; train < trainNum; ++train)
 	{

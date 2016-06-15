@@ -39,7 +39,7 @@ void drawTrain(SDL_Renderer * ren, SDL_Texture * trainTexture)
 			case SOUTHEAST:SDL_RenderCopyEx(ren, trainTexture, NULL, &dst, 45, NULL, SDL_FLIP_NONE); break;
 			case SOUTH:SDL_RenderCopy(ren, trainTexture, NULL, &dst); break;
 			}
-		SDL_RenderPresent(ren);
+		//SDL_RenderPresent(ren);//µ˜ ‘ø…”√
 	}
 }
 
