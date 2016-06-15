@@ -35,7 +35,7 @@ void initFromFile();
 SDL_Rect blockClip[BLOCK_ROW][BLOCK_COLUMN];
 SDL_Rect buttonClip[BUTTON_ROW][BUTTON_COLUMN];
 
-int main(int argc, char* args[])
+int main(int argc, char* argv[])
 {
 	//初始化火车和轨道
 	initFromFile();
@@ -144,22 +144,21 @@ int main(int argc, char* args[])
 			changePosition(&train[i]);
 		}
 
-		//设置背景为白色
-		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+		//设置背景为土色
+		SDL_SetRenderDrawColor(renderer, 239, 227, 182, 255);
 		SDL_RenderClear(renderer);
 
 		//渲染轨道和火车，是以trainViewport的左上角为绘图零点
 		SDL_RenderSetViewport(renderer, &trainViewport);
-		drawRailway(window, renderer, blocksTexture);
-		drawTrain(window, renderer, buttonsTexture);
+		drawRailway(renderer, blocksTexture);
+		drawTrain(renderer, trainTexture);
+		drawStations(renderer, blocksTexture);
 
 		//渲染用户输入界面，注意是以userViewport的左上角为绘图零点
 		SDL_RenderSetViewport(renderer, &userViewport);
-		drawUI(window, renderer, buttonsTexture, bannerTexture, font);
+		drawUI(renderer, buttonsTexture, bannerTexture, font);
 
 		SDL_RenderPresent(renderer);
-
-
 
 		//时间片推进
 		++processTime;
@@ -198,6 +197,7 @@ void initFromFile()
 	int id;
 	char ch;
 
+	//调试时打开文件不成功，请修改项目->属性->调试->工作目录
 	fp = fopen(".\\txt\\init.txt", "r");
 	if (fp != NULL)
 	{

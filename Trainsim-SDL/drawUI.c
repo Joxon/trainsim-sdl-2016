@@ -20,7 +20,7 @@ enum buttonState
 	BUTTON_STATE_TOTAL = 3,
 };
 
-void drawUI(SDL_Window * win, SDL_Renderer * ren, SDL_Texture * button, SDL_Texture *banner, TTF_Font* font)
+void drawUI(SDL_Renderer * ren, SDL_Texture * button, SDL_Texture *banner, TTF_Font* font)
 {
 	//Ä¿±ê¾ØÐÎ
 	SDL_Rect dst;

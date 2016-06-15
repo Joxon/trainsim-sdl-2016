@@ -3,12 +3,15 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 
-void drawRailway(SDL_Window * win, SDL_Renderer * ren, SDL_Texture * block);
-void drawTrain(SDL_Window * win, SDL_Renderer * ren, SDL_Texture * train);
-void drawUI(SDL_Window * win, SDL_Renderer * ren, SDL_Texture * button, SDL_Texture * banner, TTF_Font * font);
+void drawRailway(SDL_Renderer * ren, SDL_Texture * block);
+static void drawCrossBlock(int railID, int blockID, SDL_Renderer * ren, SDL_Texture * tex);
+static void drawNormalBlock(int railID, int blockID, SDL_Renderer * ren, SDL_Texture * tex);
+static void judgeCommon(int extRailID, int extBlockID);
+void drawStations(SDL_Renderer* ren, SDL_Texture* block);
 
-static void drawCrossBlock(int j, int i, SDL_Renderer * ren, SDL_Texture * tex);
-static void drawNormalBlock(int j, int i, SDL_Renderer * ren, SDL_Texture * tex);
-static void judge_com(int j, int i);
+void drawTrain(SDL_Renderer * ren, SDL_Texture * train);
+void drawUI(SDL_Renderer * ren, SDL_Texture * button, SDL_Texture * banner, TTF_Font * font);
+
+
 
 #endif

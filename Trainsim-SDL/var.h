@@ -43,9 +43,9 @@ enum Strategy
 ===========================*/
 
 //对象数量
-#define MAX_TRAIN 9
-#define MAX_RAIL 9
-#define MAX_RAIL_LENGTH 999
+#define MAX_TRAIN 3
+#define MAX_RAIL 3
+#define MAX_RAIL_LENGTH 99
 
 //火车状态
 enum TrainStatus
