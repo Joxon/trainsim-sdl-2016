@@ -1,10 +1,9 @@
+#include<stdlib.h>
+#include<time.h>
 #include<SDL.h>
 #include<SDL_image.h>
-
 #include "drawSDL.h"
 #include "var.h"
-
-#define WIDTH 60;
 
 extern struct train train[MAX_TRAIN];
 extern struct block railway[MAX_RAIL][MAX_RAIL_LENGTH];
@@ -14,6 +13,42 @@ extern SDL_Rect buttonClip[BUTTON_ROW][BUTTON_COLUMN];
 
 void drawRailway(SDL_Window * win, SDL_Renderer * ren, SDL_Texture * block)
 {
+	//平铺背景，只希望背景随机生成一次
+	static bool backgroundFirstDrawn = false;
+	static int backgroundClips[WINDOW_HEIGHT / BLOCK_SIZE][WINDOW_WIDTH / BLOCK_SIZE];
+	if (!backgroundFirstDrawn)
+	{
+		//首次绘制使用随机数
+		srand((unsigned)time(NULL));
+		for (int y = 0; y < WINDOW_HEIGHT / BLOCK_SIZE; ++y)
+			for (int x = 0; x < WINDOW_WIDTH / BLOCK_SIZE; ++x)
+			{
+				SDL_Rect dst;
+				dst.y = y*BLOCK_SIZE;
+				dst.x = x*BLOCK_SIZE;
+				dst.w = BLOCK_SIZE;
+				dst.h = BLOCK_SIZE;
+				int randomNum = 10 + rand() % 8;
+				backgroundClips[y][x] = randomNum;
+				SDL_RenderCopy(ren, block, &blockClip[2][randomNum], &dst);
+			}
+		backgroundFirstDrawn = true;
+	}
+	else
+	{
+		//后续绘制使用已保存的数据
+		for (int y = 0; y < WINDOW_HEIGHT / BLOCK_SIZE; ++y)
+			for (int x = 0; x < WINDOW_WIDTH / BLOCK_SIZE; ++x)
+			{
+				SDL_Rect dst;
+				dst.y = y*BLOCK_SIZE;
+				dst.x = x*BLOCK_SIZE;
+				dst.w = BLOCK_SIZE;
+				dst.h = BLOCK_SIZE;
+				SDL_RenderCopy(ren, block, &blockClip[2][backgroundClips[y][x]], &dst);
+			}
+	}
+
 	//设定绘制起始点（左上角为零点）
 	railway[0][0].x = 10;
 	railway[0][0].y = 10;
@@ -34,14 +69,15 @@ void drawRailway(SDL_Window * win, SDL_Renderer * ren, SDL_Texture * block)
 		//SDL_RenderPresent(ren);//调试可用
 	}
 }
+
 //绘制公共入口/出口
 static void drawCrossBlock(int j, int i, SDL_Renderer * ren, SDL_Texture * tex)
 {
 	SDL_Rect pos;
-	pos.x = railway[j][i].x * WIDTH;
-	pos.y = railway[j][i].y * WIDTH;
-	pos.h = WIDTH;
-	pos.w = WIDTH;
+	pos.x = railway[j][i].x * BLOCK_SIZE;
+	pos.y = railway[j][i].y * BLOCK_SIZE;
+	pos.h = BLOCK_SIZE;
+	pos.w = BLOCK_SIZE;
 	//较小
 	if (railway[j][i - 1].common == 0)
 	{
@@ -100,10 +136,10 @@ static void drawCrossBlock(int j, int i, SDL_Renderer * ren, SDL_Texture * tex)
 static void drawNormalBlock(int j, int i, SDL_Renderer * ren, SDL_Texture * tex)
 {
 	SDL_Rect pos;
-	pos.x = railway[j][i].x * WIDTH;
-	pos.y = railway[j][i].y * WIDTH;
-	pos.h = WIDTH;
-	pos.w = WIDTH;
+	pos.x = railway[j][i].x * BLOCK_SIZE;
+	pos.y = railway[j][i].y * BLOCK_SIZE;
+	pos.h = BLOCK_SIZE;
+	pos.w = BLOCK_SIZE;
 	switch (railway[j][i].direction)
 	{
 	case SOUTHWEST:

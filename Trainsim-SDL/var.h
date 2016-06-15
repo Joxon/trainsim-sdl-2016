@@ -17,7 +17,7 @@
 //按钮参数
 #define BUTTON_ROW 4
 #define BUTTON_COLUMN 2
-#define BUTTON_WIDTH 100
+#define BUTTON_WIDTH 50
 #define BUTTON_HEIGHT 30
 
 //命令方式

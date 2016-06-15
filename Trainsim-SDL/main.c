@@ -65,6 +65,7 @@ int main(int argc, char* args[])
 			blockClip[i][j].w = BLOCK_SIZE;
 			blockClip[i][j].h = BLOCK_SIZE;
 		}
+
 	//for (int i = 0; i < BLOCK_ROW; ++i)
 	//	for (int j = 0; j < BLOCK_COLUMN; ++j)
 	//	{
@@ -76,6 +77,10 @@ int main(int argc, char* args[])
 	//		SDL_RenderCopy(renderer, blocksTexture, &blockClip[i][j], &pos);
 	//	}
 	//SDL_RenderPresent(renderer);
+
+	//加载标题栏
+	SDL_Texture* bannerTexture = IMG_LoadTexture(renderer, ".\\png\\banner.png");
+	
 	//加载按钮纹理
 	SDL_Texture* buttonsTexture = IMG_LoadTexture(renderer, ".\\png\\buttons.png");
 	for (int i = 0; i < BUTTON_ROW; ++i)
@@ -146,11 +151,11 @@ int main(int argc, char* args[])
 		//渲染轨道和火车，是以trainViewport的左上角为绘图零点
 		SDL_RenderSetViewport(renderer, &trainViewport);
 		drawRailway(window, renderer, blocksTexture);
-		//drawTrain();
+		drawTrain(window, renderer, buttonsTexture);
 
 		//渲染用户输入界面，注意是以userViewport的左上角为绘图零点
 		SDL_RenderSetViewport(renderer, &userViewport);
-		//drawUI();
+		drawUI(window, renderer, buttonsTexture, bannerTexture, font);
 
 		SDL_RenderPresent(renderer);
 
@@ -164,6 +169,7 @@ int main(int argc, char* args[])
 	//释放资源
 	TTF_CloseFont(font); font = NULL;
 	SDL_DestroyTexture(trainTexture); trainTexture = NULL;
+	SDL_DestroyTexture(bannerTexture); bannerTexture = NULL;
 	SDL_DestroyTexture(blocksTexture); blocksTexture = NULL;
 	SDL_DestroyTexture(buttonsTexture); buttonsTexture = NULL;
 	SDL_DestroyRenderer(renderer); renderer = NULL;

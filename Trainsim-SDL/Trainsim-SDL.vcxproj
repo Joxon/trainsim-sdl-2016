@@ -121,7 +121,7 @@
     <ClCompile Include="control.c" />
     <ClCompile Include="drawRailway.c" />
     <ClCompile Include="drawTrain.c" />
-    <ClCompile Include="drawUI.cpp" />
+    <ClCompile Include="drawUI.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="output.c" />
     <ClCompile Include="state_trans.c" />
@@ -134,8 +134,10 @@
     <ClInclude Include="var.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="blocks.png" />
-    <Image Include="train.png" />
+    <Image Include="..\png\banner.png" />
+    <Image Include="..\png\blocks.png" />
+    <Image Include="..\png\buttons.png" />
+    <Image Include="..\png\train.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
