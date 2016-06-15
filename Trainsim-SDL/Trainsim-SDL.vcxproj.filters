@@ -55,17 +55,25 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\png\banner.png">
+    <Image Include="..\resources\banner.png">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="..\png\blocks.png">
+    <Image Include="..\resources\blocks.png">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="..\png\buttons.png">
+    <Image Include="..\resources\buttons.png">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="..\png\train.png">
+    <Image Include="..\resources\huaji.png">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="..\resources\train.png">
+      <Filter>资源文件</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="..\resources\font.ttf">
+      <Filter>资源文件</Filter>
+    </Font>
   </ItemGroup>
 </Project>

@@ -134,10 +134,14 @@
     <ClInclude Include="var.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\png\banner.png" />
-    <Image Include="..\png\blocks.png" />
-    <Image Include="..\png\buttons.png" />
-    <Image Include="..\png\train.png" />
+    <Image Include="..\resources\banner.png" />
+    <Image Include="..\resources\blocks.png" />
+    <Image Include="..\resources\buttons.png" />
+    <Image Include="..\resources\huaji.png" />
+    <Image Include="..\resources\train.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="..\resources\font.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

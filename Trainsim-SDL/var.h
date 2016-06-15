@@ -15,7 +15,7 @@
 #define BLOCK_COLUMN 21
 #define BLOCK_SIZE 60
 //°´Å¥²ÎÊý
-#define BUTTON_ROW 4
+#define BUTTON_ROW 7
 #define BUTTON_COLUMN 2
 #define BUTTON_WIDTH 50
 #define BUTTON_HEIGHT 30

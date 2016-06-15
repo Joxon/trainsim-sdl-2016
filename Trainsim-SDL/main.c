@@ -50,13 +50,29 @@ int main(int argc, char* argv[])
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
 	//加载字体
-	TTF_Font* font = TTF_OpenFont("font.ttf", 30);
+	//  初号 = 42磅 = 14.82毫米
+	//	小初 = 36磅 = 12.70毫米
+	//	一号 = 26磅 = 9.17毫米
+	//	小一 = 24磅 = 8.47毫米
+	//	二号 = 22磅 = 7.76毫米
+	//	小二 = 18磅 = 6.35毫米
+	//	三号 = 16磅 = 5.64毫米
+	//	小三 = 15磅 = 5.29毫米
+	//	四号 = 14磅 = 4.94毫米
+	//	小四 = 12磅 = 4.23毫米
+	//	五号 = 10.5磅 = 3.70毫米
+	//	小五 = 9磅 = 3.18毫米
+	//	六号 = 7.5磅 = 2.56毫米
+	//	小六 = 6.5磅 = 2.29毫米
+	//	七号 = 5.5磅 = 1.94毫米
+	//	八号 = 5磅 = 1.76毫米
+	TTF_Font* font = TTF_OpenFont(".\\resources\\font.ttf", 30);
 
 	//加载火车纹理
-	SDL_Texture* trainTexture = IMG_LoadTexture(renderer, ".\\png\\train.png");
+	SDL_Texture* trainTexture = IMG_LoadTexture(renderer, ".\\resources\\train.png");
 
 	//加载轨道块纹理
-	SDL_Texture* blocksTexture = IMG_LoadTexture(renderer, ".\\png\\blocks.png");
+	SDL_Texture* blocksTexture = IMG_LoadTexture(renderer, ".\\resources\\blocks.png");
 	for (int i = 0; i < BLOCK_ROW; ++i)
 		for (int j = 0; j < BLOCK_COLUMN; ++j)
 		{
@@ -82,17 +98,17 @@ int main(int argc, char* argv[])
 
 
 	//加载标题栏
-	SDL_Texture* bannerTexture = IMG_LoadTexture(renderer, ".\\png\\banner.png");
+	SDL_Texture* bannerTexture = IMG_LoadTexture(renderer, ".\\resources\\banner.png");
 	
 	//加载按钮纹理
-	SDL_Texture* buttonsTexture = IMG_LoadTexture(renderer, ".\\png\\buttons.png");
-	for (int i = 0; i < BUTTON_ROW; ++i)
-		for (int j = 0; j < BUTTON_COLUMN; ++j)
+	SDL_Texture* buttonsTexture = IMG_LoadTexture(renderer, ".\\resources\\buttons.png");
+	for (int y = 0; y < BUTTON_ROW; ++y)
+		for (int x = 0; x < BUTTON_COLUMN; ++x)
 		{
-			buttonClip[i][j].x = i*BUTTON_HEIGHT;
-			buttonClip[i][j].y = j*BUTTON_WIDTH;
-			buttonClip[i][j].w = BUTTON_WIDTH;
-			buttonClip[i][j].h = BUTTON_HEIGHT;
+			buttonClip[y][x].x = x*BUTTON_WIDTH;
+			buttonClip[y][x].y = y*BUTTON_HEIGHT;
+			buttonClip[y][x].w = BUTTON_WIDTH;
+			buttonClip[y][x].h = BUTTON_HEIGHT;
 		}
 
 	//火车和轨道界面
@@ -165,7 +181,7 @@ int main(int argc, char* argv[])
 
 		//时间片推进
 		++processTime;
-		SDL_Delay(100);
+		//SDL_Delay(800);
 	}
 
 	//释放资源
