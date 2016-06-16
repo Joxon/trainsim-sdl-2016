@@ -60,9 +60,10 @@ void drawRailway(SDL_Renderer * ren, SDL_Texture * block)
 		drawCrossBlock(0, 0, ren, block);
 	else
 		drawNormalBlock(0, 0, ren, block);
-	//SDL_RenderPresent(ren);//调试可用
+	SDL_RenderPresent(ren);//调试可用
 
 	//绘制中央轨道（有两条公共轨道）
+
 	for (int blockID = 1; blockID < train[0].railwayLength; blockID++)
 	{
 		if (railway[0][blockID].common != 0 && (railway[0][blockID - 1].common == 0 || railway[0][blockID + 1].common == 0))
@@ -70,7 +71,7 @@ void drawRailway(SDL_Renderer * ren, SDL_Texture * block)
 		else
 			drawNormalBlock(0, blockID, ren, block);
 
-		//SDL_RenderPresent(ren);//调试可用
+		SDL_RenderPresent(ren);//调试可用
 	}
 
 	//绘制其它轨道
@@ -97,7 +98,8 @@ void drawRailway(SDL_Renderer * ren, SDL_Texture * block)
 		{
 			if (railway[railID][blockID].common == 0)
 				drawNormalBlock(railID, blockID, ren, block);
-			else if (blockID = commonInfo[railID - 1][2])
+			else 
+			if (blockID == commonInfo[railID - 1][2])
 			{
 				if (commonInfo[railID - 1][2] != train[railID].railwayLength - 1)
 				{
@@ -178,14 +180,22 @@ void drawRailway(SDL_Renderer * ren, SDL_Texture * block)
 			}
 			if (blockID == train[railID].railwayLength - 1)
 				blockID = -1;
-			//SDL_RenderPresent(ren);//调试可用
+			SDL_RenderPresent(ren);//调试可用
 		}
 	//补共轨
 	for (int subRailID = 1; subRailID < railNum; subRailID++)
-		for (int mainBlockID = commonInfo[subRailID - 1][3] + 1, subBlockID = commonInfo[subRailID - 1][2] - 1;
-			mainBlockID < commonInfo[subRailID - 1][4]; 
-			mainBlockID++, subBlockID--)
+		for (int mainBlockID = commonInfo[subRailID - 1][3] + 1, subBlockID = commonInfo[subRailID - 1][2] - 1; mainBlockID < commonInfo[subRailID - 1][4]; mainBlockID++, subBlockID--)
+		{
+			if (mainBlockID >= train[0].railwayLength)
+				mainBlockID = 0;
+			if (mainBlockID < 0)
+				mainBlockID = train[0].railwayLength - 1;
+			if (subBlockID >= train[subRailID].railwayLength)
+				subBlockID = 0;
+			if (subBlockID < 0)
+				subBlockID = train[subRailID].railwayLength - 1;
 			railway[subRailID][subBlockID] = railway[0][mainBlockID];
+		}
 }
 
 //绘制公共入口/出口
@@ -196,12 +206,7 @@ static void drawCrossBlock(int railID, int blockID, SDL_Renderer * ren, SDL_Text
 	pos.y = railway[railID][blockID].y * BLOCK_SIZE;
 	pos.h = BLOCK_SIZE;
 	pos.w = BLOCK_SIZE;
-	//较小
-	if (railway[railID][blockID - 1].common == 0)
-		pos.x = railway[railID][blockID].x * BLOCK_SIZE;
-	pos.y = railway[railID][blockID].y * BLOCK_SIZE;
-	pos.h = BLOCK_SIZE;
-	pos.w = BLOCK_SIZE;
+
 	//入口
 	if ((blockID != 0 && railway[railID][blockID - 1].common == 0) || (blockID == 0 && railway[railID][train[railID].railwayLength - 1].common == 0))
 	{
@@ -382,20 +387,34 @@ static void judgeCommon(int extRailID, int extBlockID)
 	for (int railID = 1; railID < railNum; railID++)
 		for (int blockID = 0; blockID < train[railID].railwayLength; blockID++)
 		{
-			if (railway[railID][blockID].common == railway[extRailID][extBlockID].common && railway[railID][blockID - 1].common == 0 && railway[extRailID][extBlockID - 1].common == 0)//入口
+			if (blockID == 0)
 			{
-				id = railID;
-				commonInfo[id - 1][0] = id;
-				commonInfo[id - 1][1] = blockID;
-				commonInfo[id - 1][3] = extBlockID;
-				break;
+				if (railway[railID][blockID].common == railway[extRailID][extBlockID].common && railway[railID][train[railID].railwayLength-1].common == 0 && railway[extRailID][extBlockID - 1].common == 0)//入口
+				{
+					id = railID;
+					commonInfo[id - 1][0] = id;
+					commonInfo[id - 1][1] = blockID;
+					commonInfo[id - 1][4] = extBlockID;
+					break;
+				}
 			}
-			if (railway[railID][blockID].common == railway[extRailID][extBlockID].common && railway[railID][blockID + 1].common == 0 && railway[extRailID][extBlockID + 1].common == 0)//出口
+			else
+			{
+				if (railway[railID][blockID].common == railway[extRailID][extBlockID].common && railway[railID][blockID - 1].common == 0 && railway[extRailID][extBlockID +1].common == 0)//入口
+				{
+					id = railID;
+					commonInfo[id - 1][0] = id;
+					commonInfo[id - 1][1] = blockID;
+					commonInfo[id - 1][4] = extBlockID;
+					break;
+				}
+			}
+			if (railway[railID][blockID].common == railway[extRailID][extBlockID].common && railway[railID][blockID + 1].common == 0 && railway[extRailID][extBlockID - 1].common == 0)//出口
 			{
 				id = railID;
 				commonInfo[id - 1][0] = id;
 				commonInfo[id - 1][2] = blockID;
-				commonInfo[id - 1][4] = extBlockID;
+				commonInfo[id - 1][3] = extBlockID;
 				break;
 			}
 		}
