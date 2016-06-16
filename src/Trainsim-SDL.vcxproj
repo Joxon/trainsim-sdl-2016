@@ -124,6 +124,7 @@
     <ClCompile Include="drawRailway.c" />
     <ClCompile Include="drawTrain.c" />
     <ClCompile Include="drawUI.c" />
+    <ClCompile Include="input.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="output.c" />
     <ClCompile Include="state_trans.c" />
@@ -131,6 +132,7 @@
   <ItemGroup>
     <ClInclude Include="control.h" />
     <ClInclude Include="drawSDL.h" />
+    <ClInclude Include="input.h" />
     <ClInclude Include="output.h" />
     <ClInclude Include="state_trans.h" />
     <ClInclude Include="var.h" />
