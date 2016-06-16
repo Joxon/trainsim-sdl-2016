@@ -142,7 +142,7 @@
     <Image Include="..\resources\blocks.png" />
     <Image Include="..\resources\buttons.png" />
     <Image Include="..\resources\huaji.png" />
-    <Image Include="..\resources\train.png" />
+    <Image Include="..\resources\trains.png" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="..\resources\font.ttf" />

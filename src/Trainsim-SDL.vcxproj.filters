@@ -57,7 +57,7 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="input.h">
-      <Filter>源文件</Filter>
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -73,7 +73,7 @@
     <Image Include="..\resources\huaji.png">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="..\resources\train.png">
+    <Image Include="..\resources\trains.png">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>

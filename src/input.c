@@ -36,12 +36,12 @@ void errorFromKeyboard()
 void init()
 {
 	printf(
-		"             === Trainsim by C403 ===               ;###'                       \n"
-		"             |   Jiannan Zheng      |               ,#+++.                      \n"
-		"             |   Awesome Yuan       |                #+++                       \n"
-		"             |    Joxon Chan        |                #+++`                      \n"
+		"             === 第55组火车模拟调度 ===               ;###'                     \n"
+		"             |         郑键楠         |               ,#+++.                    \n"
+		"             |         袁盺钰         |                #+++                     \n"
+		"             |         陈俊贤         |                #+++`                    \n"
 		"             =============================================:                     \n"
-		"                   '++'    |Press any key to continue....| `                    \n"
+		"                   '++'    |       按任意键继续....      | `                    \n"
 		"                   @+#+    ==============================;::';'++#+             \n"
 		"                   '+++                           ,;;:;;+';:,;';'''++           \n"
 		"                   ++++                         ,::,,,,,,,;::;;;'::'''          \n"
@@ -69,11 +69,11 @@ void init()
 	/*初始化火车和轨道*/
 initRetry:
 	system("cls");
-	printf("Initialization type:\n"
-		"1:initialize from file.\n"
-		"2:initialize from keyboard.\n"
-		"q:exit.\n"
-		"Input your choice:");
+	printf("初始化方式:\n"
+		"1:读入文件\n"
+		"2:键盘输入\n"
+		"q:退出\n"
+		"请输入选择：");
 	ch = _getche();
 	switch (ch)
 	{
@@ -87,12 +87,12 @@ initRetry:
 		break;
 	case 'q':
 		system("cls");
-		printf("Exiting...");
+		printf("退出中...");
 		Sleep(SLEEP_TIME_MS);
 		exit(EXIT_SUCCESS);
 	default:
 		system("cls");
-		printf("Wrong init mode! Please retry...\n");
+		printf("错误输入！任意键重试...\n");
 		Sleep(SLEEP_TIME_MS);
 		goto initRetry;
 	}
@@ -100,31 +100,31 @@ initRetry:
 	/*选择命令输入方式*/
 inputRetry:
 	system("cls");
-	printf("Commands type:\n"
-		"1:Commands from file.\n"
-		"2:Commands from keyboard.\n"
-		"q:exit.\n"
-		"Input your choice:");
+	printf("命令输入方式：\n"
+		"1:读入文件+键盘输入\n"
+		"2:键盘输入\n"
+		"q:退出\n"
+		"请输入选择：");
 	ch = _getche();
 	switch (ch)
 	{
 	case '1':
-		printf("\nYou have selected to input commands from file.\n");
+		printf("\n你选择了从文件和键盘读取命令。\n");
 		inputMode = FROM_FILE;
 		Sleep(SLEEP_TIME_MS);
 		break;
 	case '2':
-		printf("\nYou have selected to input commands from keyboard.\n");
+		printf("\n你选择了从键盘读取命令。\n");
 		inputMode = FROM_KEYBOARD;
 		Sleep(SLEEP_TIME_MS);
 		break;
 	case 'q':
 		system("cls");
-		printf("Exiting...");
+		printf("退出中...");
 		Sleep(SLEEP_TIME_MS);
 		exit(EXIT_SUCCESS);
 	default:
-		printf("\nWrong input mode! Please retry...");
+		printf("\n错误输入！请重试...");
 		Sleep(SLEEP_TIME_MS);
 		goto inputRetry;
 	}
@@ -243,12 +243,12 @@ static void initFromFile()
 				railway[id][length + i] = railway[id][i];
 		}
 		fclose(fp);
-		printf("\ninit successful!");
+		printf("\n初始化成功！");
 	}
 
 	else
 	{
-		printf("\nCannot open init.txt. Press any key to exit...");
+		printf("\n无法打开init.txt。按任意键退出...");
 		_getch();
 		exit(EXIT_FAILURE);
 	}
@@ -465,7 +465,7 @@ railwayRetry:
 				railway[id][length + i] = railway[id][i];
 		}
 
-		printf("init successful!");
+		printf("初始化成功！");
 		Sleep(SLEEP_TIME_MS);
 		system("cls");
 	}

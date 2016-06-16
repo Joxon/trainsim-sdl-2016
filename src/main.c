@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <conio.h>
 #include <windows.h>
-#include <process.h>
+//#include <process.h>
 
 #include <SDL.h>
 //#include <SDL_thread.h>
@@ -81,11 +81,11 @@ int main(int argc, char* argv[])
 
 versionSelect:
 	system("cls");
-	printf("你希望用那个版本？\n");
-	printf("1：命令行+图形化\n");
-	printf("2：仅命令行\n");
-	printf("q：退出\n");
-	printf("请输入选择：");
+	printf("你希望用哪个版本？\n"
+		"1：命令行+图形化\n"
+		"2：仅命令行\n"
+		"q：退出\n"
+		"请输入选择：");
 
 	char version = _getche();
 	if (version == '1')
@@ -347,6 +347,7 @@ versionSelect:
 		IMG_Quit();
 		SDL_Quit();
 	}
+
 	else if (version == '2')
 	{
 		while (1)
@@ -407,8 +408,10 @@ versionSelect:
 			Sleep(1000);
 		}
 	}
-	else if (version == 'q') return 0;
-	else 
+
+	else if (version == 'q');
+
+	else
 	{
 		printf("输入错误。任意键重试。");
 		_getch();
