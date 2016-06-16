@@ -60,7 +60,9 @@ void drawRailway(SDL_Renderer * ren, SDL_Texture * block)
 		drawCrossBlock(0, 0, ren, block);
 	else
 		drawNormalBlock(0, 0, ren, block);
-	//SDL_RenderPresent(ren);//调试可用
+	#ifdef DEBUG
+	SDL_RenderPresent(ren);
+#endif // DEBUG
 
 	//绘制中央轨道（有两条公共轨道）
 
@@ -71,7 +73,9 @@ void drawRailway(SDL_Renderer * ren, SDL_Texture * block)
 		else
 			drawNormalBlock(0, blockID, ren, block);
 
-		//SDL_RenderPresent(ren);//调试可用
+#ifdef DEBUG
+		SDL_RenderPresent(ren);
+#endif // DEBUG
 	}
 
 	//绘制其它轨道
@@ -180,7 +184,9 @@ void drawRailway(SDL_Renderer * ren, SDL_Texture * block)
 			}
 			if (blockID == train[railID].railwayLength - 1)
 				blockID = -1;
-			//SDL_RenderPresent(ren);//调试可用
+#ifdef DEBUG
+			SDL_RenderPresent(ren);
+#endif // DEBUG
 		}
 	//补共轨
 	for (int subRailID = 1; subRailID < railNum; subRailID++)

@@ -1,4 +1,3 @@
-#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <conio.h>
 #include <windows.h>
@@ -22,16 +21,20 @@ struct block railway[MAX_RAIL][MAX_RAIL_LENGTH];       //轨道与长度上限
 
 int strategy = 0; //1，2，3分别对应"交替策略"，"快车优先策略"，"人工控制"
 int inputMode = FROM_KEYBOARD; //1，2分别对应"从文件读入命令"，"从键盘读入命令"
-unsigned int processTime = 0; //程序时钟
-unsigned int commandTime = 0;
+int processTime = 0; //程序时钟
+int commandTime = 0;
 char         command;
 
 FILE *logPtr = NULL; //日志文件指针
 FILE *commandPtr = NULL; //命令文件指针
 FILE *outPtr = NULL; //输出文件指针
 
+SDL_Rect trainClip[MAX_TRAIN];
 SDL_Rect blockClip[BLOCK_ROW][BLOCK_COLUMN];
 SDL_Rect buttonClip[BUTTON_ROW][BUTTON_COLUMN];
+SDL_Rect strategyButtonPos[3];
+SDL_Rect trainButtonPos[3][3];
+SDL_Rect exitButtonPos;
 
 bool quit = false;
 
@@ -168,7 +171,6 @@ void initFromFile()
 	}
 }
 
-
 //struct drawUIArgs
 //{
 //	SDL_Renderer* renderer;
@@ -229,11 +231,18 @@ int main(int argc, char* argv[])
 	TTF_Font* font = TTF_OpenFont(".\\resources\\font.ttf", 30);
 
 	//加载火车纹理
-	SDL_Texture* trainTexture = IMG_LoadTexture(renderer, ".\\resources\\train.png");
+	SDL_Texture* trainTexture = IMG_LoadTexture(renderer, ".\\resources\\trains.png");
+	for (int i = 0; i < MAX_TRAIN; ++i)
+	{
+		trainClip[i].x = i*BLOCK_SIZE;
+		trainClip[i].y = 0;
+		trainClip[i].w = BLOCK_SIZE;
+		trainClip[i].h = BLOCK_SIZE;
+	}
 
 	//加载轨道块纹理
 	SDL_Texture* blocksTexture = IMG_LoadTexture(renderer, ".\\resources\\blocks.png");
-	for (int i = 0; i < BLOCK_ROW; ++i)
+	for (int i = 0; i < MAX_TRAIN; ++i)
 		for (int j = 0; j < BLOCK_COLUMN; ++j)
 		{
 			blockClip[i][j].x = j*BLOCK_SIZE;
@@ -273,17 +282,17 @@ int main(int argc, char* argv[])
 
 	//火车和轨道界面
 	SDL_Rect trainViewport;
-	trainViewport.x = 0;
+	trainViewport.x = WINDOW_WIDTH / 6;
 	trainViewport.y = 0;
 	trainViewport.h = WINDOW_HEIGHT;
 	trainViewport.w = WINDOW_WIDTH * 5 / 6;
 
 	//用户输入界面
 	SDL_Rect userViewport;
-	userViewport.x = WINDOW_WIDTH * 5 / 6;
+	userViewport.x = 0;
 	userViewport.y = 0;
 	userViewport.h = WINDOW_HEIGHT;
-	userViewport.w = WINDOW_WIDTH / 6;
+	userViewport.w = WINDOW_WIDTH * 5 / 6;
 
 	//用户界面线程
 	//struct drawUIArgs drawUIArgs;
@@ -295,14 +304,8 @@ int main(int argc, char* argv[])
 	//SDL_Thread* drawUIThreadHandle = SDL_CreateThread(drawUIFunc, "drawUIThread", (void*)(&drawUIArgs));
 
 	//主循环
-	SDL_Event e;
 	while (!quit)
 	{
-		while (SDL_PollEvent(&e))
-		{
-			if (e.type == SDL_QUIT) quit = true;
-		}
-
 		int i;
 		//控制命令
 		if (inputMode == FROM_FILE)
@@ -321,8 +324,8 @@ int main(int argc, char* argv[])
 		for (i = 0; i < trainNum; ++i)
 			trans(&train[i], railway, i);
 
-		//控制台输出
-		printConsole();
+		//控制台与文件输出
+		printConsoleAndFile();
 
 		//火车移动
 		for (i = 0; i < trainNum; ++i)
@@ -344,12 +347,103 @@ int main(int argc, char* argv[])
 		//渲染用户输入界面，注意是以userViewport的左上角为绘图零点
 		SDL_RenderSetViewport(renderer, &userViewport);
 		drawUI(renderer, buttonsTexture, bannerTexture, font);
+
+		//处理事件
+		SDL_Event e;
+		while (SDL_PollEvent(&e))
+		{
+			//点击右上角退出
+			if (e.type == SDL_QUIT) quit = true;
+		}
+
+		//获得鼠标坐标
+		int x, y;
+		SDL_GetMouseState(&x, &y);
+
+		//历遍各个策略按钮
+		for (int i = 0; i < 3; ++i)
+			//如果鼠标在按钮范围内
+			if ((x > strategyButtonPos[i].x) &&
+				(x < strategyButtonPos[i].x + strategyButtonPos[i].w) &&
+				(y > strategyButtonPos[i].y) &&
+				(y < strategyButtonPos[i].y + strategyButtonPos[i].h))
+			{
+				//按钮显示为预备状态
+				SDL_RenderCopy(renderer, buttonsTexture, &buttonClip[i][2], &strategyButtonPos[i]);
+				//如果点击鼠标
+				if (e.type == SDL_MOUSEBUTTONDOWN)
+				{
+					//按钮显示为按下状态
+					SDL_RenderCopy(renderer, buttonsTexture, &buttonClip[i][0], &strategyButtonPos[i]);
+					//触发修改策略
+					strategy = i + ALTERNATIVE;
+				}
+			}
+
+		//历遍各个火车按钮
+		for (int trainID = 0; trainID < trainNum; ++trainID)
+			for (int buttonID = 0; buttonID < 3; ++buttonID)
+				if ((x > trainButtonPos[trainID][buttonID].x) &&
+					(x < trainButtonPos[trainID][buttonID].x + trainButtonPos[trainID][buttonID].w) &&
+					(y > trainButtonPos[trainID][buttonID].y) &&
+					(y < trainButtonPos[trainID][buttonID].y + trainButtonPos[trainID][buttonID].h))
+				{
+					//按钮显示为预备状态
+					SDL_RenderCopy(renderer, buttonsTexture, &buttonClip[buttonID + 3][2], &trainButtonPos[trainID][buttonID]);
+					//如果点击鼠标
+					if (e.type == SDL_MOUSEBUTTONDOWN)
+					{
+						//按钮显示为按下状态
+						SDL_RenderCopy(renderer, buttonsTexture, &buttonClip[buttonID + 3][0], &trainButtonPos[trainID][buttonID]);
+						//进行相应的操作
+						switch (buttonID)
+						{
+						case 0://暂停
+							if (train[trainID].speed != 0)
+							{
+								trainSpeed[trainID] = train[trainID].speed;
+								train[trainID].speed = 0;
+							}
+							break;
+						case 1://恢复
+							if (train[trainID].speed == 0)
+								train[trainID].speed = trainSpeed[trainID];
+							break;
+						case 2://反向
+							if (train[trainID].direction == NORMAL)
+								train[trainID].direction = REVERSE;
+							else if (train[trainID].direction == REVERSE)
+								train[trainID].direction = NORMAL;
+							break;
+						}
+					}
+				}
+
+		//退出按钮
+		if ((x > exitButtonPos.x) &&
+			(x < exitButtonPos.x + exitButtonPos.w) &&
+			(y > exitButtonPos.y) &&
+			(y < exitButtonPos.y + exitButtonPos.h))
+		{
+			//按钮显示为预备状态
+			SDL_RenderCopy(renderer, buttonsTexture, &buttonClip[6][2], &exitButtonPos);
+			//如果点击鼠标
+			if (e.type == SDL_MOUSEBUTTONDOWN)
+			{
+				//按钮显示为按下状态
+				SDL_RenderCopy(renderer, buttonsTexture, &buttonClip[6][0], &exitButtonPos);
+				quit = true;
+			}
+		}
+
+		//完成绘制后呈现
 		SDL_RenderPresent(renderer);
 
 		//时间片推进
-		++processTime;
-		//SDL_Delay(800);
+		processTime++;
+		SDL_Delay(1000 / 24);
 	}
+
 
 	//释放资源
 	TTF_CloseFont(font); font = NULL;

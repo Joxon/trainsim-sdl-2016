@@ -1,24 +1,17 @@
+#include<wchar.h>
 #include<SDL.h>
 #include<SDL_ttf.h>
 #include"drawSDL.h"
 #include"var.h"
 
+extern int strategy;
 extern int trainNum;
 extern struct train train[MAX_TRAIN];
-extern SDL_Rect buttonClip[BUTTON_ROW][BUTTON_COLUMN];
 
-//按钮状态枚举
-enum buttonState
-{
-	//鼠标不在按钮范围内
-	BUTTON_MOUSE_OUT,
-	//鼠标在按钮范围内按下
-	BUTTON_MOUSE_DOWN,
-	//鼠标在按钮范围内按下后释放
-	BUTTON_MOUSE_UP,
-	//按钮状态共计3个
-	BUTTON_STATE_TOTAL = 3,
-};
+extern SDL_Rect buttonClip[BUTTON_ROW][BUTTON_COLUMN];
+extern SDL_Rect strategyButtonPos[3];
+extern SDL_Rect trainButtonPos[3][3];
+extern SDL_Rect exitButtonPos;
 
 //渲染特定颜色、特定位置的文字
 void renderText(SDL_Renderer * ren, TTF_Font* font, SDL_Color Color, SDL_Rect dst, wchar_t * str)
@@ -61,8 +54,22 @@ void drawUI(SDL_Renderer * ren, SDL_Texture * button, SDL_Texture *banner, TTF_F
 	for (int i = 0; i < 3; ++i)
 	{
 		dst.x = (WINDOW_WIDTH / 6 - BUTTON_WIDTH) / 2 * i;
-		dst.w = BUTTON_WIDTH; dst.h = BUTTON_HEIGHT;
-		SDL_RenderCopy(ren, button, &buttonClip[i][1], &dst);
+		dst.w = BUTTON_WIDTH;
+		dst.h = BUTTON_HEIGHT;
+
+		strategyButtonPos[i].x = dst.x;
+		strategyButtonPos[i].y = dst.y;
+		strategyButtonPos[i].w = dst.w;
+		strategyButtonPos[i].h = dst.h;
+
+		//默认为暗色
+		SDL_RenderCopy(ren, button, &buttonClip[i][0], &dst);
+	}
+	switch (strategy)
+	{
+	case ALTERNATIVE:SDL_RenderCopy(ren, button, &buttonClip[0][2], &strategyButtonPos[0]); break;
+	case FAST_FIRST:SDL_RenderCopy(ren, button, &buttonClip[1][2], &strategyButtonPos[1]); break;
+	case MANUAL:SDL_RenderCopy(ren, button, &buttonClip[2][2], &strategyButtonPos[2]); break;
 	}
 
 	//输出火车文字部分
@@ -73,55 +80,56 @@ void drawUI(SDL_Renderer * ren, SDL_Texture * button, SDL_Texture *banner, TTF_F
 
 	//绘制各火车相应按钮
 	TTF_SetFontStyle(font, TTF_STYLE_NORMAL);
-	//A文字
-	dst.x = WINDOW_WIDTH / 6 / 4; dst.y += 50;
-	dst.w = WINDOW_WIDTH / 6 / 2; dst.h = 50;
-	renderText(ren, font, ColorBlack, dst, L"火车A");
-	//A按钮
-	dst.y += dst.h + BUTTON_HEIGHT;
-	for (int i = 0; i < 3; ++i)
+	for (int trainID = 0; trainID < trainNum; ++trainID)
 	{
-		dst.x = (WINDOW_WIDTH / 6 - BUTTON_WIDTH) / 2 * i;
-		dst.w = BUTTON_WIDTH; dst.h = BUTTON_HEIGHT;
-		SDL_RenderCopy(ren, button, &buttonClip[i + 3][1], &dst);
-	}
+		//文字
+		dst.x = WINDOW_WIDTH / 6 / 4; dst.y += 50;
+		dst.w = WINDOW_WIDTH / 6 / 2; dst.h = 50;
 
+		wchar_t tempWcstr[10] = L"火车";
+		if (trainID == 0) wcscat(tempWcstr, L"A");
+		else if (trainID == 1) wcscat(tempWcstr, L"B");
+		else if (trainID == 2) wcscat(tempWcstr, L"C");
+		renderText(ren, font, ColorBlack, dst, tempWcstr);
 
-	//B
-	dst.x = WINDOW_WIDTH / 6 / 4; dst.y += dst.h + BUTTON_HEIGHT;;
-	dst.w = WINDOW_WIDTH / 6 / 2; dst.h = 50;
-	renderText(ren, font, ColorBlack, dst, L"火车B");
-	dst.y += dst.h + BUTTON_HEIGHT;
-	for (int i = 0; i < 3; ++i)
-	{
-		dst.x = (WINDOW_WIDTH / 6 - BUTTON_WIDTH) / 2 * i;
-		dst.w = BUTTON_WIDTH; dst.h = BUTTON_HEIGHT;
-		SDL_RenderCopy(ren, button, &buttonClip[i + 3][1], &dst);
-	}
+		//按钮
+		dst.y += dst.h + BUTTON_HEIGHT;
+		for (int buttonID = 0; buttonID < 3; ++buttonID)
+		{
+			dst.x = (WINDOW_WIDTH / 6 - BUTTON_WIDTH) / 2 * buttonID;
+			dst.w = BUTTON_WIDTH;
+			dst.h = BUTTON_HEIGHT;
 
-	//C
-	dst.x = WINDOW_WIDTH / 6 / 4; dst.y += dst.h + BUTTON_HEIGHT;;
-	dst.w = WINDOW_WIDTH / 6 / 2; dst.h = 50;
-	renderText(ren, font, ColorBlack, dst, L"火车C");
-	dst.y += dst.h + BUTTON_HEIGHT;
-	for (int i = 0; i < 3; ++i)
-	{
-		dst.x = (WINDOW_WIDTH / 6 - BUTTON_WIDTH) / 2 * i;
-		dst.w = BUTTON_WIDTH; dst.h = BUTTON_HEIGHT;
-		SDL_RenderCopy(ren, button, &buttonClip[i + 3][1], &dst);
+			trainButtonPos[trainID][buttonID].x = dst.x;
+			trainButtonPos[trainID][buttonID].y = dst.y;
+			trainButtonPos[trainID][buttonID].w = dst.w;
+			trainButtonPos[trainID][buttonID].h = dst.h;
+
+			SDL_RenderCopy(ren, button, &buttonClip[buttonID + 3][1], &dst);
+		}
 	}
 
 	//绘制输入命令栏
-	dst.x = 0; dst.y += dst.h + BUTTON_HEIGHT;;
-	dst.w = WINDOW_WIDTH / 6 ; dst.h = 50;
+	dst.x = 0;
+	dst.y += dst.h + BUTTON_HEIGHT;
+	dst.w = WINDOW_WIDTH / 6;
+	dst.h = 50;
 	renderText(ren, font, ColorBlack, dst, L"命令输入栏");
+
 	dst.y += dst.h;
 	renderText(ren, font, ColorBlack, dst, L"__________");
 
 	//绘制退出按钮
 	dst.x = (WINDOW_WIDTH / 6 - BUTTON_WIDTH) / 2;
 	dst.y = WINDOW_HEIGHT - BUTTON_HEIGHT;
-	dst.w = BUTTON_WIDTH; dst.h = BUTTON_HEIGHT;
+	dst.w = BUTTON_WIDTH;
+	dst.h = BUTTON_HEIGHT;
+
+	exitButtonPos.x = dst.x;
+	exitButtonPos.y = dst.y;
+	exitButtonPos.w = dst.w;
+	exitButtonPos.h = dst.h;
+
 	SDL_RenderCopy(ren, button, &buttonClip[6][1], &dst);
 }
 

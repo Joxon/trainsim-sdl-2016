@@ -16,7 +16,7 @@
 #define BLOCK_SIZE 60
 //按钮参数
 #define BUTTON_ROW 7
-#define BUTTON_COLUMN 2
+#define BUTTON_COLUMN 3
 #define BUTTON_WIDTH 50
 #define BUTTON_HEIGHT 30
 
@@ -26,15 +26,13 @@ enum CommandType
 	FROM_FILE,
 	FROM_KEYBOARD,
 };
-
+//策略
 enum Strategy
 {
 	ALTERNATIVE = 1,
 	FAST_FIRST,
 	MANUAL,
 };
-
-
 
 /*===========================
 
@@ -126,7 +124,7 @@ struct train
 	int   railwayLength;
 
 	//火车在站点的暂停时间
-	int pausetime;
+	int   pausetime;
 };
 
 struct block
