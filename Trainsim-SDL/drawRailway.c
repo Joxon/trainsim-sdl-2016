@@ -184,10 +184,18 @@ void drawRailway(SDL_Renderer * ren, SDL_Texture * block)
 		}
 	//补共轨
 	for (int subRailID = 1; subRailID < railNum; subRailID++)
-		for (int mainBlockID = commonInfo[subRailID - 1][3] + 1, subBlockID = commonInfo[subRailID - 1][2] - 1;
-			mainBlockID < commonInfo[subRailID - 1][4]; 
-			mainBlockID++, subBlockID--)
+		for (int mainBlockID = commonInfo[subRailID - 1][3] + 1, subBlockID = commonInfo[subRailID - 1][2] - 1; mainBlockID < commonInfo[subRailID - 1][4]; mainBlockID++, subBlockID--)
+		{
+			if (mainBlockID >= train[0].railwayLength)
+				mainBlockID = 0;
+			if (mainBlockID < 0)
+				mainBlockID = train[0].railwayLength - 1;
+			if (subBlockID >= train[subRailID].railwayLength)
+				subBlockID = 0;
+			if (subBlockID < 0)
+				subBlockID = train[subRailID].railwayLength - 1;
 			railway[subRailID][subBlockID] = railway[0][mainBlockID];
+		}
 }
 
 //绘制公共入口/出口
