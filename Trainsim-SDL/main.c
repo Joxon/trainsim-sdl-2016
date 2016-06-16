@@ -5,6 +5,7 @@
 #include <process.h>
 
 #include <SDL.h>
+//#include <SDL_thread.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 
@@ -29,176 +30,10 @@ FILE *logPtr = NULL; //日志文件指针
 FILE *commandPtr = NULL; //命令文件指针
 FILE *outPtr = NULL; //输出文件指针
 
-//void errorFromFile();
-void initFromFile();
-
 SDL_Rect blockClip[BLOCK_ROW][BLOCK_COLUMN];
 SDL_Rect buttonClip[BUTTON_ROW][BUTTON_COLUMN];
 
-int main(int argc, char* argv[])
-{
-	//初始化火车和轨道
-	initFromFile();
-
-	//SDL初始化
-	SDL_Init(SDL_INIT_VIDEO);
-	IMG_Init(IMG_INIT_PNG);
-	TTF_Init();
-
-	//创建窗口和渲染器
-	SDL_Window* window = SDL_CreateWindow("Trainsim", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
-	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
-	//加载字体
-	//  初号 = 42磅 = 14.82毫米
-	//	小初 = 36磅 = 12.70毫米
-	//	一号 = 26磅 = 9.17毫米
-	//	小一 = 24磅 = 8.47毫米
-	//	二号 = 22磅 = 7.76毫米
-	//	小二 = 18磅 = 6.35毫米
-	//	三号 = 16磅 = 5.64毫米
-	//	小三 = 15磅 = 5.29毫米
-	//	四号 = 14磅 = 4.94毫米
-	//	小四 = 12磅 = 4.23毫米
-	//	五号 = 10.5磅 = 3.70毫米
-	//	小五 = 9磅 = 3.18毫米
-	//	六号 = 7.5磅 = 2.56毫米
-	//	小六 = 6.5磅 = 2.29毫米
-	//	七号 = 5.5磅 = 1.94毫米
-	//	八号 = 5磅 = 1.76毫米
-	TTF_Font* font = TTF_OpenFont(".\\resources\\font.ttf", 30);
-
-	//加载火车纹理
-	SDL_Texture* trainTexture = IMG_LoadTexture(renderer, ".\\resources\\train.png");
-
-	//加载轨道块纹理
-	SDL_Texture* blocksTexture = IMG_LoadTexture(renderer, ".\\resources\\blocks.png");
-	for (int i = 0; i < BLOCK_ROW; ++i)
-		for (int j = 0; j < BLOCK_COLUMN; ++j)
-		{
-			blockClip[i][j].x = j*BLOCK_SIZE;
-			blockClip[i][j].y = i*BLOCK_SIZE;
-			blockClip[i][j].w = BLOCK_SIZE;
-			blockClip[i][j].h = BLOCK_SIZE;
-		}
-
-#ifdef BLOCK_TEST
-	for (int i = 0; i < BLOCK_ROW; ++i)
-		for (int j = 0; j < BLOCK_COLUMN; ++j)
-		{
-			SDL_Rect pos;
-			pos.x = j*BLOCK_SIZE;
-			pos.y = i*BLOCK_SIZE;
-			pos.w = BLOCK_SIZE;
-			pos.h = BLOCK_SIZE;
-			SDL_RenderCopy(renderer, blocksTexture, &blockClip[i][j], &pos);
-		}
-	SDL_RenderPresent(renderer);
-#endif
-
-
-	//加载标题栏
-	SDL_Texture* bannerTexture = IMG_LoadTexture(renderer, ".\\resources\\banner.png");
-
-	//加载按钮纹理
-	SDL_Texture* buttonsTexture = IMG_LoadTexture(renderer, ".\\resources\\buttons.png");
-	for (int y = 0; y < BUTTON_ROW; ++y)
-		for (int x = 0; x < BUTTON_COLUMN; ++x)
-		{
-			buttonClip[y][x].x = x*BUTTON_WIDTH;
-			buttonClip[y][x].y = y*BUTTON_HEIGHT;
-			buttonClip[y][x].w = BUTTON_WIDTH;
-			buttonClip[y][x].h = BUTTON_HEIGHT;
-		}
-
-	//火车和轨道界面
-	SDL_Rect trainViewport;
-	trainViewport.x = 0;
-	trainViewport.y = 0;
-	trainViewport.h = WINDOW_HEIGHT;
-	trainViewport.w = WINDOW_WIDTH * 5 / 6;
-
-	//用户输入界面
-	SDL_Rect userViewport;
-	userViewport.x = WINDOW_WIDTH * 5 / 6;
-	userViewport.y = 0;
-	userViewport.h = WINDOW_HEIGHT;
-	userViewport.w = WINDOW_WIDTH / 6;
-
-	//主循环
-	bool quit = false;
-	SDL_Event e;
-	while (!quit)
-	{
-		while (SDL_PollEvent(&e))
-		{
-			if (e.type == SDL_QUIT) quit = true;
-		}
-
-		int i;
-		//控制命令
-		if (inputMode == FROM_FILE)
-		{
-			for (i = 0; i < trainNum; ++i)
-				if (processTime == train[i].startTime)
-					train[i].speed = trainSpeed[i];     //到启动时刻返还速度
-			getInputFromFile();
-		}
-		else if (inputMode == FROM_KEYBOARD)
-			for (i = 0; i < trainNum; ++i)
-				if (processTime == train[i].startTime)
-					train[i].speed = trainSpeed[i];     //到启动时刻返还速度
-
-		//状态变换
-		for (i = 0; i < trainNum; ++i)
-			trans(&train[i], railway, i);
-
-		//控制台输出
-		printConsole();
-
-		//火车移动
-		for (i = 0; i < trainNum; ++i)
-		{
-			changeDirection(&train[i], railway, i);
-			changePosition(&train[i]);
-		}
-
-		//设置背景为土色
-		SDL_SetRenderDrawColor(renderer, 239, 227, 182, 255);
-		SDL_RenderClear(renderer);
-
-		//渲染轨道和火车，是以trainViewport的左上角为绘图零点
-		SDL_RenderSetViewport(renderer, &trainViewport);
-		drawRailway(renderer, blocksTexture);
-		drawTrain(renderer, trainTexture);
-		drawStations(renderer, blocksTexture);
-
-		//渲染用户输入界面，注意是以userViewport的左上角为绘图零点
-		SDL_RenderSetViewport(renderer, &userViewport);
-		drawUI(renderer, buttonsTexture, bannerTexture, font);
-
-		SDL_RenderPresent(renderer);
-
-		//时间片推进
-		++processTime;
-		//SDL_Delay(800);
-	}
-
-	//释放资源
-	TTF_CloseFont(font); font = NULL;
-	SDL_DestroyTexture(trainTexture); trainTexture = NULL;
-	SDL_DestroyTexture(bannerTexture); bannerTexture = NULL;
-	SDL_DestroyTexture(blocksTexture); blocksTexture = NULL;
-	SDL_DestroyTexture(buttonsTexture); buttonsTexture = NULL;
-	SDL_DestroyRenderer(renderer); renderer = NULL;
-	SDL_DestroyWindow(window); window = NULL;
-
-	TTF_Quit();
-	IMG_Quit();
-	SDL_Quit();
-
-	return 0;
-}
+bool quit = false;
 
 //void errorFromFile()
 //{
@@ -332,3 +167,203 @@ void initFromFile()
 		exit(EXIT_FAILURE);
 	}
 }
+
+
+//struct drawUIArgs
+//{
+//	SDL_Renderer* renderer;
+//	SDL_Texture* buttonsTexture;
+//	SDL_Texture* bannerTexture;
+//	TTF_Font* font;
+//	SDL_Rect userViewport;
+//};
+//
+//int drawUIFunc(void* args)
+//{
+//	struct drawUIArgs* argsConverted = (struct drawUIArgs*)args;
+//	while (!quit)
+//	{
+//		//渲染用户输入界面，注意是以userViewport的左上角为绘图零点
+//		SDL_RenderSetViewport(argsConverted->renderer, &argsConverted->userViewport);
+//		drawUI(argsConverted->renderer,
+//			argsConverted->buttonsTexture,
+//			argsConverted->bannerTexture,
+//			argsConverted->font);
+//		SDL_RenderPresent(argsConverted->renderer);
+//	}
+//
+//	return 0;
+//}
+
+int main(int argc, char* argv[])
+{
+	//初始化火车和轨道
+	initFromFile();
+
+	//SDL初始化
+	SDL_Init(SDL_INIT_VIDEO);
+	IMG_Init(IMG_INIT_PNG);
+	TTF_Init();
+
+	//创建窗口和渲染器
+	SDL_Window* window = SDL_CreateWindow("Trainsim", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
+	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+	//加载字体
+	//  初号 = 42磅 = 14.82毫米
+	//	小初 = 36磅 = 12.70毫米
+	//	一号 = 26磅 = 9.17毫米
+	//	小一 = 24磅 = 8.47毫米
+	//	二号 = 22磅 = 7.76毫米
+	//	小二 = 18磅 = 6.35毫米
+	//	三号 = 16磅 = 5.64毫米
+	//	小三 = 15磅 = 5.29毫米
+	//	四号 = 14磅 = 4.94毫米
+	//	小四 = 12磅 = 4.23毫米
+	//	五号 = 10.5磅 = 3.70毫米
+	//	小五 = 9磅 = 3.18毫米
+	//	六号 = 7.5磅 = 2.56毫米
+	//	小六 = 6.5磅 = 2.29毫米
+	//	七号 = 5.5磅 = 1.94毫米
+	//	八号 = 5磅 = 1.76毫米
+	TTF_Font* font = TTF_OpenFont(".\\resources\\font.ttf", 30);
+
+	//加载火车纹理
+	SDL_Texture* trainTexture = IMG_LoadTexture(renderer, ".\\resources\\train.png");
+
+	//加载轨道块纹理
+	SDL_Texture* blocksTexture = IMG_LoadTexture(renderer, ".\\resources\\blocks.png");
+	for (int i = 0; i < BLOCK_ROW; ++i)
+		for (int j = 0; j < BLOCK_COLUMN; ++j)
+		{
+			blockClip[i][j].x = j*BLOCK_SIZE;
+			blockClip[i][j].y = i*BLOCK_SIZE;
+			blockClip[i][j].w = BLOCK_SIZE;
+			blockClip[i][j].h = BLOCK_SIZE;
+		}
+
+#ifdef BLOCK_TEST
+	for (int i = 0; i < BLOCK_ROW; ++i)
+		for (int j = 0; j < BLOCK_COLUMN; ++j)
+		{
+			SDL_Rect pos;
+			pos.x = j*BLOCK_SIZE;
+			pos.y = i*BLOCK_SIZE;
+			pos.w = BLOCK_SIZE;
+			pos.h = BLOCK_SIZE;
+			SDL_RenderCopy(renderer, blocksTexture, &blockClip[i][j], &pos);
+		}
+	SDL_RenderPresent(renderer);
+#endif
+
+
+	//加载标题栏
+	SDL_Texture* bannerTexture = IMG_LoadTexture(renderer, ".\\resources\\banner.png");
+
+	//加载按钮纹理
+	SDL_Texture* buttonsTexture = IMG_LoadTexture(renderer, ".\\resources\\buttons.png");
+	for (int y = 0; y < BUTTON_ROW; ++y)
+		for (int x = 0; x < BUTTON_COLUMN; ++x)
+		{
+			buttonClip[y][x].x = x*BUTTON_WIDTH;
+			buttonClip[y][x].y = y*BUTTON_HEIGHT;
+			buttonClip[y][x].w = BUTTON_WIDTH;
+			buttonClip[y][x].h = BUTTON_HEIGHT;
+		}
+
+	//火车和轨道界面
+	SDL_Rect trainViewport;
+	trainViewport.x = 0;
+	trainViewport.y = 0;
+	trainViewport.h = WINDOW_HEIGHT;
+	trainViewport.w = WINDOW_WIDTH * 5 / 6;
+
+	//用户输入界面
+	SDL_Rect userViewport;
+	userViewport.x = WINDOW_WIDTH * 5 / 6;
+	userViewport.y = 0;
+	userViewport.h = WINDOW_HEIGHT;
+	userViewport.w = WINDOW_WIDTH / 6;
+
+	//用户界面线程
+	//struct drawUIArgs drawUIArgs;
+	//drawUIArgs.bannerTexture = bannerTexture;
+	//drawUIArgs.buttonsTexture = buttonsTexture;
+	//drawUIArgs.font = font;
+	//drawUIArgs.renderer = renderer;
+	//drawUIArgs.userViewport = userViewport;
+	//SDL_Thread* drawUIThreadHandle = SDL_CreateThread(drawUIFunc, "drawUIThread", (void*)(&drawUIArgs));
+
+	//主循环
+	SDL_Event e;
+	while (!quit)
+	{
+		while (SDL_PollEvent(&e))
+		{
+			if (e.type == SDL_QUIT) quit = true;
+		}
+
+		int i;
+		//控制命令
+		if (inputMode == FROM_FILE)
+		{
+			for (i = 0; i < trainNum; ++i)
+				if (processTime == train[i].startTime)
+					train[i].speed = trainSpeed[i];     //到启动时刻返还速度
+			getInputFromFile();
+		}
+		else if (inputMode == FROM_KEYBOARD)
+			for (i = 0; i < trainNum; ++i)
+				if (processTime == train[i].startTime)
+					train[i].speed = trainSpeed[i];     //到启动时刻返还速度
+
+		//状态变换
+		for (i = 0; i < trainNum; ++i)
+			trans(&train[i], railway, i);
+
+		//控制台输出
+		printConsole();
+
+		//火车移动
+		for (i = 0; i < trainNum; ++i)
+		{
+			changeDirection(&train[i], railway, i);
+			changePosition(&train[i]);
+		}
+
+		//设置背景为土色
+		SDL_SetRenderDrawColor(renderer, 239, 227, 182, 255);
+		SDL_RenderClear(renderer);
+
+		//渲染轨道和火车，是以trainViewport的左上角为绘图零点
+		SDL_RenderSetViewport(renderer, &trainViewport);
+		drawRailway(renderer, blocksTexture);
+		drawTrain(renderer, trainTexture);
+		drawStations(renderer, blocksTexture);
+
+		//渲染用户输入界面，注意是以userViewport的左上角为绘图零点
+		SDL_RenderSetViewport(renderer, &userViewport);
+		drawUI(renderer, buttonsTexture, bannerTexture, font);
+		SDL_RenderPresent(renderer);
+
+		//时间片推进
+		++processTime;
+		//SDL_Delay(800);
+	}
+
+	//释放资源
+	TTF_CloseFont(font); font = NULL;
+	SDL_DestroyTexture(trainTexture); trainTexture = NULL;
+	SDL_DestroyTexture(bannerTexture); bannerTexture = NULL;
+	SDL_DestroyTexture(blocksTexture); blocksTexture = NULL;
+	SDL_DestroyTexture(buttonsTexture); buttonsTexture = NULL;
+	SDL_DestroyRenderer(renderer); renderer = NULL;
+	SDL_DestroyWindow(window); window = NULL;
+
+	TTF_Quit();
+	IMG_Quit();
+	SDL_Quit();
+
+	return 0;
+}
+
