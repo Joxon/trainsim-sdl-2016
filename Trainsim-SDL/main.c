@@ -99,7 +99,7 @@ int main(int argc, char* argv[])
 
 	//加载标题栏
 	SDL_Texture* bannerTexture = IMG_LoadTexture(renderer, ".\\resources\\banner.png");
-	
+
 	//加载按钮纹理
 	SDL_Texture* buttonsTexture = IMG_LoadTexture(renderer, ".\\resources\\buttons.png");
 	for (int y = 0; y < BUTTON_ROW; ++y)
@@ -259,6 +259,7 @@ void initFromFile()
 			railway[id][northwest].direction = NORTHWEST;
 			railway[id][northeast].direction = NORTHEAST;
 			railway[id][southeast].direction = SOUTHEAST;
+			railway[id][length].direction = SOUTHEAST;
 			int blockid = 0;
 			for (blockid = southwest + 1; blockid < northwest; ++blockid)
 			{
@@ -292,8 +293,16 @@ void initFromFile()
 				//if (common_count <= 0 || start < 0 || end < 0) errorFromFile();
 				for (blockid = start; blockid <= end; ++blockid)
 				{
-					railway[id][blockid].common = common_ID;
-					railway[id][blockid].last = -1;
+					if (blockid == length)
+					{
+						railway[id][0].common = common_ID;
+						railway[id][0].last = -1;
+					}
+					else
+					{
+						railway[id][blockid].common = common_ID;
+						railway[id][blockid].last = -1;
+					}
 				}
 			}
 
