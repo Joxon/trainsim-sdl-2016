@@ -6,17 +6,19 @@
 		 程序相关
 
 ===========================*/
-#define WINDOW_WIDTH 1400
-#define WINDOW_HEIGHT 900
-#define BLOCK_SIZE 60
-#define BLOCK_ROW 3
-#define BLOCK_COLUMN 21
 
+//窗口大小
 #define WINDOW_WIDTH 1400
 #define WINDOW_HEIGHT 900
-#define BLOCK_SIZE 60
+//轨道块参数
 #define BLOCK_ROW 3
 #define BLOCK_COLUMN 21
+#define BLOCK_SIZE 60
+//按钮参数
+#define BUTTON_ROW 7
+#define BUTTON_COLUMN 3
+#define BUTTON_WIDTH 50
+#define BUTTON_HEIGHT 30
 
 //命令方式
 enum CommandType
@@ -24,15 +26,13 @@ enum CommandType
 	FROM_FILE,
 	FROM_KEYBOARD,
 };
-
+//策略
 enum Strategy
 {
 	ALTERNATIVE = 1,
 	FAST_FIRST,
 	MANUAL,
 };
-
-
 
 /*===========================
 
@@ -41,9 +41,9 @@ enum Strategy
 ===========================*/
 
 //对象数量
-#define MAX_TRAIN 9
-#define MAX_RAIL 9
-#define MAX_RAIL_LENGTH 999
+#define MAX_TRAIN 3
+#define MAX_RAIL 3
+#define MAX_RAIL_LENGTH 99
 
 //火车状态
 enum TrainStatus
@@ -124,7 +124,7 @@ struct train
 	int   railwayLength;
 
 	//火车在站点的暂停时间
-	int pausetime;
+	int   pausetime;
 };
 
 struct block

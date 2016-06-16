@@ -33,10 +33,7 @@
     <ClCompile Include="drawRailway.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="drawUI.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="drawUI.cpp">
+    <ClCompile Include="drawUI.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -58,11 +55,25 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="blocks.png">
+    <Image Include="..\resources\banner.png">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="train.png">
+    <Image Include="..\resources\blocks.png">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="..\resources\buttons.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="..\resources\huaji.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="..\resources\train.png">
+      <Filter>资源文件</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="..\resources\font.ttf">
+      <Filter>资源文件</Filter>
+    </Font>
   </ItemGroup>
 </Project>

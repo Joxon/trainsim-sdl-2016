@@ -1,4 +1,3 @@
-#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <windows.h>
 #include "output.h"
@@ -21,12 +20,12 @@ extern struct block railway[MAX_RAIL][MAX_RAIL_LENGTH];
 
 extern int strategy;
 extern int inputMode;
-extern unsigned int   processTime;
+extern int processTime;
 
 extern FILE *logPtr;
 extern FILE *outPtr;
 
-void print()
+void printConsoleAndFile()
 {
 	printPerSec();
 	printTrans();
@@ -84,7 +83,7 @@ static void printPerSec()
 			"|                Clock = %-3ds                                   |\n"
 			"|           Input Mode = %-20s                   |\n"
 			"|             Strategy = %-20s                   |\n",
-			processTime,
+			(int)processTime,
 			inputMode == FROM_FILE ? "From file" : "From keyboard",
 			strategy == 1 ? "Alternative mode" :
 			strategy == 2 ? "Fast-first mode" : "Manual mode");

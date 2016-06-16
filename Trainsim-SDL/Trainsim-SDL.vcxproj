@@ -75,10 +75,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>D:\SDL2-2.0.4-full\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib</AdditionalDependencies>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>D:\SDL2-2.0.4-full\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -96,6 +97,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -121,7 +123,7 @@
     <ClCompile Include="control.c" />
     <ClCompile Include="drawRailway.c" />
     <ClCompile Include="drawTrain.c" />
-    <ClCompile Include="drawUI.cpp" />
+    <ClCompile Include="drawUI.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="output.c" />
     <ClCompile Include="state_trans.c" />
@@ -134,8 +136,14 @@
     <ClInclude Include="var.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="blocks.png" />
-    <Image Include="train.png" />
+    <Image Include="..\resources\banner.png" />
+    <Image Include="..\resources\blocks.png" />
+    <Image Include="..\resources\buttons.png" />
+    <Image Include="..\resources\huaji.png" />
+    <Image Include="..\resources\train.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="..\resources\font.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
