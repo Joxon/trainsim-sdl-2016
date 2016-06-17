@@ -1,4 +1,3 @@
-#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
@@ -27,7 +26,7 @@ void errorFromFile()
 	exit(EXIT_FAILURE);
 };
 
-void errorFromKeyboad()
+void errorFromKeyboard()
 {
 	/*键盘输入错误*/
 	printf("ERROR input detected! Press any key to retry.");
@@ -37,12 +36,12 @@ void errorFromKeyboad()
 void init()
 {
 	printf(
-		"             === Trainsim by C403 ===               ;###'                       \n"
-		"             |   Jiannan Zheng      |               ,#+++.                      \n"
-		"             |   Awesome Yuan       |                #+++                       \n"
-		"             |    Joxon Chan        |                #+++`                      \n"
+		"             === 第55组火车模拟调度 ===               ;###'                     \n"
+		"             |         郑键楠         |               ,#+++.                    \n"
+		"             |         袁盺钰         |                #+++                     \n"
+		"             |         陈俊贤         |                #+++`                    \n"
 		"             =============================================:                     \n"
-		"                   '++'    |Press any key to continue....| `                    \n"
+		"                   '++'    |       按任意键继续....      | `                    \n"
 		"                   @+#+    ==============================;::';'++#+             \n"
 		"                   '+++                           ,;;:;;+';:,;';'''++           \n"
 		"                   ++++                         ,::,,,,,,,;::;;;'::'''          \n"
@@ -70,11 +69,11 @@ void init()
 	/*初始化火车和轨道*/
 initRetry:
 	system("cls");
-	printf("Initialization type:\n"
-		"1:initialize from file.\n"
-		"2:initialize from keyboard.\n"
-		"q:exit.\n"
-		"Input your choice:");
+	printf("初始化方式:\n"
+		"1:读入文件\n"
+		"2:键盘输入\n"
+		"q:退出\n"
+		"请输入选择：");
 	ch = _getche();
 	switch (ch)
 	{
@@ -88,12 +87,12 @@ initRetry:
 		break;
 	case 'q':
 		system("cls");
-		printf("Exiting...");
+		printf("退出中...");
 		Sleep(SLEEP_TIME_MS);
 		exit(EXIT_SUCCESS);
 	default:
 		system("cls");
-		printf("Wrong init mode! Please retry...\n");
+		printf("错误输入！任意键重试...\n");
 		Sleep(SLEEP_TIME_MS);
 		goto initRetry;
 	}
@@ -101,31 +100,31 @@ initRetry:
 	/*选择命令输入方式*/
 inputRetry:
 	system("cls");
-	printf("Commands type:\n"
-		"1:Commands from file.\n"
-		"2:Commands from keyboard.\n"
-		"q:exit.\n"
-		"Input your choice:");
+	printf("命令输入方式：\n"
+		"1:读入文件+键盘输入\n"
+		"2:键盘输入\n"
+		"q:退出\n"
+		"请输入选择：");
 	ch = _getche();
 	switch (ch)
 	{
 	case '1':
-		printf("\nYou have selected to input commands from file.\n");
+		printf("\n你选择了从文件和键盘读取命令。\n");
 		inputMode = FROM_FILE;
 		Sleep(SLEEP_TIME_MS);
 		break;
 	case '2':
-		printf("\nYou have selected to input commands from keyboard.\n");
+		printf("\n你选择了从键盘读取命令。\n");
 		inputMode = FROM_KEYBOARD;
 		Sleep(SLEEP_TIME_MS);
 		break;
 	case 'q':
 		system("cls");
-		printf("Exiting...");
+		printf("退出中...");
 		Sleep(SLEEP_TIME_MS);
 		exit(EXIT_SUCCESS);
 	default:
-		printf("\nWrong input mode! Please retry...");
+		printf("\n错误输入！请重试...");
 		Sleep(SLEEP_TIME_MS);
 		goto inputRetry;
 	}
@@ -138,6 +137,7 @@ static void initFromFile()
 	int id;
 	char ch;
 
+	//调试时打开文件不成功，请修改项目->属性->调试->工作目录
 	fp = fopen(".\\txt\\init.txt", "r");
 	if (fp != NULL)
 	{
@@ -150,7 +150,7 @@ static void initFromFile()
 
 		/*火车初始化*/
 		fscanf(fp, "train.num=%d\n", &trainNum);
-		if (trainNum < 0) errorFromFile();
+		//if (trainNum < 0) errorFromFile();
 		for (id = 0; id < trainNum; ++id)
 		{
 			fscanf(fp, "train%c.speed=%f st=%d sp=%d dir=%d type=%d pt=%d\n",
@@ -167,7 +167,7 @@ static void initFromFile()
 
 		/*轨道初始化*/
 		fscanf(fp, "railway.num=%d\n", &railNum);
-		if (railNum < 0) errorFromFile();
+		//if (railNum < 0) errorFromFile();
 		for (id = 0; id < railNum; ++id)
 		{
 			/*轨道初始化：长宽设定*/
@@ -180,6 +180,7 @@ static void initFromFile()
 			railway[id][northwest].direction = NORTHWEST;
 			railway[id][northeast].direction = NORTHEAST;
 			railway[id][southeast].direction = SOUTHEAST;
+			railway[id][length].direction = SOUTHEAST;
 			int blockid = 0;
 			for (blockid = southwest + 1; blockid < northwest; ++blockid)
 			{
@@ -213,8 +214,16 @@ static void initFromFile()
 				//if (common_count <= 0 || start < 0 || end < 0) errorFromFile();
 				for (blockid = start; blockid <= end; ++blockid)
 				{
-					railway[id][blockid].common = common_ID;
-					railway[id][blockid].last = -1;
+					if (blockid == length)
+					{
+						railway[id][0].common = common_ID;
+						railway[id][0].last = -1;
+					}
+					else
+					{
+						railway[id][blockid].common = common_ID;
+						railway[id][blockid].last = -1;
+					}
 				}
 			}
 
@@ -229,19 +238,17 @@ static void initFromFile()
 				railway[id][stationPoint].station = 1;
 			}
 
-
-			//复制轨道起始部分，防止越界访问，i的最大值决定了火车最大速度
+			//复制轨道起始部分，防止越界访问，i的范围视速度而定
 			for (int i = 0; i < 10; ++i)
 				railway[id][length + i] = railway[id][i];
 		}
 		fclose(fp);
-		printf("\ninit successful!");
+		printf("\n初始化成功！");
 	}
 
 	else
 	{
-		system("cls");
-		printf("Cannot open init.txt. Press any key to exit...");
+		printf("\n无法打开init.txt。按任意键退出...");
 		_getch();
 		exit(EXIT_FAILURE);
 	}
@@ -260,9 +267,9 @@ strategyRetry:
 		"(int > 0):");
 	scanf("%d", &strategy);
 	fflush(stdin);
-	if (strategy < 1 || strategy > 3)
+	if (strategy < ALTERNATIVE || strategy > MANUAL)
 	{
-		errorFromKeyboad();
+		errorFromKeyboard();
 		goto strategyRetry;
 	}
 	printf("DONE...");
@@ -279,7 +286,7 @@ trainRetry:
 	fflush(stdin);
 	if (trainNum <= 0)
 	{
-		errorFromKeyboad();
+		errorFromKeyboard();
 		goto trainRetry;
 	}
 
@@ -313,7 +320,7 @@ trainRetry:
 			train[id].type > 2 ||
 			train[id].pausetime < 0)
 		{
-			errorFromKeyboad();
+			errorFromKeyboard();
 			goto trainRetry;
 		}
 
@@ -321,10 +328,8 @@ trainRetry:
 		printf("DONE...\n");
 	}
 
-	/*轨道初始化*/
-	int length, southwest, northwest, northeast, southeast;
-	int common_count, common_ID, start, end;
 
+	/*轨道初始化*/
 railwayRetry:
 	system("cls");
 	printf("INITIALIZING RAILWAYS...\n"
@@ -334,12 +339,14 @@ railwayRetry:
 	fflush(stdin);
 	if (railNum < 0)
 	{
-		errorFromKeyboad();
+		errorFromKeyboard();
 		goto railwayRetry;
 	}
 
 	for (id = 0; id < railNum; ++id)
 	{
+		int length, southwest, northwest, northeast, southeast;
+		int common_count, common_ID, start, end;
 		/*轨道初始化：长宽设定*/
 		printf("Please input railway%c's length (int > 0),\n"
 			"SW point(int => 0),\n"
@@ -352,35 +359,36 @@ railwayRetry:
 		fflush(stdin);
 		if (length < 0 || southeast < 0 || northeast < 0 || northwest < 0 || southeast < 0)
 		{
-			errorFromKeyboad();
+			errorFromKeyboard();
 			goto railwayRetry;
 		}
 
 		train[id].railwayLength = length;
+		railway[id][southwest].direction = SOUTHWEST;
+		railway[id][northwest].direction = NORTHWEST;
+		railway[id][northeast].direction = NORTHEAST;
+		railway[id][southeast].direction = SOUTHEAST;
+		railway[id][length].direction = SOUTHEAST;
 		int blockid = 0;
-		while (blockid <= northwest)
+		for (blockid = southwest + 1; blockid < northwest; ++blockid)
 		{
 			railway[id][blockid].direction = WEST;
 			railway[id][blockid].station = 0;
-			++blockid;
 		}
-		while (blockid <= northeast)
+		for (blockid = northwest + 1; blockid < northeast; ++blockid)
 		{
 			railway[id][blockid].direction = NORTH;
 			railway[id][blockid].station = 0;
-			++blockid;
 		}
-		while (blockid <= southeast)
+		for (blockid = northeast + 1; blockid < southeast; ++blockid)
 		{
 			railway[id][blockid].direction = EAST;
 			railway[id][blockid].station = 0;
-			++blockid;
 		}
-		while (blockid < length)
+		for (blockid = southeast + 1; blockid < length; ++blockid)
 		{
 			railway[id][blockid].direction = SOUTH;
 			railway[id][blockid].station = 0;
-			++blockid;
 		}
 		printf("DONE...\n");
 
@@ -391,7 +399,7 @@ railwayRetry:
 		fflush(stdin);
 		if (common_count < 0)
 		{
-			errorFromKeyboad();
+			errorFromKeyboard();
 			goto railwayRetry;
 		}
 
@@ -406,52 +414,60 @@ railwayRetry:
 			scanf("%d %d %d", &common_ID, &start, &end);
 			if (common_count <= 0 || start < 0 || end < 0)
 			{
-				errorFromKeyboad();
+				errorFromKeyboard();
 				goto railwayRetry;
 			}
 
 			for (blockid = start; blockid <= end; ++blockid)
 			{
-				railway[id][blockid].common = common_ID;
-				railway[id][blockid].last = -1;
+				if (blockid == length)
+				{
+					railway[id][0].common = common_ID;
+					railway[id][0].last = -1;
+				}
+				else
+				{
+					railway[id][blockid].common = common_ID;
+					railway[id][blockid].last = -1;
+				}
+				printf("DONE...\n");
 			}
-			printf("DONE...\n");
-		}
 
-		/*轨道初始化：停靠点*/
-		int stationCount, stationID = 1, stationPoint;
-		printf("How many stations does the railway%c have?\n"
-			"(int => 0):", 'A' + id);
-		scanf("%d", &stationCount);
-		fflush(stdin);
-		if (stationCount < 0)
-		{
-			errorFromKeyboad();
-			goto railwayRetry;
-		}
-
-		printf("Please input railway%c's"
-			"station point (int => 0),\n"
-			"separated by spaces in one line:\n", 'A' + id);
-		while (stationID++ <= stationCount)
-		{
-			scanf("%d", &stationPoint);
-			if (stationPoint < 0)
+			/*轨道初始化：停靠点*/
+			int stationCount, stationID = 1, stationPoint;
+			printf("How many stations does the railway%c have?\n"
+				"(int => 0):", 'A' + id);
+			scanf("%d", &stationCount);
+			fflush(stdin);
+			if (stationCount < 0)
 			{
-				errorFromKeyboad();
+				errorFromKeyboard();
 				goto railwayRetry;
 			}
-			railway[id][stationPoint].station = 1;
+
+			printf("Please input railway%c's"
+				"station point (int => 0),\n"
+				"separated by spaces in one line:\n", 'A' + id);
+			while (stationID++ <= stationCount)
+			{
+				scanf("%d", &stationPoint);
+				if (stationPoint < 0)
+				{
+					errorFromKeyboard();
+					goto railwayRetry;
+				}
+				railway[id][stationPoint].station = 1;
+			}
+
+
+			//复制轨道起始部分，防止越界访问，i的范围视速度而定
+			for (int i = 0; i < 10; ++i)
+				railway[id][length + i] = railway[id][i];
 		}
 
-
-		//复制轨道起始部分，防止越界访问，i的范围视速度而定
-		for (int i = 0; i < 10; ++i)
-			railway[id][length + i] = railway[id][i];
+		printf("初始化成功！");
+		Sleep(SLEEP_TIME_MS);
+		system("cls");
 	}
-
-	printf("init successful!");
-	Sleep(SLEEP_TIME_MS);
-	system("cls");
 }
 

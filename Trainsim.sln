@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Trainsim-CLI", "Trainsim-CLI\Trainsim-CLI.vcxproj", "{A0DDC69B-3D9C-4BCB-B2A9-802D17DCD4E5}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Trainsim-SDL", "Trainsim-SDL\Trainsim-SDL.vcxproj", "{49952F39-5C3B-4474-8827-C4229B796DE5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Trainsim-SDL", "src\Trainsim-SDL.vcxproj", "{49952F39-5C3B-4474-8827-C4229B796DE5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,14 +13,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A0DDC69B-3D9C-4BCB-B2A9-802D17DCD4E5}.Debug|x64.ActiveCfg = Debug|x64
-		{A0DDC69B-3D9C-4BCB-B2A9-802D17DCD4E5}.Debug|x64.Build.0 = Debug|x64
-		{A0DDC69B-3D9C-4BCB-B2A9-802D17DCD4E5}.Debug|x86.ActiveCfg = Debug|Win32
-		{A0DDC69B-3D9C-4BCB-B2A9-802D17DCD4E5}.Debug|x86.Build.0 = Debug|Win32
-		{A0DDC69B-3D9C-4BCB-B2A9-802D17DCD4E5}.Release|x64.ActiveCfg = Release|x64
-		{A0DDC69B-3D9C-4BCB-B2A9-802D17DCD4E5}.Release|x64.Build.0 = Release|x64
-		{A0DDC69B-3D9C-4BCB-B2A9-802D17DCD4E5}.Release|x86.ActiveCfg = Release|Win32
-		{A0DDC69B-3D9C-4BCB-B2A9-802D17DCD4E5}.Release|x86.Build.0 = Release|Win32
 		{49952F39-5C3B-4474-8827-C4229B796DE5}.Debug|x64.ActiveCfg = Debug|x64
 		{49952F39-5C3B-4474-8827-C4229B796DE5}.Debug|x64.Build.0 = Debug|x64
 		{49952F39-5C3B-4474-8827-C4229B796DE5}.Debug|x86.ActiveCfg = Debug|Win32
