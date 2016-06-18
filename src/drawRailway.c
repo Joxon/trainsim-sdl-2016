@@ -230,7 +230,7 @@ void drawRailway(SDL_Renderer * ren, SDL_Texture * block, TTF_Font* font)
 			{
 				//初始化特效
 				SDL_RenderPresent(ren);
-				SDL_Delay(1000 / 24);
+				SDL_Delay(1000 / 60);
 			}
 
 #ifdef DEBUG
@@ -273,14 +273,12 @@ void drawRailway(SDL_Renderer * ren, SDL_Texture * block, TTF_Font* font)
 		background.g = 227;
 		background.r = 239;
 		SDL_Rect dst;
-		dst.x = 0;
-		dst.y = 0;
-		dst.w = 500;
-		dst.h = 75;
 		SDL_Surface* textSurface = TTF_RenderUNICODE_Shaded(font, L"点击地图可修改轨道位置！", foreground, background);
 		SDL_Texture* textTexture = SDL_CreateTextureFromSurface(ren, textSurface);
+		SDL_QueryTexture(textTexture, NULL, NULL, &dst.w, &dst.h);
+		dst.x = 0;
+		dst.y = 0;
 		SDL_RenderCopy(ren, textTexture, NULL, &dst);
-
 		SDL_DestroyTexture(textTexture); textTexture = NULL;
 		SDL_FreeSurface(textSurface); textSurface = NULL;
 	}

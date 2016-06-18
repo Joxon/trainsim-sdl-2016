@@ -7,7 +7,7 @@
 extern int strategy;
 extern int trainNum;
 extern struct train trains[MAX_TRAIN];
-extern int processTime; 
+extern int processTime;
 
 extern SDL_Rect buttonClip[BUTTON_ROW][BUTTON_COLUMN];
 extern SDL_Rect strategyButtonPos[3];
@@ -48,7 +48,7 @@ void drawUI(SDL_Renderer * ren, SDL_Texture * button, SDL_Texture *banner, TTF_F
 	dst.y += dst.h;
 	dst.h = 50;
 	wchar_t tempWcstr[50];
-	swprintf(tempWcstr, 50, L"程序时间：%d",processTime);
+	swprintf(tempWcstr, 50, L"程序时间：%d", processTime / FPS);
 	renderText(ren, font, ColorBlack, dst, tempWcstr);
 
 	//输出策略文字部分

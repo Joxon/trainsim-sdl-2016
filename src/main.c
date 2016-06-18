@@ -54,6 +54,10 @@ versionSelect:
 	char version = _getche();
 	if (version == '1')
 	{
+		//控制火车速度
+		//for (int trainID = 0; trainID < trainNum; ++trainID)
+		//	trainSpeed[trainID] /= FPS;
+
 		//SDL初始化
 		SDL_Init(SDL_INIT_VIDEO);
 		IMG_Init(IMG_INIT_PNG);
@@ -162,34 +166,40 @@ versionSelect:
 
 		****************/
 		bool quit = false;
+		bool firstTick = true;
+		unsigned int startTick, endTick, msPerFrame=0, countedFrames=0;
 		while (!quit)
 		{
-			int i;
+			//控制帧率
+			float avgFPS;
+			if (!firstTick) 
+				startTick = SDL_GetTicks();
+
 			//控制命令
 			if (inputMode == FROM_FILE)
 			{
-				for (i = 0; i < trainNum; ++i)
-					if (processTime == trains[i].startTime)
-						trains[i].speed = trainSpeed[i];     //到启动时刻返还速度
+				for (int trainID = 0; trainID < trainNum; ++trainID)
+					if (processTime == trains[trainID].startTime)
+						trains[trainID].speed = trainSpeed[trainID];     //到启动时刻返还速度
 				getInputFromFile();
 			}
 			else if (inputMode == FROM_KEYBOARD)
-				for (i = 0; i < trainNum; ++i)
-					if (processTime == trains[i].startTime)
-						trains[i].speed = trainSpeed[i];     //到启动时刻返还速度
+				for (int trainID = 0; trainID < trainNum; ++trainID)
+					if (processTime == trains[trainID].startTime)
+						trains[trainID].speed = trainSpeed[trainID];     //到启动时刻返还速度
 
 			//状态变换
-			for (i = 0; i < trainNum; ++i)
-				trans(&trains[i], railway, i);
+			for (int trainID = 0; trainID < trainNum; ++trainID)
+				trans(&trains[trainID], railway, trainID);
 
 			//控制台与文件输出
 			printConsoleAndFile();
 
 			//火车移动
-			for (i = 0; i < trainNum; ++i)
+			for (int trainID = 0; trainID < trainNum; ++trainID)
 			{
-				changeDirection(&trains[i], railway, i);
-				changePosition(&trains[i]);
+				changeDirection(&trains[trainID], railway, trainID);
+				changePosition(&trains[trainID]);
 			}
 
 			//设置背景为土色
@@ -327,12 +337,52 @@ versionSelect:
 				}
 			}
 
+			//计算平均帧率
+			avgFPS = countedFrames / (SDL_GetTicks() / 1000.f);
+
+			//文字表面转纹理渲染
+			SDL_Color foreground;
+			foreground.a = 255;
+			foreground.b = 0;
+			foreground.g = 0;
+			foreground.r = 0;
+			SDL_Color background;
+			background.a = 255;
+			background.b = 182;
+			background.g = 227;
+			background.r = 239;
+			SDL_Rect dst;
+			wchar_t tempstr[50];
+			swprintf(tempstr, 50, L"平均FPS：%.2f", avgFPS);
+			SDL_Surface* textSurface = TTF_RenderUNICODE_Shaded(font, tempstr, foreground, background);
+			SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+			SDL_QueryTexture(textTexture, NULL, NULL, &dst.w, &dst.h);
+			dst.x = WINDOW_WIDTH - dst.w;
+			dst.y = 0;
+			SDL_RenderCopy(renderer, textTexture, NULL, &dst);
+			SDL_DestroyTexture(textTexture); textTexture = NULL;
+			SDL_FreeSurface(textSurface); textSurface = NULL;
+
+
 			//完成绘制后呈现
 			SDL_RenderPresent(renderer);
 
 			//时间片推进
 			++processTime;
-			SDL_Delay(500);
+			++countedFrames;
+			if (countedFrames > 10000000)
+				countedFrames = 0;
+
+			//计算绘制每帧所需时间
+			if (!firstTick)
+			{
+				endTick = SDL_GetTicks();
+				msPerFrame = endTick - startTick;
+			}
+			else firstTick = false;
+
+			//控制帧率
+			SDL_Delay((1000 - msPerFrame) / FPS);
 		}
 
 
