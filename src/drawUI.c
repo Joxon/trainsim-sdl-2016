@@ -14,10 +14,10 @@ extern SDL_Rect trainButtonPos[3][3];
 extern SDL_Rect exitButtonPos;
 
 //渲染特定颜色、特定位置的文字
-void renderText(SDL_Renderer * ren, TTF_Font* font, SDL_Color Color, SDL_Rect dst, wchar_t * str)
+void renderText(SDL_Renderer * ren, TTF_Font* font, SDL_Color color, SDL_Rect dst, wchar_t * str)
 {
 	//文字表面转纹理
-	SDL_Surface* textSurface = TTF_RenderUNICODE_Blended(font, str, Color);
+	SDL_Surface* textSurface = TTF_RenderUNICODE_Blended(font, str, color);
 	SDL_Texture* textTexture = SDL_CreateTextureFromSurface(ren, textSurface);
 
 	SDL_RenderCopy(ren, textTexture, NULL, &dst);
@@ -109,15 +109,15 @@ void drawUI(SDL_Renderer * ren, SDL_Texture * button, SDL_Texture *banner, TTF_F
 		}
 	}
 
-	//绘制输入命令栏
-	dst.x = 0;
-	dst.y += dst.h + BUTTON_HEIGHT;
-	dst.w = WINDOW_WIDTH / 6;
-	dst.h = 50;
-	renderText(ren, font, ColorBlack, dst, L"命令输入栏");
+	////绘制输入命令栏
+	//dst.x = 0;
+	//dst.y += dst.h + BUTTON_HEIGHT;
+	//dst.w = WINDOW_WIDTH / 6;
+	//dst.h = 50;
+	//renderText(ren, font, ColorBlack, dst, L"命令输入栏");
 
-	dst.y += dst.h;
-	renderText(ren, font, ColorBlack, dst, L"__________");
+	//dst.y += dst.h;
+	//renderText(ren, font, ColorBlack, dst, L"__________");
 
 	//绘制退出按钮
 	dst.x = (WINDOW_WIDTH / 6 - BUTTON_WIDTH) / 2;

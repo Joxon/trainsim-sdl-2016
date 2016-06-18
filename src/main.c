@@ -4,9 +4,9 @@
 //#include <process.h>
 
 #include <SDL.h>
-//#include <SDL_thread.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+//#include <SDL_thread.h>
 
 #include "input.h"
 #include "output.h"
@@ -37,43 +37,6 @@ SDL_Rect strategyButtonPos[3];
 SDL_Rect trainButtonPos[3][3];
 SDL_Rect exitButtonPos;
 
-//void errorFromFile()
-//{
-//	/*文件输入错误*/
-//	system("cls");
-//	printf("ERROR data detected! Please check init.txt.\n"
-//		"Press any key to exit...");
-//	_getch();
-//	exit(EXIT_FAILURE);
-//}
-
-
-//struct drawUIArgs
-//{
-//	SDL_Renderer* renderer;
-//	SDL_Texture* buttonsTexture;
-//	SDL_Texture* bannerTexture;
-//	TTF_Font* font;
-//	SDL_Rect userViewport;
-//};
-//
-//int drawUIFunc(void* args)
-//{
-//	struct drawUIArgs* argsConverted = (struct drawUIArgs*)args;
-//	while (!quit)
-//	{
-//		//渲染用户输入界面，注意是以userViewport的左上角为绘图零点
-//		SDL_RenderSetViewport(argsConverted->renderer, &argsConverted->userViewport);
-//		drawUI(argsConverted->renderer,
-//			argsConverted->buttonsTexture,
-//			argsConverted->bannerTexture,
-//			argsConverted->font);
-//		SDL_RenderPresent(argsConverted->renderer);
-//	}
-//
-//	return 0;
-//}
-
 int main(int argc, char* argv[])
 {
 	//初始化火车和轨道
@@ -96,7 +59,8 @@ versionSelect:
 		TTF_Init();
 
 		//创建窗口和渲染器
-		SDL_Window* window = SDL_CreateWindow("Trainsim", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
+		SDL_Window* window = SDL_CreateWindow("Trainsim", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+			WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 		SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
 		//加载字体
@@ -191,7 +155,11 @@ versionSelect:
 		//drawUIArgs.userViewport = userViewport;
 		//SDL_Thread* drawUIThreadHandle = SDL_CreateThread(drawUIFunc, "drawUIThread", (void*)(&drawUIArgs));
 
-		//主循环
+		/****************
+
+			 主循环
+
+		****************/
 		bool quit = false;
 		while (!quit)
 		{
@@ -229,11 +197,11 @@ versionSelect:
 
 			//渲染轨道和火车，是以trainViewport的左上角为绘图零点
 			SDL_RenderSetViewport(renderer, &trainViewport);
-			drawRailway(renderer, blocksTexture);
+			drawRailway(renderer, blocksTexture, font);
 			drawTrain(renderer, trainTexture);
 			drawStations(renderer, blocksTexture);
 
-			//渲染用户输入界面，注意是以userViewport的左上角为绘图零点
+			//渲染用户界面，是以userViewport的左上角为绘图零点
 			SDL_RenderSetViewport(renderer, &userViewport);
 			drawUI(renderer, buttonsTexture, bannerTexture, font);
 
@@ -245,83 +213,116 @@ versionSelect:
 				if (e.type == SDL_QUIT) quit = true;
 			}
 
-			//获得鼠标坐标
-			int x, y;
-			SDL_GetMouseState(&x, &y);
+			//鼠标事件处理
+			{
+				SDL_RenderSetViewport(renderer, NULL);
 
-			//历遍各个策略按钮
-			for (int i = 0; i < 3; ++i)
-				//如果鼠标在按钮范围内
-				if ((x > strategyButtonPos[i].x) &&
-					(x < strategyButtonPos[i].x + strategyButtonPos[i].w) &&
-					(y > strategyButtonPos[i].y) &&
-					(y < strategyButtonPos[i].y + strategyButtonPos[i].h))
+				//获得鼠标坐标
+				int x, y;
+				SDL_GetMouseState(&x, &y);
+
+				//如果鼠标在火车界面范围内
+				if (x > USERVIEW_WIDTH)
 				{
-					//按钮显示为预备状态
-					SDL_RenderCopy(renderer, buttonsTexture, &buttonClip[i][2], &strategyButtonPos[i]);
-					//如果点击鼠标
+					SDL_Rect dst;
+					dst.h = BLOCK_SIZE;
+					dst.w = BLOCK_SIZE;
+					dst.x = (int)((x - USERVIEW_WIDTH) / BLOCK_SIZE)*BLOCK_SIZE + USERVIEW_WIDTH;
+					dst.y = (int)(y / BLOCK_SIZE)*BLOCK_SIZE;
+					SDL_RenderCopy(renderer, blocksTexture, &blockClip[0][4], &dst);
+					//如果按下鼠标，修改绘制起始点
 					if (e.type == SDL_MOUSEBUTTONDOWN)
 					{
-						//按钮显示为按下状态
-						SDL_RenderCopy(renderer, buttonsTexture, &buttonClip[i][0], &strategyButtonPos[i]);
-						//触发修改策略
-						strategy = i + ALTERNATIVE;
+						railway[0][0].x = (int)((x - USERVIEW_WIDTH) / BLOCK_SIZE);
+						railway[0][0].y = (int)(y / BLOCK_SIZE);
 					}
 				}
 
-			//历遍各个火车按钮
-			for (int trainID = 0; trainID < trainNum; ++trainID)
-				for (int buttonID = 0; buttonID < 3; ++buttonID)
-					if ((x > trainButtonPos[trainID][buttonID].x) &&
-						(x < trainButtonPos[trainID][buttonID].x + trainButtonPos[trainID][buttonID].w) &&
-						(y > trainButtonPos[trainID][buttonID].y) &&
-						(y < trainButtonPos[trainID][buttonID].y + trainButtonPos[trainID][buttonID].h))
+				//从左到右，暗，正常，亮
+				const int darkClip = 0;
+				const int normalClip = 1;
+				const int brightClip = 2;
+
+				//一共三个策略
+				const int strategyNum = 3;
+				//历遍各个策略按钮
+				for (int i = 0; i < strategyNum; ++i)
+					//如果鼠标在按钮范围内
+					if ((x > strategyButtonPos[i].x) &&
+						(x < strategyButtonPos[i].x + strategyButtonPos[i].w) &&
+						(y > strategyButtonPos[i].y) &&
+						(y < strategyButtonPos[i].y + strategyButtonPos[i].h))
 					{
 						//按钮显示为预备状态
-						SDL_RenderCopy(renderer, buttonsTexture, &buttonClip[buttonID + 3][2], &trainButtonPos[trainID][buttonID]);
-						//如果点击鼠标
+						SDL_RenderCopy(renderer, buttonsTexture, &buttonClip[i][brightClip], &strategyButtonPos[i]);
+						//如果按下按钮
 						if (e.type == SDL_MOUSEBUTTONDOWN)
 						{
 							//按钮显示为按下状态
-							SDL_RenderCopy(renderer, buttonsTexture, &buttonClip[buttonID + 3][0], &trainButtonPos[trainID][buttonID]);
-							//进行相应的操作
-							switch (buttonID)
-							{
-							case 0://暂停
-								if (train[trainID].speed != 0)
-								{
-									trainSpeed[trainID] = train[trainID].speed;
-									train[trainID].speed = 0;
-								}
-								break;
-							case 1://恢复
-								if (train[trainID].speed == 0)
-									train[trainID].speed = trainSpeed[trainID];
-								break;
-							case 2://反向
-								if (train[trainID].direction == NORMAL)
-									train[trainID].direction = REVERSE;
-								else if (train[trainID].direction == REVERSE)
-									train[trainID].direction = NORMAL;
-								break;
-							}
+							SDL_RenderCopy(renderer, buttonsTexture, &buttonClip[i][darkClip], &strategyButtonPos[i]);
+							//触发修改策略
+							strategy = i + ALTERNATIVE;
 						}
 					}
 
-			//退出按钮
-			if ((x > exitButtonPos.x) &&
-				(x < exitButtonPos.x + exitButtonPos.w) &&
-				(y > exitButtonPos.y) &&
-				(y < exitButtonPos.y + exitButtonPos.h))
-			{
-				//按钮显示为预备状态
-				SDL_RenderCopy(renderer, buttonsTexture, &buttonClip[6][2], &exitButtonPos);
-				//如果点击鼠标
-				if (e.type == SDL_MOUSEBUTTONDOWN)
+				//历遍各个火车按钮
+				const int trainButtonNum = 3;
+				for (int trainID = 0; trainID < trainNum; ++trainID)
+					for (int buttonID = 0; buttonID < trainButtonNum; ++buttonID)
+						//如果鼠标在按钮范围内
+						if ((x > trainButtonPos[trainID][buttonID].x) &&
+							(x < trainButtonPos[trainID][buttonID].x + trainButtonPos[trainID][buttonID].w) &&
+							(y > trainButtonPos[trainID][buttonID].y) &&
+							(y < trainButtonPos[trainID][buttonID].y + trainButtonPos[trainID][buttonID].h))
+						{
+							//按钮显示为预备状态
+							SDL_RenderCopy(renderer, buttonsTexture, &buttonClip[buttonID + 3][brightClip], &trainButtonPos[trainID][buttonID]);
+							//如果按下按钮
+							if (e.type == SDL_MOUSEBUTTONDOWN)
+							{
+								//按钮显示为按下状态
+								SDL_RenderCopy(renderer, buttonsTexture, &buttonClip[buttonID + 3][darkClip], &trainButtonPos[trainID][buttonID]);
+								//进行相应的操作
+								switch (buttonID)
+								{
+								case 0://暂停
+									if (train[trainID].speed != 0)
+									{
+										trainSpeed[trainID] = train[trainID].speed;
+										train[trainID].speed = 0;
+									}
+									break;
+								case 1://恢复
+									if (train[trainID].speed == 0)
+										train[trainID].speed = trainSpeed[trainID];
+									break;
+								case 2://反向
+									if (train[trainID].direction == NORMAL)
+										train[trainID].direction = REVERSE;
+									else if (train[trainID].direction == REVERSE)
+										train[trainID].direction = NORMAL;
+									break;
+								}
+
+							}
+						}
+
+				//退出按钮
+				//如果鼠标在按钮范围内
+				if ((x > exitButtonPos.x) &&
+					(x < exitButtonPos.x + exitButtonPos.w) &&
+					(y > exitButtonPos.y) &&
+					(y < exitButtonPos.y + exitButtonPos.h))
 				{
-					//按钮显示为按下状态
-					SDL_RenderCopy(renderer, buttonsTexture, &buttonClip[6][0], &exitButtonPos);
-					quit = true;
+					//按钮显示为预备状态
+					SDL_RenderCopy(renderer, buttonsTexture, &buttonClip[6][brightClip], &exitButtonPos);
+					//如果按下鼠标
+					if (e.type == SDL_MOUSEBUTTONDOWN)
+					{
+						//按钮显示为按下状态
+						SDL_RenderCopy(renderer, buttonsTexture, &buttonClip[6][darkClip], &exitButtonPos);
+						quit = true;
+					}
 				}
 			}
 
@@ -329,7 +330,7 @@ versionSelect:
 			SDL_RenderPresent(renderer);
 
 			//时间片推进
-			processTime++;
+			++processTime;
 			SDL_Delay(1000 / 24);
 		}
 
@@ -421,3 +422,39 @@ versionSelect:
 	return 0;
 }
 
+//void errorFromFile()
+//{
+//	/*文件输入错误*/
+//	system("cls");
+//	printf("ERROR data detected! Please check init.txt.\n"
+//		"Press any key to exit...");
+//	_getch();
+//	exit(EXIT_FAILURE);
+//}
+
+
+//struct drawUIArgs
+//{
+//	SDL_Renderer* renderer;
+//	SDL_Texture* buttonsTexture;
+//	SDL_Texture* bannerTexture;
+//	TTF_Font* font;
+//	SDL_Rect userViewport;
+//};
+//
+//int drawUIFunc(void* args)
+//{
+//	struct drawUIArgs* argsConverted = (struct drawUIArgs*)args;
+//	while (!quit)
+//	{
+//		//渲染用户输入界面，注意是以userViewport的左上角为绘图零点
+//		SDL_RenderSetViewport(argsConverted->renderer, &argsConverted->userViewport);
+//		drawUI(argsConverted->renderer,
+//			argsConverted->buttonsTexture,
+//			argsConverted->bannerTexture,
+//			argsConverted->font);
+//		SDL_RenderPresent(argsConverted->renderer);
+//	}
+//
+//	return 0;
+//}

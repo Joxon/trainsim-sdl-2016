@@ -3,7 +3,7 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 
-void drawRailway(SDL_Renderer * ren, SDL_Texture * block);
+void drawRailway(SDL_Renderer * ren, SDL_Texture * block, TTF_Font* font);
 static void drawCrossBlock(int railID, int blockID, SDL_Renderer * ren, SDL_Texture * tex);
 static void drawNormalBlock(int railID, int blockID, SDL_Renderer * ren, SDL_Texture * tex);
 static void judgeCommon(int extRailID, int extBlockID);

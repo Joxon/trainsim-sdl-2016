@@ -8,8 +8,12 @@
 ===========================*/
 
 //窗口大小
-#define WINDOW_WIDTH 1400
+#define WINDOW_WIDTH 1200
 #define WINDOW_HEIGHT 900
+#define USERVIEW_WIDTH (WINDOW_WIDTH/6)
+#define USERVIEW_HEIGHT WINDOW_HEIGHT
+#define TRAINVIEW_WIDTH (WINDOW_WIDTH*5/6)
+#define TRAINVIEW_HEIGHT WINDOW_HEIGHT
 //轨道块参数
 #define BLOCK_ROW 3
 #define BLOCK_COLUMN 21
