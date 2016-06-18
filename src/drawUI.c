@@ -7,6 +7,7 @@
 extern int strategy;
 extern int trainNum;
 extern struct train trains[MAX_TRAIN];
+extern int processTime; 
 
 extern SDL_Rect buttonClip[BUTTON_ROW][BUTTON_COLUMN];
 extern SDL_Rect strategyButtonPos[3];
@@ -40,8 +41,15 @@ void drawUI(SDL_Renderer * ren, SDL_Texture * button, SDL_Texture *banner, TTF_F
 
 	//绘制标题
 	dst.x = 0; dst.y = 0;
-	dst.w = WINDOW_WIDTH / 6; dst.h = 150;
+	dst.w = USERVIEW_WIDTH; dst.h = 150;
 	SDL_RenderCopy(ren, banner, NULL, &dst);
+
+	//输出运行时间
+	dst.y += dst.h;
+	dst.h = 50;
+	wchar_t tempWcstr[50];
+	swprintf(tempWcstr, 50, L"程序时间：%d",processTime);
+	renderText(ren, font, ColorBlack, dst, tempWcstr);
 
 	//输出策略文字部分
 	dst.x = 0; dst.y += dst.h;
@@ -83,17 +91,24 @@ void drawUI(SDL_Renderer * ren, SDL_Texture * button, SDL_Texture *banner, TTF_F
 	for (int trainID = 0; trainID < trainNum; ++trainID)
 	{
 		//文字
-		dst.x = WINDOW_WIDTH / 6 / 4; dst.y += 50;
-		dst.w = WINDOW_WIDTH / 6 / 2; dst.h = 50;
+		dst.x = USERVIEW_WIDTH / 4; dst.y += 50;
+		dst.w = USERVIEW_WIDTH / 2; dst.h = 50;
+		swprintf(tempWcstr, 50, L"火车%c", 'A' + trainID);
+		renderText(ren, font, ColorBlack, dst, tempWcstr);
 
-		wchar_t tempWcstr[10] = L"火车";
-		if (trainID == 0) wcscat(tempWcstr, L"A");
-		else if (trainID == 1) wcscat(tempWcstr, L"B");
-		else if (trainID == 2) wcscat(tempWcstr, L"C");
+		//状态
+		dst.y += dst.h;
+		dst.x = 0;
+		dst.w = USERVIEW_WIDTH;
+		swprintf(tempWcstr, 50, L"状态：%s",
+			trains[trainID].status == RUN ? L"运行中" :
+			trains[trainID].status == PAUSE_COMMON ? L"暂停-等待公共轨道" :
+			trains[trainID].status == PAUSE_STATION ? L"暂停-停靠站点" :
+			trains[trainID].status == PAUSE_ANY ? L" 暂停-人工暂停" : L"错误");
 		renderText(ren, font, ColorBlack, dst, tempWcstr);
 
 		//按钮
-		dst.y += dst.h + BUTTON_HEIGHT;
+		dst.y += dst.h;
 		for (int buttonID = 0; buttonID < 3; ++buttonID)
 		{
 			dst.x = (WINDOW_WIDTH / 6 - BUTTON_WIDTH) / 2 * buttonID;

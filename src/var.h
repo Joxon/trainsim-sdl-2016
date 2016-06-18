@@ -112,6 +112,7 @@ struct train
 	* RUN = 运行
 	* PAUSE_COMMON = 等待公共轨道
 	* PAUSE_ANY = 用户暂停
+	* PAUSE_STATION = 停靠站点
 	*/
 	int   status;
 
