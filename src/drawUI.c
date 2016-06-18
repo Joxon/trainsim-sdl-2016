@@ -6,7 +6,7 @@
 
 extern int strategy;
 extern int trainNum;
-extern struct train train[MAX_TRAIN];
+extern struct train trains[MAX_TRAIN];
 
 extern SDL_Rect buttonClip[BUTTON_ROW][BUTTON_COLUMN];
 extern SDL_Rect strategyButtonPos[3];

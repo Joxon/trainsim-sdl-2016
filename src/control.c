@@ -6,7 +6,7 @@
 #include "var.h"
 
 extern float        trainSpeed[MAX_TRAIN];
-extern struct train train[MAX_TRAIN];
+extern struct train trains[MAX_TRAIN];
 extern FILE         *commandPtr;
 extern unsigned int processTime;
 extern unsigned int commandTime;
@@ -71,17 +71,17 @@ void handleCommand(char * commandStr)
 		{
 			if (atoi(tempSpeed[trainID]) == -1)
 			{
-				if (train[trainID].direction == NORMAL)
-					train[trainID].direction = REVERSE;
-				else if (train[trainID].direction == REVERSE)
-					train[trainID].direction = NORMAL;
+				if (trains[trainID].direction == NORMAL)
+					trains[trainID].direction = REVERSE;
+				else if (trains[trainID].direction == REVERSE)
+					trains[trainID].direction = NORMAL;
 				continue;
 			}
 
-			train[trainID].speed = (float)atof(tempSpeed[trainID]);
+			trains[trainID].speed = (float)atof(tempSpeed[trainID]);
 			trainSpeed[trainID] = (float)atof(tempSpeed[trainID]);
 
-			if (train[trainID].speed == 0)
-				train[trainID].status = PAUSE_ANY;
+			if (trains[trainID].speed == 0)
+				trains[trainID].status = PAUSE_ANY;
 		}
 }

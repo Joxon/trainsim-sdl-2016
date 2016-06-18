@@ -9,7 +9,7 @@
 
 extern int trainNum;
 extern int railNum;
-extern struct train train[MAX_TRAIN];
+extern struct train trains[MAX_TRAIN];
 extern float        trainSpeed[MAX_TRAIN];
 extern struct block railway[MAX_RAIL][MAX_RAIL_LENGTH];
 
@@ -154,14 +154,14 @@ static void initFromFile()
 		for (id = 0; id < trainNum; ++id)
 		{
 			fscanf(fp, "train%c.speed=%f st=%d sp=%d dir=%d type=%d pt=%d\n",
-				&ch, &trainSpeed[id], &train[id].startTime, &train[id].startPoint,
-				&train[id].direction, &train[id].type, &train[id].pausetime);
-			//if (train[id].speed < 0 || train[id].startTime < 0 || train[id].startPoint < 0 ||
-			//	train[id].direction != NORMAL || train[id].direction != REVERSE ||
-			//	train[id].type != FAST || train[id].type != SLOW || train[id].pausetime < 0)
+				&ch, &trainSpeed[id], &trains[id].startTime, &trains[id].startPoint,
+				&trains[id].direction, &trains[id].type, &trains[id].pausetime);
+			//if (trains[id].speed < 0 || trains[id].startTime < 0 || trains[id].startPoint < 0 ||
+			//	trains[id].direction != NORMAL || trains[id].direction != REVERSE ||
+			//	trains[id].type != FAST || trains[id].type != SLOW || trains[id].pausetime < 0)
 			//	errorFromFile();
-			train[id].position = train[id].startPoint;
-			train[id].status = WAIT;
+			trains[id].position = trains[id].startPoint;
+			trains[id].status = WAIT;
 		}
 
 
@@ -175,7 +175,7 @@ static void initFromFile()
 			fscanf(fp, "railway%c.len=%d sw=%d nw=%d ne=%d se=%d\n",
 				&ch, &length, &southwest, &northwest, &northeast, &southeast);
 			//if (length < 0 || southeast < 0 || northeast < 0 || northwest < 0 || southeast < 0) errorFromFile();
-			train[id].railwayLength = length;
+			trains[id].railwayLength = length;
 			railway[id][southwest].direction = SOUTHWEST;
 			railway[id][northwest].direction = NORTHWEST;
 			railway[id][northeast].direction = NORTHEAST;
@@ -303,28 +303,28 @@ trainRetry:
 			"separated by spaces:\n",
 			'A' + id);
 		scanf("%f %d %d %d %d %d",
-			&train[id].speed,
-			&train[id].startTime,
-			&train[id].startPoint,
-			&train[id].direction,
-			&train[id].type,
-			&train[id].pausetime);
+			&trains[id].speed,
+			&trains[id].startTime,
+			&trains[id].startPoint,
+			&trains[id].direction,
+			&trains[id].type,
+			&trains[id].pausetime);
 		fflush(stdin);
 
-		if (train[id].speed < 0 ||
-			train[id].startTime < 0 ||
-			train[id].startPoint < 0 ||
-			train[id].direction < 1 ||
-			train[id].direction > 2 ||
-			train[id].type < 1 ||
-			train[id].type > 2 ||
-			train[id].pausetime < 0)
+		if (trains[id].speed < 0 ||
+			trains[id].startTime < 0 ||
+			trains[id].startPoint < 0 ||
+			trains[id].direction < 1 ||
+			trains[id].direction > 2 ||
+			trains[id].type < 1 ||
+			trains[id].type > 2 ||
+			trains[id].pausetime < 0)
 		{
 			errorFromKeyboard();
 			goto trainRetry;
 		}
 
-		trainSpeed[id] = train[id].speed;
+		trainSpeed[id] = trains[id].speed;
 		printf("DONE...\n");
 	}
 
@@ -363,7 +363,7 @@ railwayRetry:
 			goto railwayRetry;
 		}
 
-		train[id].railwayLength = length;
+		trains[id].railwayLength = length;
 		railway[id][southwest].direction = SOUTHWEST;
 		railway[id][northwest].direction = NORTHWEST;
 		railway[id][northeast].direction = NORTHEAST;

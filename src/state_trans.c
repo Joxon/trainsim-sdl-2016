@@ -2,10 +2,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
+
+#include "var.h"
 #include "state_trans.h"
 
 extern unsigned int trainNum;
-extern struct train train[MAX_TRAIN];
+extern struct train trains[MAX_TRAIN];
 extern struct block railway[MAX_RAIL][MAX_RAIL_LENGTH];
 extern float        trainSpeed[MAX_TRAIN];
 extern int strategy;
@@ -147,11 +149,11 @@ void trans(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], int i)
 				}
 			}
 			else if (strategy == FAST_FIRST) {
-				if (tra->type < train[m].type) {
+				if (tra->type < trains[m].type) {
 					state = RUN;
 					break;
 				}
-				else if (tra->type > train[m].type) {
+				else if (tra->type > trains[m].type) {
 					state = STOP;
 					tra->status = PAUSE_COMMON;
 					trainSpeed[i] = tra->speed;
@@ -241,7 +243,7 @@ void changePosition(struct train *tra)
 int judgeCommonTrack(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], int i)
 {
 	unsigned int j, x = 0, y = 0;
-	int pos=tra->position,posi;
+	int pos=tra->position;
 
 	//在探测点判断公共轨道是否有车
 	//顺时针
@@ -252,21 +254,21 @@ int judgeCommonTrack(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], in
 		{
 			//当前秒
 			for (j = 0; j < trainNum; j++)
-				if (railway[j][train[j].position].common
+				if (railway[j][trains[j].position].common
 					== rail[i][tra->position + (int)trainSpeed[i]].common)
 					x++;
 			//下一秒
 			if (x == 0)
 				for (j = 0; j < trainNum; j++)
-					if (train[j].speed == 0 && train[j].status == PAUSE_COMMON&&strategy != 3)
+					if (trains[j].speed == 0 && trains[j].status == PAUSE_COMMON&&strategy != 3)
 					{
-						if (railway[j][train[j].position + (int)trainSpeed[j]].common
+						if (railway[j][trains[j].position + (int)trainSpeed[j]].common
 							== rail[i][tra->position + (int)tra->speed].common)
 							y++;
 						if (j != i)
 							m = j;
 					}
-					else if (railway[j][train[j].position + (int)train[j].speed].common
+					else if (railway[j][trains[j].position + (int)trains[j].speed].common
 						== rail[i][tra->position + (int)trainSpeed[i]].common) {
 						y++;
 						if (j != i)
@@ -278,21 +280,21 @@ int judgeCommonTrack(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], in
 		{
 			//当前秒
 			for (j = 0; j < trainNum; j++)
-				if (railway[j][train[j].position].common
+				if (railway[j][trains[j].position].common
 					== rail[i][tra->position + (int)trainSpeed[i]].common)
 					x++;
 			//下一秒
 			if (x == 0)
 				for (j = 0; j < trainNum; j++)
-					if (train[j].speed == 0 && train[j].status == PAUSE_COMMON&&strategy != 3)
+					if (trains[j].speed == 0 && trains[j].status == PAUSE_COMMON&&strategy != 3)
 					{
-						if (railway[j][train[j].position + (int)trainSpeed[j]].common
+						if (railway[j][trains[j].position + (int)trainSpeed[j]].common
 							== rail[i][tra->position + (int)tra->speed].common)
 							y++;
 						if (j != i)
 							m = j;
 					}
-					else if (railway[j][train[j].position + (int)train[j].speed].common
+					else if (railway[j][trains[j].position + (int)trains[j].speed].common
 						== rail[i][tra->position + (int)tra->speed].common) {
 						y++;
 						if (j != i)
@@ -310,21 +312,21 @@ int judgeCommonTrack(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], in
 		{
 			//当前秒
 			for (j = 0; j < trainNum; j++)
-				if (railway[j][train[j].position].common
+				if (railway[j][trains[j].position].common
 					== rail[i][tra->position - (int)trainSpeed[i]].common)
 					x++;
 			//下一秒
 			if (x == 0)
 				for (j = 0; j < trainNum; j++)
-					if (train[j].speed == 0 && train[j].status == PAUSE_COMMON&&strategy != 3)
+					if (trains[j].speed == 0 && trains[j].status == PAUSE_COMMON&&strategy != 3)
 					{
-						if (railway[j][train[j].position - (int)trainSpeed[j]].common
+						if (railway[j][trains[j].position - (int)trainSpeed[j]].common
 							== rail[i][tra->position - (int)tra->speed].common)
 							y++;
 						if (j != i)
 							m = j;
 					}
-					else if (railway[j][train[j].position - (int)train[j].speed].common
+					else if (railway[j][trains[j].position - (int)trains[j].speed].common
 						== rail[i][tra->position - (int)tra->speed].common) {
 						y++;
 						if (j != i)
@@ -336,21 +338,21 @@ int judgeCommonTrack(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], in
 		{
 			//当前秒
 			for (j = 0; j < trainNum; j++)
-				if (railway[j][train[j].position].common
+				if (railway[j][trains[j].position].common
 					== rail[i][tra->position - (int)trainSpeed[i]].common)
 					x++;
 			//下一秒
 			if (x == 0)
 				for (j = 0; j < trainNum; j++)
-					if (train[j].speed == 0 && train[j].status == PAUSE_COMMON&&strategy != 3)
+					if (trains[j].speed == 0 && trains[j].status == PAUSE_COMMON&&strategy != 3)
 					{
-						if (railway[j][train[j].position - (int)trainSpeed[j]].common
+						if (railway[j][trains[j].position - (int)trainSpeed[j]].common
 							== rail[i][tra->position - (int)tra->speed].common)
 							y++;
 						if (j != i)
 							m = j;
 					}
-					else if (railway[j][train[j].position - (int)train[j].speed].common
+					else if (railway[j][trains[j].position - (int)trains[j].speed].common
 						== rail[i][tra->position - (int)trainSpeed[i]].common) {
 						y++;
 						if (j != i)

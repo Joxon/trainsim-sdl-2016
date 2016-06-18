@@ -10,7 +10,7 @@
 
 extern int railNum;
 
-extern struct train train[MAX_TRAIN];
+extern struct train trains[MAX_TRAIN];
 extern struct block railway[MAX_RAIL][MAX_RAIL_LENGTH];
 
 extern SDL_Rect blockClip[BLOCK_ROW][BLOCK_COLUMN];
@@ -66,7 +66,7 @@ void drawRailway(SDL_Renderer * ren, SDL_Texture * block, TTF_Font* font)
 		railway[0][0].y = WINDOW_HEIGHT / BLOCK_SIZE / 2;
 	}
 
-	if (railway[0][0].common != railway[0][train[0].railwayLength - 1].common)
+	if (railway[0][0].common != railway[0][trains[0].railwayLength - 1].common)
 		drawCrossBlock(0, 0, ren, block);
 	else
 		drawNormalBlock(0, 0, ren, block);
@@ -101,7 +101,7 @@ void drawRailway(SDL_Renderer * ren, SDL_Texture * block, TTF_Font* font)
 	}
 
 	//绘制中央轨道（有两条公共轨道）
-	for (int blockID = 1; blockID < train[0].railwayLength; blockID++)
+	for (int blockID = 1; blockID < trains[0].railwayLength; blockID++)
 	{
 		if (railway[0][blockID].common != 0 && (railway[0][blockID - 1].common == 0 || railway[0][blockID + 1].common == 0))
 			drawCrossBlock(0, blockID, ren, block);
@@ -123,7 +123,7 @@ void drawRailway(SDL_Renderer * ren, SDL_Texture * block, TTF_Font* font)
 	//获取共轨信息
 	for (int railID = 1; railID < railNum; railID++)
 	{
-		for (int blockID = 0; blockID < train[0].railwayLength; blockID++)
+		for (int blockID = 0; blockID < trains[0].railwayLength; blockID++)
 		{
 			if (blockID == commonInfo[railID - 1][3])
 			{
@@ -146,7 +146,7 @@ void drawRailway(SDL_Renderer * ren, SDL_Texture * block, TTF_Font* font)
 			else
 				if (blockID == commonInfo[railID - 1][2])
 				{
-					if (commonInfo[railID - 1][2] != train[railID].railwayLength - 1)
+					if (commonInfo[railID - 1][2] != trains[railID].railwayLength - 1)
 					{
 						switch (railway[railID][blockID].direction)
 						{
@@ -223,7 +223,7 @@ void drawRailway(SDL_Renderer * ren, SDL_Texture * block, TTF_Font* font)
 						}
 					}
 				}
-			if (blockID == train[railID].railwayLength - 1)
+			if (blockID == trains[railID].railwayLength - 1)
 				blockID = -1;
 
 			if (!railwayFirstDrawn)
@@ -248,14 +248,14 @@ void drawRailway(SDL_Renderer * ren, SDL_Texture * block, TTF_Font* font)
 			mainBlockID < commonInfo[subRailID - 1][4];
 			mainBlockID++, subBlockID--)
 		{
-			if (mainBlockID >= train[0].railwayLength)
+			if (mainBlockID >= trains[0].railwayLength)
 				mainBlockID = 0;
 			if (mainBlockID < 0)
-				mainBlockID = train[0].railwayLength - 1;
-			if (subBlockID >= train[subRailID].railwayLength)
+				mainBlockID = trains[0].railwayLength - 1;
+			if (subBlockID >= trains[subRailID].railwayLength)
 				subBlockID = 0;
 			if (subBlockID < 0)
-				subBlockID = train[subRailID].railwayLength - 1;
+				subBlockID = trains[subRailID].railwayLength - 1;
 			railway[subRailID][subBlockID] = railway[0][mainBlockID];
 		}
 
@@ -298,7 +298,7 @@ static void drawCrossBlock(int railID, int blockID, SDL_Renderer * ren, SDL_Text
 	pos.w = BLOCK_SIZE;
 
 	//入口
-	if ((blockID != 0 && railway[railID][blockID - 1].common == 0) || (blockID == 0 && railway[railID][train[railID].railwayLength - 1].common == 0))
+	if ((blockID != 0 && railway[railID][blockID - 1].common == 0) || (blockID == 0 && railway[railID][trains[railID].railwayLength - 1].common == 0))
 	{
 		judgeCommon(railID, blockID);
 		switch (railway[railID][blockID].direction)
@@ -376,7 +376,7 @@ static void drawNormalBlock(int railID, int blockID, SDL_Renderer * ren, SDL_Tex
 	pos.y = railway[railID][blockID].y * BLOCK_SIZE;
 	pos.h = BLOCK_SIZE;
 	pos.w = BLOCK_SIZE;
-	if (blockID != train[railID].railwayLength - 1)
+	if (blockID != trains[railID].railwayLength - 1)
 	{
 		switch (railway[railID][blockID].direction)
 		{
@@ -475,11 +475,11 @@ static void judgeCommon(int extRailID, int extBlockID)
 {
 	int id;
 	for (int railID = 1; railID < railNum; railID++)
-		for (int blockID = 0; blockID < train[railID].railwayLength; blockID++)
+		for (int blockID = 0; blockID < trains[railID].railwayLength; blockID++)
 		{
 			if (blockID == 0)
 			{
-				if (railway[railID][blockID].common == railway[extRailID][extBlockID].common && railway[railID][train[railID].railwayLength - 1].common == 0 && railway[extRailID][extBlockID + 1].common == 0)//入口
+				if (railway[railID][blockID].common == railway[extRailID][extBlockID].common && railway[railID][trains[railID].railwayLength - 1].common == 0 && railway[extRailID][extBlockID + 1].common == 0)//入口
 				{
 					id = railID;
 					commonInfo[id - 1][0] = id;
@@ -515,7 +515,7 @@ void drawStations(SDL_Renderer* ren, SDL_Texture* block)
 {
 	//处理站点
 	for (int railID = 0; railID < railNum; ++railID)
-		for (int blockID = 0; blockID < train[railID].railwayLength; ++blockID)
+		for (int blockID = 0; blockID < trains[railID].railwayLength; ++blockID)
 		{
 			if (railway[railID][blockID].station == 1)
 			{

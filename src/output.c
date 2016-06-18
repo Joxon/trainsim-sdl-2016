@@ -15,7 +15,7 @@
 
 extern int          trainNum;
 extern int          railNum;
-extern struct train train[MAX_TRAIN];
+extern struct train trains[MAX_TRAIN];
 extern struct block railway[MAX_RAIL][MAX_RAIL_LENGTH];
 
 extern int strategy;
@@ -106,16 +106,16 @@ static void printPerSec()
 		for (id = 0; id < trainNum; ++id)
 			logprintf("| ID: %c | Type:%-4s | Speed: %-3.1f | Dir: %-5s | Pos: %c[%2d][%6s] | Status: %-s\n",
 				'A' + id,
-				train[id].type == FAST ? "Fast" : "Slow",
-				train[id].speed,
-				train[id].directionStr,
-				'A' + id, train[id].position,
-				railway[id][train[id].position].common != 0 ? "Commom" : "Normal",
-				train[id].status == RUN ? "Running" :
-				train[id].status == PAUSE_COMMON ? "Paused/common" :
-				train[id].status == PAUSE_ANY ? "Paused/user" :
-				train[id].status == PAUSE_STATION ? "Paused/station" :
-				train[id].status == WAIT ? "Waiting" : "ERROR");
+				trains[id].type == FAST ? "Fast" : "Slow",
+				trains[id].speed,
+				trains[id].directionStr,
+				'A' + id, trains[id].position,
+				railway[id][trains[id].position].common != 0 ? "Commom" : "Normal",
+				trains[id].status == RUN ? "Running" :
+				trains[id].status == PAUSE_COMMON ? "Paused/common" :
+				trains[id].status == PAUSE_ANY ? "Paused/user" :
+				trains[id].status == PAUSE_STATION ? "Paused/station" :
+				trains[id].status == WAIT ? "Waiting" : "ERROR");
 
 		//轨道信息
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), WHITE);
@@ -134,9 +134,9 @@ static void printPerSec()
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GREEN);
 		for (id = 0; id < railNum; ++id)
 		{
-			logprintf("\n|/ Railway ID: %c | Length:%d | StationPoint:", 'A' + id, train[id].railwayLength);
+			logprintf("\n|/ Railway ID: %c | Length:%d | StationPoint:", 'A' + id, trains[id].railwayLength);
 			int stationCount, block;
-			for (stationCount = 0, block = 0; block <= train[id].railwayLength; ++block)
+			for (stationCount = 0, block = 0; block <= trains[id].railwayLength; ++block)
 				if (railway[id][block].station == 1)
 				{
 					logprintf("%d ", block);
@@ -161,8 +161,8 @@ static void printPerSec()
 
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GREEN);
 		for (id = 0; id < trainNum; ++id)
-			if (railway[id][train[id].position].common != 0)
-				logprintf("| Common ID: %d | Status: %c using\n", railway[id][train[id].position].common, 'A' + id);
+			if (railway[id][trains[id].position].common != 0)
+				logprintf("| Common ID: %d | Status: %c using\n", railway[id][trains[id].position].common, 'A' + id);
 	}
 }
 
@@ -177,8 +177,8 @@ static void printTrans()
 	{
 		for (i = 0; i < 3; ++i)
 		{
-			pre_point[i] = train[i].startPoint;
-			pre_speed[i] = train[i].speed;
+			pre_point[i] = trains[i].startPoint;
+			pre_speed[i] = trains[i].speed;
 		}
 		flag = 1;
 	}
@@ -199,12 +199,12 @@ static void printTrans()
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GREEN);
 		//状态变化
 		//A
-		if (railway[0][train[0].position].common != railway[0][pre_point[0]].common)
+		if (railway[0][trains[0].position].common != railway[0][pre_point[0]].common)
 		{
 			if (railway[0][pre_point[0]].common == 0)
 			{
 				for (k = 0, j = 0; railway[1][j].direction != 0 && k == 0; j++)
-					if (railway[1][j].common == railway[0][train[0].position].common)
+					if (railway[1][j].common == railway[0][trains[0].position].common)
 						k++;
 				if (k != 0)
 					outprintf("T=%d; TrainA; Trans: A->A-B\n", processTime);
@@ -223,12 +223,12 @@ static void printTrans()
 			}
 		}
 		//B
-		if (railway[1][train[1].position].common != railway[1][pre_point[1]].common)
+		if (railway[1][trains[1].position].common != railway[1][pre_point[1]].common)
 		{
 			if (railway[1][pre_point[1]].common == 0)
 			{
 				for (k = 0, j = 0; railway[0][j].direction != 0 && k == 0; j++)
-					if (railway[0][j].common == railway[1][train[1].position].common)
+					if (railway[0][j].common == railway[1][trains[1].position].common)
 						k++;
 				if (k != 0)
 					outprintf("T=%d; TrainB; Trans: B->A-B\n", processTime);
@@ -247,12 +247,12 @@ static void printTrans()
 			}
 		}
 		//C
-		if (railway[2][train[2].position].common != railway[2][pre_point[2]].common)
+		if (railway[2][trains[2].position].common != railway[2][pre_point[2]].common)
 		{
 			if (railway[2][pre_point[2]].common == 0)
 			{
 				for (k = 0, j = 0; railway[0][j].direction != 0 && k == 0; j++)
-					if (railway[0][j].common == railway[2][train[2].position].common)
+					if (railway[0][j].common == railway[2][trains[2].position].common)
 						k++;
 				if (k != 0)
 					outprintf("T=%d; TrainC; Trans: C->A-C\n", processTime);
@@ -273,17 +273,17 @@ static void printTrans()
 		//speed changing
 		for (i = 0; i < 3; i++)
 		{
-			if (pre_speed[i] != train[i].speed)
+			if (pre_speed[i] != trains[i].speed)
 			{
 				if (pre_speed[i] == 0)
 					outprintf("T=%d; Train%c; Start\n", processTime, 'A' + i);
 				else
 				{
-					if (train[i].speed == 0)
+					if (trains[i].speed == 0)
 						outprintf("T=%d; Train%c; Stop\n", processTime, 'A' + i);
 					else
 					{
-						if (pre_speed[i] > train[i].speed)
+						if (pre_speed[i] > trains[i].speed)
 							outprintf("T=%d; Train%c; Speed Down\n", processTime, 'A' + i);
 						else
 							outprintf("T=%d; Train%c; Speed Up\n", processTime, 'A' + i);
@@ -293,8 +293,8 @@ static void printTrans()
 		}
 		for (i = 0; i < 3; i++)
 		{
-			pre_point[i] = train[i].position;
-			pre_speed[i] = train[i].speed;
+			pre_point[i] = trains[i].position;
+			pre_speed[i] = trains[i].speed;
 		}
 	}
 }

@@ -8,6 +8,7 @@
 #include <SDL_ttf.h>
 //#include <SDL_thread.h>
 
+#include "var.h"
 #include "input.h"
 #include "output.h"
 #include "state_trans.h"
@@ -16,7 +17,7 @@
 
 int trainNum;                                 //火车数量
 int railNum;                                  //轨道数量
-struct train train[MAX_TRAIN];                         //火车上限
+struct train trains[MAX_TRAIN];                         //火车上限
 float        trainSpeed[MAX_TRAIN];                    //火车速度
 struct block railway[MAX_RAIL][MAX_RAIL_LENGTH];       //轨道与长度上限
 
@@ -24,7 +25,7 @@ int strategy = 0; //1，2，3分别对应"交替策略"，"快车优先策略"，"人工控制"
 int inputMode = FROM_KEYBOARD; //1，2分别对应"从文件读入命令"，"从键盘读入命令"
 int processTime = 0; //程序时钟
 int commandTime = 0;
-char         command;
+char command;
 
 FILE *logPtr = NULL; //日志文件指针
 FILE *commandPtr = NULL; //命令文件指针
@@ -168,18 +169,18 @@ versionSelect:
 			if (inputMode == FROM_FILE)
 			{
 				for (i = 0; i < trainNum; ++i)
-					if (processTime == train[i].startTime)
-						train[i].speed = trainSpeed[i];     //到启动时刻返还速度
+					if (processTime == trains[i].startTime)
+						trains[i].speed = trainSpeed[i];     //到启动时刻返还速度
 				getInputFromFile();
 			}
 			else if (inputMode == FROM_KEYBOARD)
 				for (i = 0; i < trainNum; ++i)
-					if (processTime == train[i].startTime)
-						train[i].speed = trainSpeed[i];     //到启动时刻返还速度
+					if (processTime == trains[i].startTime)
+						trains[i].speed = trainSpeed[i];     //到启动时刻返还速度
 
 			//状态变换
 			for (i = 0; i < trainNum; ++i)
-				trans(&train[i], railway, i);
+				trans(&trains[i], railway, i);
 
 			//控制台与文件输出
 			printConsoleAndFile();
@@ -187,8 +188,8 @@ versionSelect:
 			//火车移动
 			for (i = 0; i < trainNum; ++i)
 			{
-				changeDirection(&train[i], railway, i);
-				changePosition(&train[i]);
+				changeDirection(&trains[i], railway, i);
+				changePosition(&trains[i]);
 			}
 
 			//设置背景为土色
@@ -229,7 +230,7 @@ versionSelect:
 					dst.w = BLOCK_SIZE;
 					dst.x = (int)((x - USERVIEW_WIDTH) / BLOCK_SIZE)*BLOCK_SIZE + USERVIEW_WIDTH;
 					dst.y = (int)(y / BLOCK_SIZE)*BLOCK_SIZE;
-					SDL_RenderCopy(renderer, blocksTexture, &blockClip[0][4], &dst);
+					SDL_RenderCopy(renderer, blocksTexture, &blockClip[2][4], &dst);
 					//如果按下鼠标，修改绘制起始点
 					if (e.type == SDL_MOUSEBUTTONDOWN)
 					{
@@ -286,21 +287,21 @@ versionSelect:
 								switch (buttonID)
 								{
 								case 0://暂停
-									if (train[trainID].speed != 0)
+									if (trains[trainID].speed != 0)
 									{
-										trainSpeed[trainID] = train[trainID].speed;
-										train[trainID].speed = 0;
+										trainSpeed[trainID] = trains[trainID].speed;
+										trains[trainID].speed = 0;
 									}
 									break;
 								case 1://恢复
-									if (train[trainID].speed == 0)
-										train[trainID].speed = trainSpeed[trainID];
+									if (trains[trainID].speed == 0)
+										trains[trainID].speed = trainSpeed[trainID];
 									break;
 								case 2://反向
-									if (train[trainID].direction == NORMAL)
-										train[trainID].direction = REVERSE;
-									else if (train[trainID].direction == REVERSE)
-										train[trainID].direction = NORMAL;
+									if (trains[trainID].direction == NORMAL)
+										trains[trainID].direction = REVERSE;
+									else if (trains[trainID].direction == REVERSE)
+										trains[trainID].direction = NORMAL;
 									break;
 								}
 
@@ -381,18 +382,18 @@ versionSelect:
 			if (inputMode == FROM_FILE)
 			{
 				for (i = 0; i < trainNum; ++i)
-					if (processTime == train[i].startTime)
-						train[i].speed = trainSpeed[i];     //到启动时刻返还速度
+					if (processTime == trains[i].startTime)
+						trains[i].speed = trainSpeed[i];     //到启动时刻返还速度
 				getInputFromFile();
 			}
 			else if (inputMode == FROM_KEYBOARD)
 				for (i = 0; i < trainNum; ++i)
-					if (processTime == train[i].startTime)
-						train[i].speed = trainSpeed[i];     //到启动时刻返还速度
+					if (processTime == trains[i].startTime)
+						trains[i].speed = trainSpeed[i];     //到启动时刻返还速度
 
 			//状态变换
 			for (i = 0; i < trainNum; ++i)
-				trans(&train[i], railway, i);
+				trans(&trains[i], railway, i);
 
 			//输出
 			printConsoleAndFile();
@@ -400,8 +401,8 @@ versionSelect:
 			//火车移动
 			for (i = 0; i < trainNum; ++i)
 			{
-				changeDirection(&train[i], railway, i);
-				changePosition(&train[i]);
+				changeDirection(&trains[i], railway, i);
+				changePosition(&trains[i]);
 			}
 
 			//时间片推进
