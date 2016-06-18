@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
+#include <math.h>
 
 #include "var.h"
 #include "state_trans.h"
@@ -40,20 +41,24 @@ void trans(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], int i)
 		}
 		else {
 			for (j = 0; j < tra->speed; j++) {
-				if (rail[i][tra->position + j].station != 0)
+				if (rail[i][tra->position + (int)pow(-1, trains[j].direction + 1)* j].station != 0)
 					sum++;
 				if (sum > 0)
 					break;
 			}
 			if (sum > 0) {
-				state = PAUSE_STATION;
-				if (tra->speed != 0) {
-					tra->position += j;
-					tra->status = PAUSE_STATION;
-					trainSpeed[i] = tra->speed;
-					tra->speed = 0;
+				if (tra->pausetime != 0) {
+					state = PAUSE_STATION;
+					if (tra->speed != 0) {
+						tra->position += j;
+						tra->status = PAUSE_STATION;
+						trainSpeed[i] = tra->speed;
+						tra->speed = 0;
+					}
+					break;
 				}
-				break;
+				else
+					state = RUN;
 			}
 			else
 				state = RUN;
@@ -134,20 +139,31 @@ void trans(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], int i)
 					}
 				}
 				else {
-					if (rail[i][tra->position - (int)tra->speed].last == i) {
+					if (rail[i][tra->position + (int)tra->speed].last == i) {
 						state = STOP;
+						tra->status = PAUSE_COMMON;
+						trainSpeed[i] = tra->speed;
 						tra->speed = 0;
-						tra->status = STOP;
 						break;
 					}
 					else {
-						state = RUN;
-						rail[i][tra->position - (int)tra->speed].last = i;
-						tra->status = RUN;
-						break;
+						if (flag == 0) {
+							state = RUN;
+							rail[i][tra->position - (int)tra->speed].last = i;
+							tra->status = RUN;
+							flag = rail[i][tra->position - (int)tra->speed].common;
+							break;
+						}
+						else if (flag == rail[i][tra->position - (int)tra->speed].common) {
+							state = STOP;
+							tra->speed = 0;
+							tra->status = PAUSE_COMMON;
+							flag = 0;
+							break;
+						}
 					}
 				}
-			}
+		}
 			else if (strategy == FAST_FIRST) {
 				if (tra->type < trains[m].type) {
 					state = RUN;
@@ -265,17 +281,31 @@ int judgeCommonTrack(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], in
 				for (j = 0; j < trainNum; j++)
 					if (trains[j].speed == 0 && trains[j].status == PAUSE_COMMON&&strategy != 3)
 					{
-						if (railway[j][trains[j].position + (int)trainSpeed[j]].common
+						if (trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trainSpeed[j] > 0 && trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trainSpeed[j] < trains[j].railwayLength)
+							posi = trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trainSpeed[j];
+						else if (trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trainSpeed[j] >= trains[j].railwayLength)
+							posi = trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trainSpeed[j] - trains[j].railwayLength;
+						else
+							posi = trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trainSpeed[j] + trains[j].railwayLength;
+						if (railway[j][posi].common
 							== rail[i][pos].common)
 							y++;
 						if (j != i)
 							m = j;
 					}
-					else if (railway[j][trains[j].position + (int)trains[j].speed].common
+					else {
+						if (trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trains[j].speed > 0 && trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trains[j].speed < trains[j].railwayLength)
+							posi = trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trains[j].speed;
+						else if (trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trains[j].speed >= trains[j].railwayLength)
+							posi = trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trains[j].speed - trains[j].railwayLength;
+						else
+							posi = trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trains[j].speed + trains[j].railwayLength;
+						if (railway[j][posi].common
 						== rail[i][pos].common) {
 						y++;
 						if (j != i)
 							m = j;
+					    }
 					}
 		}
 		//一般情况
@@ -294,17 +324,31 @@ int judgeCommonTrack(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], in
 				for (j = 0; j < trainNum; j++)
 					if (trains[j].speed == 0 && trains[j].status == PAUSE_COMMON&&strategy != 3)
 					{
-						if (railway[j][trains[j].position + (int)trainSpeed[j]].common
+						if (trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trainSpeed[j] > 0 && trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trainSpeed[j] < trains[j].railwayLength)
+							posi = trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trainSpeed[j];
+						else if (trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trainSpeed[j] >= trains[j].railwayLength)
+							posi = trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trainSpeed[j] - trains[j].railwayLength;
+						else
+							posi = trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trainSpeed[j] + trains[j].railwayLength;
+						if (railway[j][posi].common
 							== rail[i][pos].common)
 							y++;
 						if (j != i)
 							m = j;
 					}
-					else if (railway[j][trains[j].position + (int)trains[j].speed].common
+					else {
+						if (trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trains[j].speed > 0 && trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trains[j].speed < trains[j].railwayLength)
+							posi = trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trains[j].speed;
+						else if (trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trains[j].speed >= trains[j].railwayLength)
+							posi = trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trains[j].speed - trains[j].railwayLength;
+						else
+							posi = trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trains[j].speed + trains[j].railwayLength;
+						if (railway[j][posi].common
 						== rail[i][pos].common) {
 						y++;
 						if (j != i)
 							m = j;
+					    }
 					}
 
 		}
@@ -329,10 +373,12 @@ int judgeCommonTrack(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], in
 				for (j = 0; j < trainNum; j++)
 					if (trains[j].speed == 0 && trains[j].status == PAUSE_COMMON&&strategy != 3)
 					{   
-						if (trains[j].position - (int)trainSpeed[j] > 0)
-							posi = trains[j].position - (int)trainSpeed[j];
+						if (trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trainSpeed[j] > 0 && trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trainSpeed[j] < trains[j].railwayLength)
+							posi = trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trainSpeed[j];
+						else if (trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trainSpeed[j] >= trains[j].railwayLength)
+							posi = trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trainSpeed[j] - trains[j].railwayLength;
 						else
-							posi = trains[j].position - (int)trainSpeed[j] + tra->railwayLength;
+							posi = trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trainSpeed[j] + trains[j].railwayLength ;
 						if (railway[j][posi].common
 							== rail[i][pos].common)
 							y++;
@@ -340,10 +386,12 @@ int judgeCommonTrack(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], in
 							m = j;
 					}
 					else {
-						if (trains[j].position - (int)trainSpeed[j] > 0)
-							posi = trains[j].position - (int)trains[j].speed;
+						if (trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trains[j].speed > 0 && trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trains[j].speed < trains[j].railwayLength)
+							posi = trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trains[j].speed;
+						else if (trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trains[j].speed >= trains[j].railwayLength)
+							posi = trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trains[j].speed - trains[j].railwayLength;
 						else
-							posi = trains[j].position - (int)trains[j].speed + tra->railwayLength;
+							posi = trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trains[j].speed + trains[j].railwayLength;
 						if (railway[j][trains[j].position - (int)trains[j].speed].common
 						== rail[i][pos].common) {
 						y++;
@@ -353,7 +401,7 @@ int judgeCommonTrack(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], in
 					}
 		}
 		//下一秒
-		if (rail[i][tra->position + (int)tra->speed].common != 0)
+		if (rail[i][tra->position - (int)tra->speed].common != 0)
 		{
 			pos -= (int)tra->speed;
 			if (pos<0)
@@ -368,10 +416,12 @@ int judgeCommonTrack(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], in
 				for (j = 0; j < trainNum; j++)
 					if (trains[j].speed == 0 && trains[j].status == PAUSE_COMMON&&strategy != 3)
 					{
-						if (trains[j].position - (int)trainSpeed[j] > 0)
-							posi = trains[j].position - (int)trainSpeed[j];
+						if (trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trainSpeed[j] > 0 && trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trainSpeed[j] < trains[j].railwayLength)
+							posi = trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trainSpeed[j];
+						else if (trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trainSpeed[j] >= trains[j].railwayLength)
+							posi = trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trainSpeed[j] - trains[j].railwayLength;
 						else
-							posi = trains[j].position - (int)trainSpeed[j] + tra->railwayLength;
+							posi = trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trainSpeed[j] + trains[j].railwayLength;
 						if (railway[j][posi].common
 							== rail[i][pos].common)
 							y++;
@@ -379,10 +429,12 @@ int judgeCommonTrack(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], in
 							m = j;
 					}
 					else{
-						if (trains[j].position - (int)trainSpeed[j] > 0)
-							posi = trains[j].position - (int)trains[j].speed;
+						if (trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trains[j].speed > 0 && trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trains[j].speed < trains[j].railwayLength)
+							posi = trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trains[j].speed;
+						else if (trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trains[j].speed >= trains[j].railwayLength)
+							posi = trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trains[j].speed - trains[j].railwayLength;
 						else
-							posi = trains[j].position - (int)trains[j].speed + tra->railwayLength;
+							posi = trains[j].position + (int)pow(-1, trains[j].direction + 1)* (int)trains[j].speed + trains[j].railwayLength;
 						if (railway[j][posi].common
 						== rail[i][pos].common) {
 						y++;

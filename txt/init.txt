@@ -1,8 +1,8 @@
 strategy=1
 train.num=3
-trainA.speed=1 st=0 sp=0 dir=1 type=0 pt=3
-trainB.speed=1 st=0 sp=3 dir=1 type=1 pt=3
-trainC.speed=1 st=0 sp=5 dir=1 type=0 pt=3
+trainA.speed=1 st=0 sp=8 dir=1 type=0 pt=0
+trainB.speed=1 st=0 sp=3 dir=1 type=1 pt=0
+trainC.speed=1 st=0 sp=3 dir=2 type=0 pt=0
 railway.num=3
 railwayA.len=16 sw=0 nw=4 ne=8 se=12 cm=2 id=1 1 3 id=2 9 11 sn=2 5 10
 railwayB.len=8  sw=0 nw=2 ne=4 se=6  cm=1 id=1 4 6 sn=1 4
