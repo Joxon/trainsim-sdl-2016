@@ -70,9 +70,9 @@ void init()
 initRetry:
 	system("cls");
 	printf("初始化方式:\n"
-		"1:读入文件\n"
-		"2:键盘输入\n"
-		"q:退出\n"
+		"1：读入文件\n"
+		"2：键盘输入\n"
+		"q：退出\n"
 		"请输入选择：");
 	ch = _getche();
 	switch (ch)
@@ -101,9 +101,9 @@ initRetry:
 inputRetry:
 	system("cls");
 	printf("命令输入方式：\n"
-		"1:读入文件+键盘输入\n"
-		"2:键盘输入\n"
-		"q:退出\n"
+		"1：读入文件+键盘输入\n"
+		"2：键盘输入\n"
+		"q：退出\n"
 		"请输入选择：");
 	ch = _getche();
 	switch (ch)

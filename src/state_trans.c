@@ -241,7 +241,7 @@ void changePosition(struct train *tra)
 int judgeCommonTrack(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], int i)
 {
 	unsigned int j, x = 0, y = 0;
-	unsigned int pos=tra->position,posi;
+	int pos=tra->position,posi;
 
 	//在探测点判断公共轨道是否有车
 	//顺时针
@@ -251,7 +251,7 @@ int judgeCommonTrack(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], in
 		if (tra->speed == 0 && tra->status == PAUSE_COMMON)
 		{
 			//当前秒
-			pos += trainSpeed[i];
+			pos += (int)trainSpeed[i];
 			if(pos >= tra->railwayLength)
 				pos = pos+ tra->railwayLength;
 			for (j = 0; j < trainNum; j++)
@@ -314,7 +314,7 @@ int judgeCommonTrack(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], in
 		//在公共轨道前自动暂停的情况
 		if (tra->speed == 0 && tra->status == PAUSE_COMMON)
 		{
-			pos -= trainSpeed[i];
+			pos -= (int)trainSpeed[i];
 			if (pos <0)
 				pos = pos + tra->railwayLength+1;
 			//当前秒
