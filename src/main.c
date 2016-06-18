@@ -332,7 +332,7 @@ versionSelect:
 
 			//时间片推进
 			++processTime;
-			SDL_Delay(1000 / 24);
+			SDL_Delay(500);
 		}
 
 
