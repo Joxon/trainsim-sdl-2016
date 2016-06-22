@@ -133,6 +133,7 @@ void trans(struct train *tra, struct block rail[][MAX_RAIL_LENGTH], int i)
 							state = STOP;
 							tra->speed = 0;
 							tra->status = PAUSE_COMMON;
+							rail[i][tra->position + (int)tra->speed].last = -1;
 							flag = 0;
 							break;
 						}

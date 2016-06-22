@@ -1,3 +1,44 @@
+//左右型
+strategy=1
+train.num=3
+trainA.speed=1.0 st=0 sp=0 dir=1 type=0 pt=10
+trainB.speed=1.0 st=1 sp=0 dir=1 type=1 pt=10
+trainC.speed=1.0 st=2 sp=0 dir=2 type=0 pt=10
+railway.num=3
+railwayA.len=22 sw=0 nw=9 ne=11 se=20 cm=2 id=1 3 8 id=2 12 17 sn=2 5 10
+railwayB.len=16 sw=0 nw=5 ne=8 se=13 cm=1 id=1 8 13 sn=1 3
+railwayC.len=16 sw=0 nw=5 ne=8 se=13 cm=1 id=2 0 5 sn=1 11
+
+//上下型
+strategy=1
+train.num=3
+trainA.speed=1.0 st=0 sp=0 dir=1 type=0 pt=10
+trainB.speed=1.0 st=1 sp=0 dir=1 type=1 pt=10
+trainC.speed=1.0 st=2 sp=0 dir=2 type=0 pt=10
+railway.num=3
+railwayA.len=20 sw=0 nw=3 ne=10 se=13 cm=2 id=1 5 9 id=2 14 17 sn=2 5 10
+railwayB.len=12 sw=0 nw=2 ne=6 se=8 cm=1 id=1 8 12 sn=1 3
+railwayC.len=14 sw=0 nw=4 ne=7 se=11 cm=1 id=2 4 7 sn=1 11
+
+//策略测试
+strategy=3
+train.num=2
+trainA.speed=1.0 st=0 sp=8 dir=1 type=0 pt=10
+trainB.speed=1.0 st=0 sp=3 dir=1 type=1 pt=10
+railway.num=2
+railwayA.len=12 sw=0 nw=5 ne=6 se=11 cm=1 id=1 1 3 sn=0
+railwayB.len=8 sw=0 nw=2 ne=4 se=6 cm=1 id=1 4 6 sn=0
+
+strategy=1
+train.num=3
+trainA.speed=5.0  st=0 sp=0 dir=1 type=0 pt=3
+trainB.speed=10.0 st=1 sp=0 dir=1 type=1 pt=3
+trainC.speed=5.0  st=2 sp=0 dir=2 type=0 pt=3
+railway.num=3
+railwayA.len=42 sw=0 nw=8 ne=20 se=29 cm=2 id=1 1 6 id=2 21 27 sn=2 5 10
+railwayB.len=22 sw=0 nw=4 ne=10 se=15 cm=1 id=1 10 15 sn=1 3
+railwayC.len=18 sw=0 nw=7 ne=9 se=16 cm=1 id=2 0 7 sn=1 13
+
 strategy=1
 train.num=3
 trainA.speed=5.0  st=0 sp=0 dir=1 type=0 pt=3

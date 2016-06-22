@@ -15,7 +15,7 @@
 #define TRAINVIEW_WIDTH (WINDOW_WIDTH*5/6)
 #define TRAINVIEW_HEIGHT WINDOW_HEIGHT
 //帧率
-#define FPS 6
+#define FPS 1
 //轨道块参数
 #define BLOCK_ROW 3
 #define BLOCK_COLUMN 21
